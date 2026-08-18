@@ -136,11 +136,11 @@ because the pool holds the full deposit and covers every payout the frozen
 terms allow, by construction of the terms. The commitment calculus
 deliberately carries no value inside its commitments; bounding loss is the job
 of this separate economic design, which makes every claim fully funded before
-it exists. In my prototype the check is structural: required collateral is
+it exists. In my prototype I made the check structural: required collateral is
 computed as the largest liability any payout vector in the market's immutable
 set implies at the current claim supply, rounding against the protocol, and
-any state whose collateral falls below that maximum is refused as an invariant
-violation --- at market construction and around every transition.
+I built every transition --- market construction included --- to refuse, as an
+invariant violation, any state whose collateral falls below that maximum.
 
 One refinement matters for classification. A complete set plus the
 recombination right is a fully hedged position, interchangeable with its own
@@ -167,11 +167,11 @@ The close is that coordination act, made cheap: a frozen rule stating that no
 further orders will be admitted. In the model, stability of the inputs
 transports to stability of every derived result, so freezing the book seals
 the clearing with no per-computation argument. After the close, computing the
-result is arithmetic anyone can redo. My batch prototype relies on exactly
-this: it freezes its price grid, tie rule, and remainder rule when the book is
-constructed, derives one canonical clearing, and accepts a submitted clearing
+result is arithmetic anyone can redo. I built my batch prototype to do exactly
+this: freeze its price grid, tie rule, and remainder rule when the book is
+constructed, derive one canonical clearing, and accept a submitted clearing
 candidate only if it matches what the frozen book itself determines,
-recomputed from scratch. The submitter's claimed quantities are never trusted.
+recomputed from scratch --- never trusting the submitter's claimed quantities.
 
 == Finality is a licensed collapse
 
@@ -312,7 +312,7 @@ My research uses three words with exact meanings:
 - *Clear*: the specified state and computation are public.
 - *Shielded*: a named executor, committee, or auditor may learn private
   inputs.
-- *Dark*: no actor learns anything beyond the frozen leakage function and its
+- *Dark*: no actor learns anything beyond a frozen leakage function and its
   own authorized local output, within an explicit corruption model.
 
 These labels describe information flows and design targets, not present
@@ -481,6 +481,6 @@ been independently audited.
   [Public input, advisory work, meetings, and the Innovation Task Force are Commission channels; the IAC is advisory], [Source notes 7 and 8],
   [Guarded-commitment properties: eager shape fixing; an accepted fill equals the committed transition; guard violations fail closed; the typed late contribution cannot substitute any committed field; commits are one-shot by replay key; writes are framed to the declared footprint; value- and authority-bearing holes are given no primitive and are refuted as an anti-model], [Model theorems in the submitter's guarded-commitment research (a weak prototype and a current generalization), source-inspected at stated commits; not deployed controls],
   [Candidate-result properties: deterministic evaluation commutes with union of candidate sets; determinacy does not survive coordination-free merging; sealing is licensed by a stability premise and an unlicensed seal can be false of a merged state; input stability transports to result stability; balance-type guards do not merge coordination-free], [Model theorems in the submitter's candidate-result formalism; no oracle, legal finality process, or enforceable selection is implemented or validated],
-  [The worked market's accounting: structural refusal of undercollateralized states (required collateral as the maximum liability over the immutable payout set); batch clearing verified by full recomputation of a frozen book; an observation accumulator that refuses questions its retained information cannot support], [Offline pure-Rust research prototype reviewed by the submitter; deterministic tests pass; tested, not formally verified; not deployed],
+  [The worked market's accounting: structural refusal of undercollateralized states (required collateral as the maximum liability over the immutable payout set); batch clearing verified by full recomputation of a frozen book; an observation accumulator built to refuse questions its retained information cannot support], [Offline pure-Rust research prototype reviewed by the submitter; deterministic tests pass; tested, not formally verified; not deployed],
   [No artifact described in this statement is deployed, funded, offered, or operating, and the research artifacts do not presently compose into an end-to-end system], [The submitter's repository status records; a statement about the submitter's own artifacts, not about any third party],
 )

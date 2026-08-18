@@ -97,9 +97,9 @@ The design creates no debt, margin, leverage, or liquidation. Maximum loss for
 every participant is fixed when their collateral or premium is paid.
 
 I have implemented the core of this design as an offline research prototype: a
-pure-Rust transition kernel with integer-exact arithmetic covering deposit,
-recombination, claim materialization, resolution, and redemption, plus its
-conservation and pool-coverage checks, together with observation-accumulation
+pure-Rust transition kernel with integer-exact arithmetic covering the worked
+example's accounting --- deposit, recombination, resolution, redemption --- with
+its conservation and pool-coverage checks, together with observation-accumulation
 and batch-clearing prototypes. Its deterministic tests pass. It is tested, not
 formally verified. It has no deployed program, no keys, no customers, and no
 funds, and nothing in this comment asks for permission to change that. I use
@@ -441,6 +441,6 @@ has been independently audited.
   [Regulation 40.11 and a pending 2026 proposal address event contracts and public-interest review], [Source notes 5 and 6],
   [A guarded commitment fixes actor, affected state, guards, and transition shape before the later value; an accepted fill equals the committed transition; a violating fill fails closed], [Model theorems in the submitter's guarded-commitment research; not deployed controls],
   [Candidate-result evaluation of deterministic functions commutes with union of candidate sets; determinacy requires a separately supplied stability or coordination premise], [Model theorem in the submitter's candidate-result formalism; no oracle, finality process, or enforceable selection is implemented or validated],
-  [The worked example's core accounting --- deposit, recombination, claim materialization, resolution, redemption, with conservation and pool-coverage checks --- runs offline with passing deterministic tests], [Pure-Rust research prototype reviewed by the submitter; tested, not formally verified; not deployed],
+  [The worked example's core accounting --- deposit, recombination, resolution, redemption, with conservation and pool-coverage checks --- has been implemented offline with passing deterministic tests], [Pure-Rust research prototype reviewed by the submitter; tested, not formally verified; not deployed],
   [No artifact described in this comment is deployed, funded, offered, or operating], [The submitter's repository status records; a statement about the submitter's own artifacts, not about any third party],
 )

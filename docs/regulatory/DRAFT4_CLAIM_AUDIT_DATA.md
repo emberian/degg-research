@@ -1,5 +1,11 @@
 # Draft 4 filing-preflight claim ledger — Data-reporting comment
 
+> **Superseded for ID purposes by [`DRAFT5_CLAIM_LEDGER.md`](DRAFT5_CLAIM_LEDGER.md)**
+> (2026-08-18). This file remains the authoritative full row text for
+> V-22 through V-28, which keep their numbers in the consolidated ID space.
+> The Draft 5 audit's V-38 supersedes the exact V-23/V-24 body phrasings with
+> built-anchored forms.
+
 Status: filing-preflight audit of the Draft 4 DATA-REPORTING rewrite, prepared
 2026-08-18. This is a local research control, not legal advice, a filing
 authorization, a source audit for the sibling repositories, or a conclusion

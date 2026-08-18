@@ -1,5 +1,12 @@
 # Draft 4 filing-preflight claim ledger — IAC written statement and cover
 
+> **Superseded for ID purposes by [`DRAFT5_CLAIM_LEDGER.md`](DRAFT5_CLAIM_LEDGER.md)**
+> (2026-08-18). This file's rows V-22 through V-27 collided with the
+> data-reporting ledger's IDs and are renumbered V-29 through V-34 in the
+> consolidated ledger; this file remains their authoritative full row text.
+> The Draft 5 audit's V-38 supersedes the exact V-25 (now V-32) prototype
+> phrasings with built-anchored forms.
+
 Status: filing-preflight audit of the Draft 4 IAC rewrite, prepared
 2026-08-18. This is a local research control, not legal advice, a filing
 authorization, a source audit for the sibling repositories, or a conclusion

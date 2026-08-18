@@ -104,9 +104,9 @@ ledger's state. They are reported from the venue's own records or they are not
 reported. In the other direction, this milestone is where machine verification
 is strongest. Because the clearing rule is deterministic over a frozen book,
 anyone holding the book can recompute the result. In my research prototype,
-the batch verifier accepts a submitted clearing only if recomputation from the
-frozen book reproduces it exactly; it never trusts the submitter's claimed
-quantities. A reporting rule with that shape is more than a format check: the
+I built the batch verifier to accept a submitted clearing only if
+recomputation from the frozen book reproduces it exactly, never trusting the
+submitter's claimed quantities. A reporting rule with that shape is more than a format check: the
 rule is the check.
 
 *Finality.* Between the close of trading and the close of the observation
@@ -397,9 +397,9 @@ correct this report, to what, under which rule version" can be a typed object
 rather than a convention. A finality or correction certificate should be
 required before one candidate becomes the final regulatory state, and rejected
 or superseded transitions should remain auditable without being counted as
-trades. One further lesson from my prototypes: my observation accumulator
-refuses to answer a question its retained information cannot support, rather
-than approximating it. "The rule rejects this" and "the backend cannot answer
+trades. One further lesson from my prototypes: I built the observation accumulator
+to refuse a question its retained information cannot support rather than
+approximate it. "The rule rejects this" and "the backend cannot answer
 this" are different states, and the failure taxonomy of item 9 should keep
 them apart.
 
@@ -506,10 +506,10 @@ has been independently audited.
   [Repository confidentiality and access rules govern reported swap data], [17 C.F.R. part 49; source note 4],
   [A guarded update's shape is fixed before the late value; an accepted update equals the committed transition; a violating update fails closed], [Model theorems in the submitter's guarded-commitment research; not deployed controls or a reporting adapter],
   [A pending computation can be represented as the set of results it could still be; collapse to one answer is an explicit act with a stated precondition], [Model theorem in the submitter's candidate-result formalism; no oracle, finality process, or enforceable selection is implemented or validated],
-  [The worked example's core accounting --- deposit, recombination, claim materialization, resolution, redemption, with conservation and pool-coverage checks --- runs offline with passing deterministic tests], [Pure-Rust research prototype reviewed by the submitter; tested, not formally verified; not deployed],
-  [The prototype's batch verifier accepts a submitted clearing only if full recomputation from the frozen book reproduces it], [Prototype source and deterministic tests reviewed by the submitter; offline research code, not a deployed venue],
-  [The prototype's observation accumulator refuses questions its retained information cannot support], [Prototype source and deterministic tests reviewed by the submitter; offline research code],
-  [The leakage laboratory replays four synthetic traces against three transcript designs and separates mechanically revealed fields from enabled deductions], [Deterministic synthetic-transcript accounting reviewed by the submitter; not an anonymity, cryptographic-leakage, timing, or real-market measurement],
+  [The worked example's core accounting --- deposit, recombination, resolution, redemption, with conservation and pool-coverage checks --- has been implemented offline with passing deterministic tests], [Pure-Rust research prototype reviewed by the submitter; tested, not formally verified; not deployed],
+  [The prototype's batch verifier was built to accept a submitted clearing only if full recomputation from the frozen book reproduces it], [Prototype source and deterministic tests reviewed by the submitter; offline research code, not a deployed venue],
+  [The prototype's observation accumulator was built to refuse questions its retained information cannot support], [Prototype source and deterministic tests reviewed by the submitter; offline research code],
+  [The leakage laboratory was built to replay four synthetic traces against three transcript designs, separating mechanically revealed fields from enabled deductions], [Deterministic synthetic-transcript accounting reviewed by the submitter; not an anonymity, cryptographic-leakage, timing, or real-market measurement],
   [The Clear, Shielded, and Dark taxonomy and the associated leakage-surface analysis], [Proposed analytical terminology from the submitter's research; no claim that any Dark system exists, is deployed, or satisfies current rules],
   [No artifact described in this comment is deployed, funded, offered, or operating], [The submitter's repository status records; a statement about the submitter's own artifacts, not about any third party],
 )

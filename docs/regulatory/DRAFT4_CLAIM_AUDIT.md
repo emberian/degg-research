@@ -1,5 +1,13 @@
 # Draft 4 filing-preflight claim ledger — Definitions comment
 
+> **Superseded for ID purposes by [`DRAFT5_CLAIM_LEDGER.md`](DRAFT5_CLAIM_LEDGER.md)**
+> (2026-08-18). This file remains the authoritative full row text for
+> V-17 through V-21; the consolidated ledger owns the shared ID space and the
+> Draft 5 rows. Record correction: the post-audit addendum below records fix
+> F-6 as applied, but the committed Draft 4 text and rebuilt Draft 4 PDF still
+> read "commodity price"; F-6 actually landed in Draft 5 (consolidated row
+> V-35).
+
 Status: filing-preflight audit of the Draft 4 DEFINITIONS rewrite, prepared
 2026-08-18. This is a local research control, not legal advice, a filing
 authorization, a source audit for the sibling repositories, or a conclusion

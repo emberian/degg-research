@@ -6,7 +6,7 @@
   1,
   "Joint Request for Comment on Swap and Security-Based Swap Data Reporting",
   "https://www.federalregister.gov/documents/2026/06/24/2026-12742/joint-request-for-comment-on-swap-and-security-based-swap-data-reporting",
-  [91 Fed. Reg. 37877 (June 24, 2026), especially Questions 3, 8, and 19. Comments must be received on or before August 24, 2026. CFTC RIN 3038-AF70; SEC File S7-2026-22. Retrieved August 17, 2026.],
+  [91 Fed. Reg. 37877 (June 24, 2026), FR Doc. 2026-12742, especially Questions 3, 8, and 19. Comments must be received on or before August 24, 2026. CFTC RIN 3038-AF70; SEC File S7-2026-22. Retrieved August 17, 2026.],
 )
 
 #source_entry(
@@ -32,13 +32,21 @@
 
 == Local technical materials inspected
 
-The Clear, Shielded, and Dark taxonomy and the guarded-update and candidate-state
-examples derive from formal-research models reviewed by the submitter. They are
-used as proposed analytical distinctions, not claims of a deployed confidential
-venue, complete compliance system, production proof stack, or vFHE system. The
-local prototype history includes serious FHE, MPC, threshold, and private-proof
-experiments, but its strongest composed paths remain Shielded rather than
-end-to-end Dark.
+The technical descriptions were prepared from research artifacts reviewed by
+the submitter: the guarded-commitment and candidate-result formal models, the
+Dragon's Clutch offline conditional-asset prototype (a pure-Rust research
+kernel, observation accumulator, and batch-clearing verifier with passing
+deterministic tests; tested, not formally verified; not a deployed system,
+product, or offer), and a deterministic synthetic-transcript leakage
+laboratory. The Clear, Shielded, and Dark taxonomy is used as a proposed
+analytical distinction, not a claim of a deployed confidential venue, complete
+compliance system, production proof stack, or vFHE system. The local prototype
+history includes serious FHE, MPC, threshold, and private-proof experiments,
+but its strongest composed paths remain Shielded rather than end-to-end Dark.
+A final public edition should cite frozen public repository commits and exact
+paths if those repositories are public by filing time; otherwise it should
+retain this limited description and avoid claims of independent public
+reproducibility.
 
 #review_note[
   *Final-source gate.* The notice requires receipt on or before August 24, 2026.

@@ -85,8 +85,10 @@ The market's terms are frozen when it is created:
   clears them at one consistent set of prices.
 - *Observation.* A frozen program reads authenticated price history from the
   named onchain source over the stated window and computes the realized cell.
-  No person chooses the value: a transaction either carries evidence that
-  satisfies the frozen rule or it is rejected.
+  No person chooses the reported value: a transaction either carries evidence
+  that satisfies the frozen rule or it is rejected. This removes reporting
+  discretion; it does not prevent trading from influencing the underlying
+  price.
 - *Settlement.* After the observation window and its repair period close, the
   realized cell's claims redeem from the pool at the stated payout. The other
   four claims expire worthless. Because every complete set was issued against
@@ -152,7 +154,7 @@ procedure — and what happens if the source fails, which the terms must answer
 in advance.
 
 *Settlement.* The realized cell's claims redeem from the pool. On its face
-this is performance of the instrument created earlier, not the creation of a
+this is performance of whatever instrument was created earlier, not the creation of a
 new one — but a design in which settlement issued a new continuing claim would
 present a different question.
 
@@ -233,7 +235,7 @@ instrument, rather than relying on the software's description of the state as
 partial.
 
 #key_point("Core distinction", [
-  Technical incompleteness is not economic incompleteness. At batch close in
+  Technical incompleteness is not necessarily economic incompleteness. At batch close in
   the worked example, nobody knows which band will realize; the computation is
   incomplete and stays incomplete until observation closes. The economics are
   already fixed: consideration is paid, collateral is locked, the possible
@@ -254,7 +256,8 @@ Ask whether the author can revoke unconditionally; whether another person can
 cause execution without a new authorization; and whether signature, funding,
 or admission creates an enforceable promise, order, option, privilege, or
 claim. In the worked example, the published template binds nobody, while a
-funded deposit does. An internal computation and a right held by another
+funded deposit locks collateral that only the market's terms can move. An
+internal computation and a right held by another
 person should not be treated as the same state merely because both are
 represented by program data.
 
@@ -264,7 +267,7 @@ Ask whether value has been paid, escrowed, or irreversibly committed; whether
 that funding pays for an ordinary service or creates gain or loss from a
 contingency; and whether maximum loss is fixed and fully prefunded. In the
 worked example, every position's maximum loss is fixed at funding and the pool
-holds the full payout. Prefunding materially changes credit and
+holds the full payout. Prefunding can materially change credit and
 customer-protection risk, but it should not be assumed to decide the product
 category by itself.
 
@@ -408,7 +411,7 @@ class of staged structures.
 = Conclusion
 
 The worked example makes a narrow but important distinction visible: technical
-incompleteness is not economic incompleteness. Objective criteria should
+incompleteness is not necessarily economic incompleteness. Objective criteria should
 identify when consideration, binding rights, contingent exposure, reference
 characteristics, and transferability become operative, then apply the
 appropriate statutory category to those facts. They should separately identify

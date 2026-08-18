@@ -107,3 +107,24 @@ build, and public-disclosure decisions remain human gates. An adversarial
 re-verification lane should start from the traceability appendix
 (`body.typ:431-453`), this ledger's V-17/V-18 rows, and the Draft 3 ledger's
 downgrade table.
+
+## Post-audit addendum (2026-08-18)
+
+An independent adversarial audit
+([DRAFT4_DEFINITIONS_AUDIT_VERDICT.md](DRAFT4_DEFINITIONS_AUDIT_VERDICT.md))
+returned PASS WITH WARNINGS. All six proposed fixes were applied to
+`typst/definitions/body.typ`: F-1 ("necessarily" restored, twice), F-2
+("can materially change" restored), F-3 (funded deposit described as locking
+collateral, not as binding), F-4 ("whatever instrument was created earlier"),
+F-6 ("onchain digital-asset price", dropping the commodity characterization),
+F-7 (reporting-discretion clause narrowed and expressly not a
+manipulation-immunity claim). F-5 is left for counsel per the verdict.
+
+N-1: the V-17 evidence was independently re-verified by the auditor at
+dragons-clutch `245c965` (26/26 tests; zero source changes since
+`fa4efb4`). Correction to V-17's environment note: Verus and Rocq are now
+installed and pinned (dragons-clutch `toolchain/PINNED_PROOF_TOOLS.md`);
+the filing claim remains exactly "tested, not formally verified" and must not
+be upgraded on installed tools alone.
+
+Rebuilt definitions PDF after fixes: 9 pages, SHA-256 `d7b4ab9e6a94b1514915a0ac1f5b935a48da9ac66269c33abd37cc1d042b3f6e`.

@@ -7,7 +7,7 @@
 //! of those failures into a *typed* terminal or retryable abort with an explicit
 //! consequence, and that guarantees the reserved amounts come back exactly once.
 //!
-//! Two rules carry most of the weight.
+//! Three rules carry most of the weight.
 //!
 //! First, an unavailable payload is never silently dropped.
 //! `DARK_RELATION_THREAT_MODEL.md` lists "an unavailable payload is converted to
@@ -23,6 +23,15 @@
 //! Every nullifier resolves exactly once, to a refund or to settlement, and the
 //! ledger's totals are checked against that invariant after every operation the
 //! tests perform.
+//!
+//! Third, a public refusal of the relation is not a settlement.
+//! [`BatchMachine::deliver_refusal`] and [`AbortClass::RelationRefused`] type
+//! the case where the relation answered completely and correctly by refusing
+//! the admitted batch: there is no allocation, so nothing may be released to
+//! settlement and every admitted record is refundable. Before that class
+//! existed a publicly refused batch reached [`Phase::Settled`] through
+//! [`BatchMachine::deliver_result`] and its reserved funds had no path back at
+//! all, which `SHIELDED_BASELINE.md` §7.1 recorded as composition gap C-1.
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -87,6 +96,26 @@ pub enum AbortClass {
     },
     /// A result was delivered that is not bound to the published cutoff root.
     ResultUnbound,
+    /// A result bound to the published cutoff root reports that the relation
+    /// publicly refused the admitted batch.
+    ///
+    /// A refusal is a complete, correct, public answer of the relation, and it
+    /// is *not* a settlement: no allocation exists, so nothing may be released
+    /// to the settlement relation and every admitted record is refundable.
+    /// Without this class a publicly refused batch reached [`Phase::Settled`]
+    /// and its reserved funds had no path back at all.
+    ///
+    /// The machine does not interpret `class_code` and cannot recompute it:
+    /// this model never evaluates the relation. The code is the relation's own
+    /// public refusal-class code, carried verbatim, in the relation named by
+    /// the log domain. A deliverer that publishes a refusal and reports it
+    /// through [`BatchMachine::deliver_result`] instead is therefore not
+    /// detected here; what closes that is a machine that checks the relation,
+    /// which is a different model.
+    RelationRefused {
+        /// The relation's own public refusal-class code.
+        class_code: u32,
+    },
 }
 
 /// What an abort or a settlement means for reserved funds and for retry.
@@ -115,6 +144,7 @@ impl AbortClass {
             AbortClass::ComputeExhausted { .. } => "compute-exhausted",
             AbortClass::Equivocation { .. } => "equivocation",
             AbortClass::ResultUnbound => "result-unbound",
+            AbortClass::RelationRefused { .. } => "relation-refused",
         }
     }
 
@@ -138,7 +168,8 @@ impl AbortClass {
             AbortClass::CutoffRootWithheld => Consequence::RefundEveryEscrowedSubmission,
             AbortClass::InputWithheld { .. }
             | AbortClass::ComputeExhausted { .. }
-            | AbortClass::ResultUnbound => Consequence::RefundEveryAdmittedRecord,
+            | AbortClass::ResultUnbound
+            | AbortClass::RelationRefused { .. } => Consequence::RefundEveryAdmittedRecord,
             AbortClass::Equivocation { .. } => Consequence::RefundUnderEitherRepudiatedRoot,
         }
     }
@@ -576,6 +607,44 @@ impl BatchMachine {
         }
         self.phase = if bound_root == cutoff.root {
             Phase::Settled { result_digest }
+        } else {
+            Phase::Aborted(AbortClass::ResultUnbound)
+        };
+        Ok(self.phase)
+    }
+
+    /// Deliver a *public refusal* of the relation, claiming to be bound to
+    /// `bound_root`.
+    ///
+    /// Every guard [`BatchMachine::deliver_result`] carries is carried here
+    /// too, and for the same reasons: a refusal offered outside `Computing` is
+    /// inadmissible, a refusal offered after the attempt deadline is a
+    /// timeout, and a refusal bound to some other root is `result-unbound`
+    /// rather than a refusal, because a statement about another admitted set
+    /// says nothing about this one.
+    ///
+    /// A bound refusal is terminal and refunds every admitted record. It is
+    /// deliberately not a settlement: the relation produced no allocation, so
+    /// there is nothing for the settlement relation to consume.
+    pub fn deliver_refusal(
+        &mut self,
+        bound_root: [u8; 32],
+        class_code: u32,
+        now_epoch: u64,
+    ) -> Result<Phase, LifecycleError> {
+        self.guard_live()?;
+        if self.phase != Phase::Computing {
+            return Err(LifecycleError::PhaseForbids { phase: self.phase });
+        }
+        let cutoff = self
+            .cutoff
+            .ok_or(LifecycleError::PhaseForbids { phase: self.phase })?;
+        if now_epoch > self.attempt_deadline() {
+            self.tick(now_epoch);
+            return Ok(self.phase);
+        }
+        self.phase = if bound_root == cutoff.root {
+            Phase::Aborted(AbortClass::RelationRefused { class_code })
         } else {
             Phase::Aborted(AbortClass::ResultUnbound)
         };

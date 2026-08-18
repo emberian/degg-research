@@ -114,6 +114,13 @@ claim seq=1 refund=6
 claim seq=2 refund=4
 claim seq=3 refund=4
 ledger refunded=29 settled=0 outstanding=0 conserves=true
-gap_c1 relation=refused:reservation-insufficient lifecycle_phase=settled phase-not-refundable:settled
-gap_c1 cutoff_withheld_class=cutoff-root-withheld
-gap_c1 fresh_watcher_phase=open
+c1 relation=refused:reservation-insufficient lifecycle_phase=relation-refused terminal=true
+c1 consequence RefundEveryAdmittedRecord
+c1 claim seq=0 refund=12
+c1 claim seq=1 refund=0
+c1 claim seq=2 not-escrowed
+c1 claim seq=3 not-escrowed
+c1 ledger refunded=12 settled=0 outstanding=0 conserves=true
+c1 release_to_settlement phase-not-settled:relation-refused
+c1 cutoff_withheld_class=cutoff-root-withheld
+c1 fresh_watcher_phase=open

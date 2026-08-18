@@ -22,6 +22,8 @@ const CUTOFF: u64 = 1_000;
 const HOLDER: HolderId = HolderId([0x5a; 32]);
 const RESULT: [u8; 32] = [0xc0; 32];
 const AMOUNTS: [u64; 4] = [10, 200, 3_000, 40_000];
+/// A relation's own public refusal-class code, opaque to this crate.
+const REFUSAL_CODE: u32 = 17;
 
 fn domain() -> LogDomain {
     LogDomain::dark_fba_v0(BATCH, MARKET, CUTOFF)
@@ -307,6 +309,7 @@ fn lifecycle_section(out: &mut String) {
             verdict_digest: [0u8; 32],
         },
         AbortClass::ResultUnbound,
+        AbortClass::RelationRefused { class_code: 0 },
     ] {
         out.push_str(&format!(
             "abort {} retryable={} terminal={} consequence={:?}\n",
@@ -316,6 +319,18 @@ fn lifecycle_section(out: &mut String) {
             class.consequence(),
         ));
     }
+    // The class code is the relation's own, carried verbatim and never read.
+    out.push_str(&format!(
+        "relation_refusal class_code={REFUSAL_CODE} phase={} consequence={:?}\n",
+        Phase::Aborted(AbortClass::RelationRefused {
+            class_code: REFUSAL_CODE
+        })
+        .name(),
+        AbortClass::RelationRefused {
+            class_code: REFUSAL_CODE
+        }
+        .consequence(),
+    ));
 
     for (name, phase, ledger) in [
         settled_run(),
@@ -323,6 +338,7 @@ fn lifecycle_section(out: &mut String) {
         withheld_input_run(),
         exhausted_run(),
         unbound_result_run(),
+        relation_refused_run(),
     ] {
         out.push_str(&format!(
             "run {name} phase={} escrowed={} refunded={} settled={} outstanding={} conserves={}\n",
@@ -427,6 +443,18 @@ fn unbound_result_run() -> (&'static str, Phase, ReserveLedger) {
         .expect("delivery is admissible");
     refund_all(&log, &machine, &mut ledger);
     ("result-unbound", phase, ledger)
+}
+
+fn relation_refused_run() -> (&'static str, Phase, ReserveLedger) {
+    let (log, cutoff) = sealed(&[0, 1, 2, 3]);
+    let mut ledger = escrow(&[0, 1, 2, 3]);
+    let mut machine = watching(cutoff);
+    machine.begin_compute(CUTOFF + 1).expect("inputs present");
+    let phase = machine
+        .deliver_refusal(cutoff.root, REFUSAL_CODE, CUTOFF + 3)
+        .expect("delivery is admissible");
+    refund_all(&log, &machine, &mut ledger);
+    ("relation-refused", phase, ledger)
 }
 
 fn refund_all(log: &AdmissionLog, machine: &BatchMachine, ledger: &mut ReserveLedger) {

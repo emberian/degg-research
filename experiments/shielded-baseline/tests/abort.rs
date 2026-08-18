@@ -14,6 +14,7 @@ use common::{NOW, balanced_residual, price_tie_low, session, under_reserved};
 use degg_inclusion_availability::lifecycle::{
     AbortClass, BatchMachine, Consequence, Disposition, Entitlement, Phase, RefundError,
 };
+use degg_relation_ir::receipt::ReceiptStatus;
 use degg_shielded_baseline::executor::Tamper;
 
 #[test]
@@ -202,36 +203,90 @@ fn a_result_bound_to_another_root_is_refused_and_refunds_every_admitted_record()
 }
 
 #[test]
-fn composition_gap_c1_a_typed_relation_refusal_has_no_refund_path() {
-    // A finding about the composition, recorded as a test rather than as a
-    // caveat. The relation refuses the admitted batch with a public typed
-    // class, the executor publishes a receipt bound to the right cutoff root,
-    // and `deliver_result` maps *any* delivered result to `Settled`, because
-    // the inclusion lane's abort taxonomy has no class for "the relation
-    // refused". The reserved funds therefore have no refund path: the ledger
-    // reports `PhaseNotRefundable`, and the only release available is to a
-    // settlement relation that does not exist.
+fn composition_gap_c1_is_closed_a_relation_refusal_refunds_every_admitted_record() {
+    // Composition gap C-1, closed upstream and verified here.
     //
-    // This packet does not patch the upstream lane; it names the gap. Closing
-    // it needs a `relation-refused` abort class upstream, whose consequence is
-    // `RefundEveryAdmittedRecord`.
+    // The relation refuses the admitted batch with a public typed class and
+    // the executor publishes a receipt bound to the right cutoff root. The
+    // session now delivers that refusal as a refusal, so the batch reaches the
+    // inclusion lane's `relation-refused` abort — terminal, carrying the
+    // relation's own public class code, with consequence
+    // `RefundEveryAdmittedRecord` — and every reserved amount comes back.
+    //
+    // The old gap assertions are kept below, inverted: if a refused batch ever
+    // reaches `Settled` again, or `claim_refund` answers `PhaseNotRefundable`
+    // again, this test turns red rather than quietly regressing.
     let scenario = under_reserved();
     let mut session = session(&scenario);
     let run = session.compute(&Tamper::None, NOW).expect("computes");
-    assert!(matches!(
-        run.run.receipt.status,
-        degg_relation_ir::receipt::ReceiptStatus::Refused(_)
-    ));
-    assert!(matches!(run.phase, Phase::Settled { .. }));
-    let receipt = &session.receipts[0];
+    let ReceiptStatus::Refused(class) = run.run.receipt.status else {
+        panic!("this scenario is publicly refused");
+    };
+
+    assert_eq!(
+        run.phase,
+        Phase::Aborted(AbortClass::RelationRefused {
+            class_code: class.code()
+        }),
+        "the published refusal class is carried into the abort verbatim"
+    );
+    assert!(
+        !matches!(run.phase, Phase::Settled { .. }),
+        "regression: a publicly refused batch must never reach a settled phase"
+    );
+    assert!(run.phase.is_terminal());
+    assert_eq!(
+        AbortClass::RelationRefused {
+            class_code: class.code()
+        }
+        .consequence(),
+        Consequence::RefundEveryAdmittedRecord
+    );
+
+    // Every escrowed reservation returns exactly once, and the ledger
+    // conserves. Padding positions refund nothing, as everywhere else.
+    let escrowed = session.ledger.total_escrowed();
+    for seq in 0..u32::try_from(session.cutoff.leaf_count).expect("bounded") {
+        let receipt = &session.receipts[usize::try_from(seq).expect("bounded")];
+        let claim = session
+            .machine
+            .claim_refund(&mut session.ledger, &Entitlement::Included(receipt));
+        assert!(
+            !matches!(claim, Err(RefundError::PhaseNotRefundable { .. })),
+            "regression: reserved funds have no path back at position {seq}"
+        );
+        if receipt.record.is_padding(&session.domain) {
+            assert_eq!(claim, Err(RefundError::NotEscrowed));
+        } else {
+            assert!(claim.is_ok(), "position {seq}: {claim:?}");
+            assert_eq!(
+                session
+                    .machine
+                    .claim_refund(&mut session.ledger, &Entitlement::Included(receipt)),
+                Err(RefundError::AlreadyRefunded)
+            );
+        }
+    }
+    assert_eq!(session.ledger.total_refunded(), escrowed);
+    assert_eq!(session.ledger.total_settled(), 0);
+    assert_eq!(session.ledger.total_outstanding(), 0);
+    assert!(session.ledger.conserves());
+}
+
+#[test]
+fn a_refused_batch_releases_nothing_to_the_settlement_relation() {
+    // The other half of the closure: a refusal produces no allocation, so the
+    // reserved amounts may only go back, never forward.
+    let scenario = under_reserved();
+    let mut session = session(&scenario);
+    let run = session.compute(&Tamper::None, NOW).expect("computes");
+    let nullifier = session.submissions[0].request.nullifier;
     assert_eq!(
         session
             .machine
-            .claim_refund(&mut session.ledger, &Entitlement::Included(receipt)),
-        Err(RefundError::PhaseNotRefundable { phase: run.phase })
+            .release_to_settlement(&mut session.ledger, nullifier),
+        Err(RefundError::PhaseNotSettled { phase: run.phase })
     );
-    assert_eq!(
-        session.ledger.total_outstanding(),
-        session.ledger.total_escrowed()
-    );
+    assert_eq!(session.ledger.total_settled(), 0);
+    assert!(session.ledger.conserves());
 }

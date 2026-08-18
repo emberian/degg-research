@@ -55,8 +55,11 @@ abort compute-timeout retryable=true terminal=false consequence=RetryAgainstSame
 abort compute-exhausted retryable=false terminal=true consequence=RefundEveryAdmittedRecord
 abort equivocation retryable=false terminal=true consequence=RefundUnderEitherRepudiatedRoot
 abort result-unbound retryable=false terminal=true consequence=RefundEveryAdmittedRecord
+abort relation-refused retryable=false terminal=true consequence=RefundEveryAdmittedRecord
+relation_refusal class_code=17 phase=relation-refused consequence=RefundEveryAdmittedRecord
 run settled phase=settled escrowed=43210 refunded=0 settled=43210 outstanding=0 conserves=true
 run cutoff-root-withheld phase=cutoff-root-withheld escrowed=43210 refunded=43210 settled=0 outstanding=0 conserves=true
 run input-withheld phase=input-withheld escrowed=43210 refunded=43210 settled=0 outstanding=0 conserves=true
 run compute-exhausted phase=compute-exhausted escrowed=43210 refunded=43210 settled=0 outstanding=0 conserves=true
 run result-unbound phase=result-unbound escrowed=43210 refunded=43210 settled=0 outstanding=0 conserves=true
+run relation-refused phase=relation-refused escrowed=43210 refunded=43210 settled=0 outstanding=0 conserves=true

@@ -309,6 +309,7 @@ CutoffRootWithheld    InputWithheld{seq}      ComputeTimeout ⇄ resume
 
 any live phase ──present_equivocation──▶ Equivocation
 Computing ──result bound to another root──▶ ResultUnbound
+Computing ──deliver_refusal, bound to the root──▶ RelationRefused{class_code}
 ```
 
 ### 6.1 The abort matrix
@@ -323,14 +324,15 @@ VERIFIED, exactly this table, asserted directly and reproduced in the corpus:
 | `compute-exhausted` | no | yes | refund every admitted record |
 | `equivocation` | no | yes | refund under either repudiated root, once per nullifier |
 | `result-unbound` | no | yes | refund every admitted record |
+| `relation-refused` | no | yes | refund every admitted record |
 
 Every class has a reachability witness, and every terminal phase is immovable:
 for each one the suite rebuilds the machine and confirms that `observe_cutoff`,
-`report_availability`, `begin_compute`, `deliver_result`, and `resume` all
-return `Terminal` or `NotResumable`, and that `tick` a thousand epochs later
-returns the same phase.
+`report_availability`, `begin_compute`, `deliver_result`, `deliver_refusal`, and
+`resume` all return `Terminal` or `NotResumable`, and that `tick` a thousand
+epochs later returns the same phase.
 
-Three rules in that table are the substance rather than the bookkeeping.
+Four rules in that table are the substance rather than the bookkeeping.
 
 **Silence is unavailability.** A position with no availability report counts as
 zero recoverable shares. A holder cannot obtain progress by declining to answer.
@@ -345,6 +347,23 @@ no path anywhere in the machine from a missing payload to a smaller batch.
 **A timeout is not an abort class shared with a failure.** `compute-timeout` is
 retryable and pays nothing; only `compute-exhausted` releases funds. A result
 delivered after its attempt deadline is a timeout, not a settlement.
+
+**A public refusal is not a settlement.** `relation-refused` types the case
+where the relation answered completely and correctly by refusing the admitted
+batch: there is no allocation, so nothing may be released to settlement and
+every admitted record is refundable. Added 2026-08-18 to close composition gap
+C-1, which `SHIELDED_BASELINE.md` §7.1 recorded as a passing test: without this
+class a publicly refused batch reached `Settled` through `deliver_result`,
+`claim_refund` answered `PhaseNotRefundable`, and the reserved funds had no path
+back at all. `deliver_refusal` carries every guard `deliver_result` carries — a
+refusal bound to another root is `result-unbound`, a refusal after the attempt
+deadline is a timeout — and the machine does not interpret the `class_code` it
+carries. It cannot: this model never evaluates the relation. The code is the
+relation's own public refusal class, verbatim, in the relation the log domain
+names, so a deliverer that publishes a refusal and reports it through
+`deliver_result` instead is still not detected here. Closing *that* needs a
+machine that checks the relation, which is a different model; it is recorded in
+section 9.1.
 
 ### 6.2 Refund conservation
 
@@ -363,8 +382,11 @@ Entitlement is typed to the consequence, and mismatches are refused:
   `RootNotRepudiated` otherwise.
 
 VERIFIED on every terminal path: total refunded equals total escrowed, total
-outstanding is zero, and the ledger's conservation invariant holds. On the
-settled path total settled equals total escrowed and total refunded is zero. A
+outstanding is zero, and the ledger's conservation invariant holds. That
+includes the refused path: a publicly refused batch refunds every admitted
+record, releases nothing, and `release_to_settlement` answers `PhaseNotSettled`.
+On the settled path total settled equals total escrowed and total refunded is
+zero. A
 second claim on one nullifier is `AlreadyRefunded`; a claim while the batch is
 live or after it settles is `PhaseNotRefundable`; a claim behind a tampered
 receipt is `Receipt(...)`. Under equivocation, the claimant sweeps both logs and
@@ -498,7 +520,7 @@ Against `DARK_FBA_RELATION.md` §10's obligations, the ones this packet touches:
 - "inclusion, equivocation, withholding, timeout, retry, and abort have distinct
   receipts" — **met**: ten admission refusal classes, two seal refusals, three
   domain defects, six receipt defects, eight proof defects, four conflict
-  classes, fifteen equivocation defects, six abort classes, four consequences,
+  classes, fifteen equivocation defects, seven abort classes, four consequences,
   eleven lifecycle errors, and nine refund errors. Every one of them is named by
   some test. Exactly one, `ReceiptDefect::SequenceMismatch`, is unreachable by
   construction rather than by witness: the canonical position lives inside the
@@ -511,7 +533,9 @@ Against `DARK_FBA_RELATION.md` §10's obligations, the ones this packet touches:
   substitute, censor, or restart the batch on more favourable inputs" —
   **partially met**. Substitution is `conflicting-record-at-sequence`; restart on
   a rewritten history is `acknowledged-prefix-abandoned`; a result computed
-  against another root is `result-unbound`. Censorship by *silence* is not.
+  against another root is `result-unbound`; a public refusal is
+  `relation-refused` and refunds rather than settling. Censorship by *silence*
+  is not.
 
 ### 9.1 Open, and named
 
@@ -542,6 +566,15 @@ Against `DARK_FBA_RELATION.md` §10's obligations, the ones this packet touches:
 6. **Occupancy is still readable from the committed record bytes.** Closing it
    needs a hiding payload commitment and an unlinkable nullifier, which is a
    cryptographic construction this packet does not attempt.
+7. **A refusal is reported, not checked.** `relation-refused` types the
+   consequence of a public refusal, and the refund path it opens is exact. But
+   this machine never evaluates the relation, so it cannot tell a truthful
+   refusal report from a settlement report over the same published outcome: an
+   executor that refuses and reports a settlement still reaches `Settled` here.
+   Every relying party can drive its own machine from the published receipt,
+   which is the model's answer today; the object that would make the machine
+   itself decide is a verifiable statement about the evaluation, and
+   `SHIELDED_BASELINE.md` §9 rung 5 is where that lives.
 
 ## 10. Reproduction and bounds
 
@@ -560,8 +593,8 @@ cargo run --quiet --offline --locked \
   | cmp - experiments/inclusion-availability/vectors/v1.txt
 ```
 
-VERIFIED on 2026-08-18: 125 tests pass — 5 hash, 29 mountain range, 23
-admission, 20 inclusion, 19 equivocation, 27 lifecycle, 2 corpus. Clippy with
+VERIFIED on 2026-08-18: 131 tests pass — 5 hash, 29 mountain range, 23
+admission, 20 inclusion, 19 equivocation, 33 lifecycle, 2 corpus. Clippy with
 `-D warnings` and `cargo fmt --check` are clean. Zero third-party dependencies.
 
 Bounds of the VERIFIED label, stated exactly:
@@ -575,15 +608,15 @@ Bounds of the VERIFIED label, stated exactly:
 - admission check priority is checked for every prefix of the frozen order;
 - honest non-equivocation is exhaustive over all 32 ordered receipt-pair
   constructions and all five prefixes of a four-record log;
-- the abort matrix and terminal immovability are exhaustive over all six abort
-  classes plus settlement.
+- the abort matrix and terminal immovability are exhaustive over all seven
+  abort classes plus settlement.
 
 Everything outside those bounds is untested. Larger logs, concurrent holders,
 adversarial schedules, real availability, and any cryptographic property are not
 covered by any statement in this document.
 
 Corpus byte identity: `experiments/inclusion-availability/vectors/v1.txt`
-SHA-256 `725facba9afdb3017c8d2878b6f5a3e11d3e3c08c8bb117fcc6dce37bd71fc0c`.
+SHA-256 `e99afccc5fcb66a9458d2fda6eb29e38328f7a71ae4edd9991170bf177e8cf9a`.
 
 Validation toolchain: `rustc 1.98.0-nightly (91fe22da8 2026-06-21)`,
 `cargo 1.98.0-nightly (a595d0da2 2026-06-20)`.

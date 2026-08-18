@@ -276,36 +276,68 @@ fn render_aborts(out: &mut String) {
         session.ledger.conserves()
     );
 
-    // Composition gap C-1: a typed relation refusal reaches `Settled` and has
-    // no refund path in the reused lifecycle.
+    // Composition gap C-1, closed: a typed relation refusal is delivered as a
+    // refusal, reaches the `relation-refused` abort, and refunds every
+    // admitted record.
     let mut refused = Session::open(&scenarios()[3], CUTOFF_EPOCH).expect("opens");
     let run = refused
         .compute(&Tamper::None, CUTOFF_EPOCH)
         .expect("computes");
-    let receipt = &refused.receipts[0];
-    let claim = refused
-        .machine
-        .claim_refund(&mut refused.ledger, &Entitlement::Included(receipt));
-    let refund = match claim {
-        Ok(amount) => format!("refund={amount}"),
-        Err(RefundError::PhaseNotRefundable { phase }) => {
-            format!("phase-not-refundable:{}", phase.name())
-        }
-        Err(error) => format!("{error:?}"),
-    };
     let _ = writeln!(
         out,
-        "gap_c1 relation={} lifecycle_phase={} {refund}",
+        "c1 relation={} lifecycle_phase={} terminal={}",
         status(run.run.receipt.status),
-        run.phase.name()
+        run.phase.name(),
+        run.phase.is_terminal()
+    );
+    if let Phase::Aborted(class) = run.phase {
+        let _ = writeln!(out, "c1 consequence {:?}", class.consequence());
+    }
+    for seq in 0..u32::try_from(refused.cutoff.leaf_count).expect("bounded") {
+        let receipt = &refused.receipts[usize::try_from(seq).expect("bounded")];
+        let claim = refused
+            .machine
+            .claim_refund(&mut refused.ledger, &Entitlement::Included(receipt));
+        let rendered = match claim {
+            Ok(amount) => format!("refund={amount}"),
+            Err(RefundError::NotEscrowed) => "not-escrowed".to_owned(),
+            Err(RefundError::PhaseNotRefundable { phase }) => {
+                format!("phase-not-refundable:{}", phase.name())
+            }
+            Err(error) => format!("{error:?}"),
+        };
+        let _ = writeln!(out, "c1 claim seq={seq} {rendered}");
+    }
+    let _ = writeln!(
+        out,
+        "c1 ledger refunded={} settled={} outstanding={} conserves={}",
+        refused.ledger.total_refunded(),
+        refused.ledger.total_settled(),
+        refused.ledger.total_outstanding(),
+        refused.ledger.conserves()
+    );
+    let nullifier = refused.submissions[0].request.nullifier;
+    let release = refused
+        .machine
+        .release_to_settlement(&mut refused.ledger, nullifier);
+    let _ = writeln!(
+        out,
+        "c1 release_to_settlement {}",
+        match release {
+            Ok(amount) => format!("released={amount}"),
+            Err(RefundError::PhaseNotSettled { phase }) => {
+                format!("phase-not-settled:{}", phase.name())
+            }
+            Err(error) => format!("{error:?}"),
+        }
     );
     let _ = writeln!(
         out,
-        "gap_c1 cutoff_withheld_class={}",
+        "c1 cutoff_withheld_class={}",
         AbortClass::CutoffRootWithheld.class()
     );
     let watcher = BatchMachine::new(refused.domain, refused.timeouts);
-    let _ = writeln!(out, "gap_c1 fresh_watcher_phase={}", watcher.phase().name());
+    let _ = writeln!(out, "c1 fresh_watcher_phase={}", watcher.phase().name());
 }
 
 /// Render the full corpus.

@@ -14,6 +14,7 @@
 //!            --evaluate--> the module's Clear evaluator
 //!            --publish--> ShieldedReceipt + DeliveryCommitment + sealed outputs
 //!            --deliver_result--> Settled, or ResultUnbound
+//!            --deliver_refusal--> RelationRefused (every record refunds)
 //! owners     --audit--> findings, or a transferable dispute object
 //! ```
 //!
@@ -32,6 +33,7 @@ use degg_relation_ir::lower::{
     ClearEvaluator, LoweringTarget, Outcome, OwnerOutput, lower, required_reservation,
 };
 use degg_relation_ir::module::{RelationModule, dark_fba_n4_k4_q15_v0};
+use degg_relation_ir::receipt::ReceiptStatus;
 
 use crate::executor::{Assembly, AssemblyRefusal, Executor, ExecutorInputs, ShieldedRun, Tamper};
 use crate::owner::{OwnedPosition, OwnerEvidence};
@@ -331,14 +333,25 @@ impl Session {
                     .and_then(|sealed| sealed.open(&self.executor.delivery_key(owner)).ok())
             })
             .collect();
-        let phase = self
-            .machine
-            .deliver_result(
-                run.receipt.cutoff.root,
-                run.receipt.outcome_digest,
-                now_epoch,
-            )
-            .map_err(|_| SessionError::Lifecycle("deliver_result refused"))?;
+        // A public refusal is a complete answer of the relation and not a
+        // settlement, so it is delivered as a refusal: the upstream lane's
+        // `relation-refused` abort carries the relation's own public class
+        // code and refunds every admitted record. Routing it through
+        // `deliver_result` instead is what left composition gap C-1 open.
+        let phase = match run.receipt.status {
+            ReceiptStatus::Settled => self
+                .machine
+                .deliver_result(
+                    run.receipt.cutoff.root,
+                    run.receipt.outcome_digest,
+                    now_epoch,
+                )
+                .map_err(|_| SessionError::Lifecycle("deliver_result refused"))?,
+            ReceiptStatus::Refused(class) => self
+                .machine
+                .deliver_refusal(run.receipt.cutoff.root, class.code(), now_epoch)
+                .map_err(|_| SessionError::Lifecycle("deliver_refusal refused"))?,
+        };
         Ok(Run {
             run,
             assembly,

@@ -317,28 +317,51 @@ VERIFIED abort behaviour, all of it the reused `BatchMachine`:
 | retries spent | `compute-exhausted` | no | refund every admitted record |
 | result bound to another root | `result-unbound` | no | refund every admitted record |
 | verified root equivocation | `equivocation` | no | refund under either repudiated root, once per nullifier |
+| the relation publicly refuses the batch | `relation-refused` | no | refund every admitted record |
 
 VERIFIED refund conservation on the crash path of the corpus scenario: 29 units
 escrowed across four positions, 29 refunded, zero outstanding, the ledger's
 invariant holding, a padding position refunding nothing as `NotEscrowed`, and a
 second claim on one nullifier returning `AlreadyRefunded`.
 
-### 7.1 Composition gap C-1
+### 7.1 Composition gap C-1, found here and closed upstream
 
-A finding, recorded as a test rather than as a caveat.
+A finding, recorded as a test rather than as a caveat, and then fixed where it
+belonged rather than worked around here.
 
-The inclusion lane's abort taxonomy has no class for *the relation refused the
-admitted batch*. `deliver_result` maps any result delivered inside its deadline
-and bound to the right root to `Settled`, regardless of whether the relation
-settled or published a typed refusal. So a batch that is publicly refused
-reaches a settled phase, `claim_refund` answers `PhaseNotRefundable`, and the
-reserved funds have no path back except through a settlement relation that does
-not exist.
+**The finding.** The inclusion lane's abort taxonomy had no class for *the
+relation refused the admitted batch*. `deliver_result` mapped any result
+delivered inside its deadline and bound to the right root to `Settled`,
+regardless of whether the relation settled or published a typed refusal. So a
+batch that was publicly refused reached a settled phase, `claim_refund`
+answered `PhaseNotRefundable`, and the reserved funds had no path back except
+through a settlement relation that does not exist.
 
-This packet does not patch the upstream lane. Closing it needs a
-`relation-refused { class }` abort class upstream whose consequence is
-`RefundEveryAdmittedRecord`, which is a one-row addition to the abort matrix
-and a change to that lane's frozen corpus.
+**The closure**, upstream in `experiments/inclusion-availability` on
+2026-08-18: `AbortClass::RelationRefused { class_code }`, terminal, not
+retryable, consequence `RefundEveryAdmittedRecord`, reached by
+`BatchMachine::deliver_refusal`, which carries every guard `deliver_result`
+carries — a refusal bound to another root is `result-unbound`, a refusal after
+the attempt deadline is a timeout. `INCLUSION_AVAILABILITY.md` §6.1 holds the
+row. This packet's `Session::compute` now delivers a published refusal as a
+refusal, and the old gap assertions live on inverted, so a regression to
+`Settled` or to `PhaseNotRefundable` turns `tests/abort.rs` red.
+
+VERIFIED refund conservation on the refused path of the corpus scenario
+(`under-reserved`, publicly refused as `reservation-insufficient`): the abort
+carries that class's own code, 12 units escrowed across the two occupied
+positions are 12 refunded, padding positions refund nothing as `NotEscrowed`,
+outstanding is zero, the ledger's invariant holds, and
+`release_to_settlement` answers `PhaseNotSettled` — a refusal produces no
+allocation, so the reserved amounts may only go back, never forward.
+
+**What the closure does not do.** The upstream machine still does not evaluate
+the relation, so it cannot distinguish a truthful refusal report from a
+settlement report over the same published outcome. An executor that refuses and
+reports a settlement still reaches `Settled`. Any relying party can drive its
+own machine from the published receipt, which is the answer this model has;
+section 6.2 is where the missing object lives, and rung 5 of section 9 is what
+would supply it. Recorded upstream as `INCLUSION_AVAILABILITY.md` §9.1 item 7.
 
 ## 8. Falsifier ledger
 
@@ -369,8 +392,9 @@ Against `DARK_FBA_RELATION.md` section 10's obligations:
 - "no invalid output can settle" — **not met**. Section 6.2 measures how far
   from met.
 - "inclusion, equivocation, withholding, timeout, retry, and abort have
-  distinct receipts" — **met**, by reuse, plus four outcome-conflict classes
-  and an omission verdict added here.
+  distinct receipts" — **met**, by reuse, plus four outcome-conflict classes,
+  an omission verdict added here, and the `relation-refused` abort added
+  upstream by section 7.1.
 - "a computation party cannot learn a partial result and silently substitute,
   censor, or restart the batch on more favourable inputs" — **partially met**.
   Substitution of a reservation or an owner is refused; substitution that moves
@@ -388,7 +412,9 @@ PROPOSED, in dependency order. Each rung is named for what it actually buys.
    that every verdict object in this packet and in the inclusion lane names a
    party instead of a contradiction. This is a cryptographic dependency and is
    the precondition for any economic consequence.
-3. **A `relation-refused` abort class upstream.** Closes composition gap C-1.
+3. ~~**A `relation-refused` abort class upstream.**~~ **Done**, 2026-08-18:
+   composition gap C-1 is closed in `experiments/inclusion-availability` and
+   verified here. Section 7.1 records the closure and what it leaves open.
 4. **Threshold decryption to a named committee** — the `ShieldedCommittee`
    lowering target `experiments/relation-ir` currently refuses. This divides
    the confidentiality trust of section 6.1 across `k` of `n` and, on its own,
@@ -428,13 +454,15 @@ cargo run --quiet --offline --locked --release \
   --bin degg-shielded-differ
 ```
 
-VERIFIED on 2026-08-18: 51 tests pass — 5 honest-run, 13 detection, 6
-owner-finding, 6 equivocation, 6 abort, 7 visibility, 1 residual-trust, 1
+VERIFIED on 2026-08-18: 52 tests pass — 5 honest-run, 13 detection, 6
+owner-finding, 6 equivocation, 7 abort, 7 visibility, 1 residual-trust, 1
 differential, 2 corpus, and 4 doctests of which three are `compile_fail` role
 boundaries. Clippy with `-D warnings` and `cargo fmt --check` are clean. Zero
 third-party dependencies; the only dependencies are path dependencies on the
-two landed experiments, both of which are unmodified and whose own suites (125
-and 21 tests) and byte corpora still pass and reproduce.
+two landed experiments. `experiments/relation-ir` is unmodified;
+`experiments/inclusion-availability` gained the `relation-refused` abort class
+of section 7.1 and nothing else, and both upstream suites (131 and 21 tests)
+and byte corpora pass and reproduce.
 
 Differential result, VERIFIED at exactly these bounds:
 
@@ -467,7 +495,7 @@ Bounds of the VERIFIED label, stated exactly:
   cryptographic property are covered by no statement in this document.
 
 Corpus byte identity: `experiments/shielded-baseline/vectors/v1.txt` SHA-256
-`627e30fcff2a8696d29a649be923bfa84571892433a27f8c5fab34deb8f2b0e9`.
+`65e54ba52ba23f9c232e831d3cf32a5801a523495057688037f69f89eadac7c1`.
 
 Validation toolchain: `rustc 1.98.0-nightly (91fe22da8 2026-06-21)`,
 `cargo 1.98.0-nightly (a595d0da2 2026-06-20)`.
@@ -481,7 +509,9 @@ machine, and the reserve ledger are consumed from
 by path dependency rather than reimplemented; the relation module, its
 canonical encoding, and its Clear evaluator are consumed from
 [`experiments/relation-ir`](../../experiments/relation-ir/) the same way.
-Neither upstream experiment was modified.
+`experiments/relation-ir` was not modified; the only change made upstream is
+the `relation-refused` abort class of section 7.1, added in the inclusion lane
+where the taxonomy lives rather than worked around here.
 
 The role-capability discipline — a value constructible only through one path,
 with a `compile_fail` doctest showing that the wrong value cannot be

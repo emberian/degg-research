@@ -85,13 +85,13 @@ takes about half a minute in release.
 | `tests/detection.rs` | 13 | omission with a transferable verdict, the bindings that refuse a substitution, the two substitutions that evade every check, and the pro-rata check's soundness over the whole bounded domain |
 | `tests/owner_findings.rs` | 6 | a witness for every evidence-level finding |
 | `tests/equivocation.rs` | 6 | four outcome-conflict classes, every rejection class, honest agreement refused |
-| `tests/abort.rs` | 6 | crash/timeout/retry/exhaustion, withheld payload, withheld root, unbound result, refund conservation, composition gap C-1 |
+| `tests/abort.rs` | 7 | crash/timeout/retry/exhaustion, withheld payload, withheld root, unbound result, refund conservation, and composition gap C-1 verified closed |
 | `tests/visibility.rs` | 7 | the public wire and commitment material carry no order field, key separation, canonical plaintext encoding, declared public ports |
 | `tests/residual_trust.rs` | 1 | 1,125 alternative published runs enumerated; 377 admissible; all 33 well-formed public results admissible |
 | `tests/differential.rs` | 1 | domain A, 6,561 books, zero divergences |
 | `tests/vectors.rs` | 2 | the corpus reproduces byte for byte |
 | doctests | 4 | three `compile_fail` role-boundary proofs and one executor-opens-it example |
-| Total | 51 | |
+| Total | 52 | |
 
 ## Differential result
 
@@ -114,7 +114,7 @@ compared elsewhere, over 2,116,916 and 300,436,169 cases respectively.
 ## Byte identity
 
 `vectors/v1.txt` SHA-256:
-`627e30fcff2a8696d29a649be923bfa84571892433a27f8c5fab34deb8f2b0e9`.
+`65e54ba52ba23f9c232e831d3cf32a5801a523495057688037f69f89eadac7c1`.
 
 Validation toolchain: `rustc 1.98.0-nightly (91fe22da8 2026-06-21)`,
 `cargo 1.98.0-nightly (a595d0da2 2026-06-20)`. Validation date: 2026-08-18.

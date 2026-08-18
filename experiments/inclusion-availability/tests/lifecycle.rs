@@ -19,6 +19,10 @@ const SECOND_ATTEMPT_DEADLINE: u64 = CUTOFF + 8;
 
 const RESULT: [u8; 32] = [0xC0; 32];
 
+/// A relation's own public refusal-class code, opaque to this crate. The value
+/// is arbitrary here on purpose: the machine carries it and never reads it.
+const REFUSAL_CODE: u32 = 17;
+
 /// Reservation amounts, exact integers, distinct so a mix-up shows up in a total.
 const AMOUNTS: [u64; 4] = [10, 200, 3_000, 40_000];
 
@@ -296,6 +300,146 @@ fn a_late_result_is_a_timeout_not_a_settlement() {
     );
 }
 
+#[test]
+fn a_publicly_refused_relation_aborts_and_refunds_every_admitted_record() {
+    // Composition gap C-1, found by the Shielded lane and closed here, in the
+    // taxonomy that owns it: a batch the relation publicly refuses produces no
+    // allocation, so it is not a settlement, and every admitted record's
+    // reservation comes back.
+    let (log, cutoff, mut ledger, mut machine) = sealed_fixture();
+    make_available(&mut machine, 4, 3);
+    machine
+        .begin_compute(CUTOFF + 1)
+        .expect("all inputs present");
+
+    let phase = machine
+        .deliver_refusal(cutoff.root, REFUSAL_CODE, CUTOFF + 3)
+        .expect("delivery is admissible");
+    assert_eq!(
+        phase,
+        Phase::Aborted(AbortClass::RelationRefused {
+            class_code: REFUSAL_CODE
+        })
+    );
+    assert!(phase.is_terminal());
+    assert_eq!(phase.name(), "relation-refused");
+
+    let total = ledger.total_escrowed();
+    for receipt in receipts(&log, 4) {
+        machine
+            .claim_refund(&mut ledger, &Entitlement::Included(&receipt))
+            .expect("a refused batch refunds every admitted record");
+    }
+    assert_eq!(ledger.total_refunded(), total);
+    assert_eq!(ledger.total_settled(), 0);
+    assert_eq!(ledger.total_outstanding(), 0);
+    assert!(ledger.conserves());
+}
+
+#[test]
+fn a_refused_batch_releases_nothing_to_settlement() {
+    // The direction matters: reserved funds go back, never forward. There is
+    // no allocation for a settlement relation to consume.
+    let (log, cutoff, mut ledger, mut machine) = sealed_fixture();
+    make_available(&mut machine, 4, 3);
+    machine.begin_compute(CUTOFF + 1).expect("inputs present");
+    let phase = machine
+        .deliver_refusal(cutoff.root, REFUSAL_CODE, CUTOFF + 3)
+        .expect("delivery is admissible");
+    let nullifier = receipts(&log, 1)[0].record.nullifier;
+    assert_eq!(
+        machine.release_to_settlement(&mut ledger, nullifier),
+        Err(RefundError::PhaseNotSettled { phase })
+    );
+    assert_eq!(ledger.total_settled(), 0);
+    assert!(ledger.conserves());
+}
+
+#[test]
+fn a_refusal_bound_to_another_root_is_unbound_rather_than_refused() {
+    // A refusal is a statement about one admitted set. Offered against another
+    // root it says nothing about this batch, so it is `result-unbound`.
+    let (_, cutoff, _, mut machine) = sealed_fixture();
+    make_available(&mut machine, 4, 3);
+    machine.begin_compute(CUTOFF + 1).expect("inputs present");
+    let mut other = cutoff.root;
+    other[0] ^= 0x01;
+    assert_eq!(
+        machine
+            .deliver_refusal(other, REFUSAL_CODE, CUTOFF + 3)
+            .expect("delivery is admissible"),
+        Phase::Aborted(AbortClass::ResultUnbound)
+    );
+}
+
+#[test]
+fn a_late_refusal_is_a_timeout_not_a_refusal() {
+    let (_, cutoff, _, mut machine) = sealed_fixture();
+    make_available(&mut machine, 4, 3);
+    machine.begin_compute(CUTOFF + 1).expect("inputs present");
+    assert_eq!(
+        machine
+            .deliver_refusal(cutoff.root, REFUSAL_CODE, FIRST_ATTEMPT_DEADLINE + 1)
+            .expect("delivery is admissible"),
+        Phase::Aborted(AbortClass::ComputeTimeout { attempts: 1 })
+    );
+}
+
+#[test]
+fn a_refusal_is_not_admissible_outside_a_running_attempt() {
+    let (_, cutoff, _, mut machine) = sealed_fixture();
+    assert_eq!(
+        machine.deliver_refusal(cutoff.root, REFUSAL_CODE, CUTOFF + 1),
+        Err(LifecycleError::PhaseForbids {
+            phase: Phase::Sealed
+        })
+    );
+    make_available(&mut machine, 4, 3);
+    machine.begin_compute(CUTOFF + 1).expect("inputs present");
+    machine
+        .deliver_result(cutoff.root, RESULT, CUTOFF + 3)
+        .expect("delivery is admissible");
+    assert_eq!(
+        machine.deliver_refusal(cutoff.root, REFUSAL_CODE, CUTOFF + 3),
+        Err(LifecycleError::Terminal {
+            phase: Phase::Settled {
+                result_digest: RESULT
+            }
+        }),
+        "a settled batch is not retroactively refused"
+    );
+}
+
+#[test]
+fn a_refusal_carries_the_relations_own_class_code_verbatim() {
+    // The code is opaque to this crate: two codes are two distinct phases with
+    // the same class name and the same consequence, and the machine never
+    // recomputes either. The relation the code belongs to is the one the log
+    // domain names.
+    let mut phases = Vec::new();
+    for class_code in [0u32, REFUSAL_CODE, u32::MAX] {
+        let (_, cutoff, _, mut machine) = sealed_fixture();
+        make_available(&mut machine, 4, 3);
+        machine.begin_compute(CUTOFF + 1).expect("inputs present");
+        let phase = machine
+            .deliver_refusal(cutoff.root, class_code, CUTOFF + 3)
+            .expect("delivery is admissible");
+        assert_eq!(
+            phase,
+            Phase::Aborted(AbortClass::RelationRefused { class_code })
+        );
+        assert_eq!(phase.name(), "relation-refused");
+        assert_eq!(
+            AbortClass::RelationRefused { class_code }.consequence(),
+            Consequence::RefundEveryAdmittedRecord
+        );
+        assert!(!AbortClass::RelationRefused { class_code }.is_retryable());
+        phases.push(phase);
+    }
+    phases.dedup();
+    assert_eq!(phases.len(), 3, "distinct codes are distinct phases");
+}
+
 /// A holder that published two cutoff roots, and the escrow spanning both.
 struct Equivocating {
     domain: LogDomain,
@@ -527,7 +671,7 @@ fn no_refund_is_paid_after_settlement() {
 
 #[test]
 fn the_abort_matrix_is_exactly_this() {
-    let matrix: [(AbortClass, &str, bool, bool, Consequence); 6] = [
+    let matrix: [(AbortClass, &str, bool, bool, Consequence); 7] = [
         (
             AbortClass::CutoffRootWithheld,
             "cutoff-root-withheld",
@@ -568,6 +712,13 @@ fn the_abort_matrix_is_exactly_this() {
         (
             AbortClass::ResultUnbound,
             "result-unbound",
+            false,
+            true,
+            Consequence::RefundEveryAdmittedRecord,
+        ),
+        (
+            AbortClass::RelationRefused { class_code: 0 },
+            "relation-refused",
             false,
             true,
             Consequence::RefundEveryAdmittedRecord,
@@ -624,6 +775,14 @@ fn every_abort_class_is_reachable_and_no_terminal_phase_moves_again() {
             make_available(&mut machine, 4, 3);
             machine.begin_compute(CUTOFF + 1).expect("inputs present");
             machine
+                .deliver_refusal(cutoff.root, REFUSAL_CODE, CUTOFF + 3)
+                .expect("delivery is admissible")
+        },
+        {
+            let (_, cutoff, _, mut machine) = sealed_fixture();
+            make_available(&mut machine, 4, 3);
+            machine.begin_compute(CUTOFF + 1).expect("inputs present");
+            machine
                 .deliver_result(cutoff.root, RESULT, CUTOFF + 3)
                 .expect("delivery is admissible")
         },
@@ -637,6 +796,7 @@ fn every_abort_class_is_reachable_and_no_terminal_phase_moves_again() {
             "compute-exhausted",
             "equivocation",
             "result-unbound",
+            "relation-refused",
             "settled",
         ]
     );
@@ -662,6 +822,10 @@ fn every_abort_class_is_reachable_and_no_terminal_phase_moves_again() {
         );
         assert_eq!(
             machine.deliver_result(cutoff.root, RESULT, CUTOFF + 3),
+            Err(LifecycleError::Terminal { phase: *expected })
+        );
+        assert_eq!(
+            machine.deliver_refusal(cutoff.root, REFUSAL_CODE, CUTOFF + 3),
             Err(LifecycleError::Terminal { phase: *expected })
         );
         assert_eq!(
@@ -705,6 +869,14 @@ fn drive_to(machine: &mut BatchMachine, target: Phase, cutoff: CutoffRoot) {
             other[31] ^= 0x01;
             machine
                 .deliver_result(other, RESULT, CUTOFF + 3)
+                .expect("delivery is admissible");
+        }
+        Phase::Aborted(AbortClass::RelationRefused { class_code }) => {
+            machine.observe_cutoff(cutoff, CUTOFF).expect("on time");
+            make_available(machine, 4, 3);
+            machine.begin_compute(CUTOFF + 1).expect("inputs present");
+            machine
+                .deliver_refusal(cutoff.root, class_code, CUTOFF + 3)
                 .expect("delivery is admissible");
         }
         Phase::Settled { .. } => {

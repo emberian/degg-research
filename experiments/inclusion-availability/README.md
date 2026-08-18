@@ -29,7 +29,8 @@ Model identifier: `degg-inclusion-availability/v0`.
 - `src/equivocation.rs` — root statements, four conflict classes, and a
   content-addressed verdict object.
 - `src/lifecycle.rs` — the typed abort machine and the reserve ledger:
-  withholding, timeout, retry, result binding, and exact refund conservation.
+  withholding, timeout, retry, result binding, public relation refusal, and
+  exact refund conservation.
 - `src/transcript.rs` — the byte-stable corpus renderer.
 - `vectors/v1.txt` — the corpus.
 
@@ -57,14 +58,14 @@ cargo run --quiet --offline --locked \
 | `tests/admission.rs` | 23 | frozen check order under simultaneous faults, every refusal class reachable, cutoff root binding, padded sealing, reserved padding nullifiers |
 | `tests/inclusion.rs` | 20 | receipts verified from a root alone, wrong root, wrong index, sibling and side tamper, record tamper, post-cutoff append, padded sealing, uniform receipt shape |
 | `tests/equivocation.rs` | 19 | four conflict classes accepted, every rejection class, honest single-root operation exhaustively refused |
-| `tests/lifecycle.rs` | 27 | the abort matrix, every abort reachable, terminal phases immovable, refund conservation on every path, every lifecycle and refund error class |
+| `tests/lifecycle.rs` | 33 | the abort matrix, every abort reachable, terminal phases immovable, refund conservation on every path including a public relation refusal, every lifecycle and refund error class |
 | `tests/vectors.rs` | 2 | the corpus reproduces byte for byte |
-| Total | 125 | |
+| Total | 131 | |
 
 ## Byte identity
 
 `vectors/v1.txt` SHA-256:
-`725facba9afdb3017c8d2878b6f5a3e11d3e3c08c8bb117fcc6dce37bd71fc0c`.
+`e99afccc5fcb66a9458d2fda6eb29e38328f7a71ae4edd9991170bf177e8cf9a`.
 
 Validation toolchain: `rustc 1.98.0-nightly (91fe22da8 2026-06-21)`,
 `cargo 1.98.0-nightly (a595d0da2 2026-06-20)`. Validation date: 2026-08-18.

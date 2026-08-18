@@ -5,6 +5,11 @@
 
 = Source notes
 
+// Draft 8 layout note: the twelve source entries are set in two columns,
+// recovering about a third of a page toward absorbing the operatorless-agent
+// insertion. Entry text and numbering are unchanged; layout only.
+#columns(2, gutter: 16pt)[
+
 #source_entry(
   1,
   "Prediction Markets, Advance Notice of Proposed Rulemaking",
@@ -88,6 +93,8 @@
   "https://www.cftc.gov/media/14476/IACMeetingAgenda082026/download",
   [Agenda for the August 20, 2026 inaugural meeting, announced by Press Release 9283-26 (August 13, 2026). Session III, "Prediction Markets: Innovation, Jurisdiction, and the Future of Event Contracts," lists market surveillance, manipulation concerns, and customer protections among its topics. Retrieved August 18, 2026.],
 )
+
+]
 
 == Local technical materials inspected
 

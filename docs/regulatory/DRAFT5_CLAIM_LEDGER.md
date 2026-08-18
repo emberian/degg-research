@@ -373,3 +373,148 @@ cover 462 to 439. Draft 6 and earlier PDFs are untouched.
 `scripts/build-regulatory-pdfs.sh` now builds the draft-7 filenames;
 `scripts/check.sh` passes. Metadata marks read "DRAFT 7 FOR REVIEW - NOT
 FILED" on all four.
+
+---
+
+# Perpetuals comment Draft 1 section (appended 2026-08-19 by the filing-integration lane)
+
+The program's fourth filing document: a standalone CFTC-only comment on the
+24/7-trading and perpetual-contracts request for comment (RIN 3038-AF75,
+docket CFTC-2026-1388, document CFTC-2026-1388-0001; 91 FR 38334, extended
+by 91 FR 47158; due August 26, 2026), converted on the author's go from
+`research-memos/CANDIDATE_247_PERPETUALS_COMMENT.md` into
+`typst/perpetuals/` and built as `cftc-perpetuals-comment-draft-1.pdf`.
+The Draft 6 register rule applies unchanged: positions are advocacy; every
+factual sentence about the submitter's artifacts keeps its exact ceiling
+wording; ceilings bound wording and never generate sentences; deleting a
+claim entirely is always permitted. Nothing here raises any ceiling.
+
+## Conversion record
+
+- The candidate's verbatim text was converted faithfully. Both of the
+  candidate's sanctioned trims were applied to meet the 4-page budget (the
+  untrimmed render was 5 pages): (1) the Question 62 section entire,
+  including summary position 4; (2) the second sentence of the Question 51
+  answer ("As to the timing half ..."). Consequential edits recorded: the
+  response-scope sentence now reads "and, narrowly, Question 66" (Question
+  62 no longer answered); the first argument section's heading drops
+  Question 51 (its liquidity half remains answered in the second argument
+  section, whose heading keeps 51); source note 1 lists Question 66, not
+  "Questions 62 and 66."
+- Smartquote micro-nit (per the Draft 7 practice): "does Core Principle 4's
+  cross-market work" rephrased to "does the cross-market work of Core
+  Principle 4" (Typst renders a prime after a digit). No claim content
+  changed.
+- The candidate's "Re:" block became the opening sentence citing the
+  request and the extension (source notes 1 and 2); ISO dates were spelled
+  out in the rendered filing. No other wording was altered.
+
+## Position register (perpetuals comment)
+
+| ID | Position (short form) | Basis | Counterargument addressed |
+|---|---|---|---|
+| P-P1 | A reference price computed at every funding interval is an observation program; contract terms can state its integrity properties as checkable requirements (frozen source specification and sampling grid, monotone accepted-observation path, sealing windows, deterministic refusal) | Question text quoted from the GPO full text of 91 FR 38334 (LA section 9 row 29); the argument ported from `research-memos/definitions-q15-reference-integrity.md` | Continuous reliability cannot rest on episodic review; answered structurally |
+| P-P2 | The cost of moving a time-weighted statistic across a decision boundary is computable in advance from stated terms; surveillance and funding-interval design should consume that number, and the requirement belongs on the inputs, not the computed number | Same sources; the relocation-not-removal analysis carried from P-I8 | A computed cost is a model output; answered: the ask is the inputs |
+| P-P3 | The Question 53 demonstration should be specified as a recomputation; the evidentiary basis is the replay | 91 FR 38334 Question 53 as quoted (LA section 9 row 29) | Process disputes; answered: disagreement becomes a fact about inputs |
+| (P-P4) | TRIMMED before first build (sanctioned trim 1): refusal-inheritance for automatic mechanisms, Question 62 | --- | --- |
+
+Keep-outs, stated in the filing's own scope sentence and Limits: no
+position on listing, energy-market, delivery, storage, convergence,
+cost-of-carry, margin, clearing, default management, position limits,
+customer protection, leverage, access, surveillance resourcing, or the
+stayed NYMEX contract; no energy market data supplied.
+
+## Factual claims and ceilings (perpetuals comment)
+
+| ID | Claim as worded in Draft 1 | Ceiling |
+|---|---|---|
+| V-23/V-38(b) | "I built the batch verifier to accept a submitted clearing only if recomputation from the frozen book reproduces it exactly, never trusting the submitter's claimed quantities" | Allowed wording verbatim; the filing adds the mandatory framing "That is offline research code about cleared batches, not energy references; I offer it only as evidence that the acceptance rule is workable, not as a system" |
+| V-24/V-38(c) | "I built the observation accumulator to refuse a question its retained information cannot support rather than approximate it" | Allowed wording verbatim |
+| V-39 (NEW, narrowing) | The accumulator-description sentence: "I have built an offline research prototype of this observation design --- an accumulator that absorbs observations over a frozen grid into windows that seal, whose accepted-observation path is monotone, refusing an input that appears to rewind rather than believing it," followed immediately by "It is tested, not formally verified; it is not deployed; source authentication is an assumed input contract, not implemented; and it has read no energy market data" | New allowed wording, narrowing within the V-38 monotone-coupling rule: built-anchored design description of the committed clutch-accumulator prototype (10 committed tests per this ledger's 2026-08-18 evidence re-pin), carried only with the four-part hedge tail in the same breath and the matching appendix row ("has been implemented offline with passing deterministic tests ... source authentication an assumed input contract"). Never "deployed," never "verified," never a claim about any energy source or data. The appendix row and Limits restate the no-energy-data negatives, re-verified at the filing-day gate |
+| Quotes | Every quotation of the request's question text and Appendix C factor summary | Verified against the candidate lane's GPO full-text retrieval of 2026-08-18 only (LA section 9 rows 29-30); docket revalidation before filing is gate 3, and retrieval dates are not currency |
+
+The filing expressly takes no position on the energy-market, margin, and
+listing questions (keep-out preserved from the candidate); identifiers are
+carried exactly; the metadata marks read "DRAFT 1 FOR REVIEW - NOT FILED."
+
+---
+
+# Draft 8 section (appended 2026-08-19 by the filing-integration lane)
+
+Draft 8 is the IAC statement and cover only; the two joint comments remain
+at Draft 7. One change: the operatorless-agent addendum
+(`research-memos/IAC_ADDENDUM_CANDIDATE.md`) enters the written statement
+on the author's go, as its own titled section ("The operatorless agent")
+between "The argument" and "Requested work products," taking no numbered
+position (nothing renumbers). Its basis block is folded into the
+traceability appendix as two full-width rows, not inline. Both of the
+candidate's sanctioned trims were applied to fit: (1) the dashed
+operating-loop enumeration in the specification sentence; (2) the closing
+clause "two facts that cut in different regulatory directions." One
+smartquote rephrase: "This is Position 2's publication-versus-operation
+question" rendered as "This is the publication-versus-operation question of
+Position 2." The first sentence carries note 9 (the meeting notice, whose
+published topics include artificial intelligence).
+
+## New rows
+
+| ID | Claim as worded in Draft 8 | Ceiling |
+|---|---|---|
+| V-40 | The operatorless-agent artifact sentence: "Part of the certificate stack this needs is real: my local research artifacts implement a Lean-authored parse/guard STARK and a genuine TLSNotary 2PC integration, joined by a shared content commitment and tested for refusal, with no live model-provider session, no onchain posting path, and no verifiable-inference backend," with the gap and trust sentences ("Proving the whole execution history is a named, machine-readable gap, so the executing host is currently trusted; and the transcript leg pins a named notary, which is an operator for that function. These artifacts have enumerated trusted roles; they are not an operatorless system, and no such agent exists.") | The independent artifact survey of 2026-08-19 (corrected second pass): the defensible-summary sentence carried essentially verbatim; must travel with the trusted-roles and no-such-agent sentences. The appendix basis row must cite the recorded suite re-run (`../research/ATTESTATION_SUITE_RERUN_2026-08-19.md`: 86 tests, zero failures, from the pinned committed tree under the repository's own toolchain pin) together with the verbatim Lean-emit caveat: "with the Lean emit step not re-run: the committed emitted descriptor, whose Lean pinning is inherited from the commit, is what the tamper canaries exercised" |
+| V-41 (GOVERNING for live-session wording) | "No live model-provider session (a live exchange-API MPC-TLS session was recorded July 11, 2026)" --- carried verbatim (with the spelled date) in the appendix boundary row | The corrected live-session ceiling wording of 2026-08-19 governs every statement about live sessions in the packet. The body's bare "no live model-provider session" clause sits within this ceiling because the recorded session was an exchange-API session, not a model-provider session; any restatement must keep or tighten the parenthetical, and if a live provider session is performed before filing, the sentence may be restated only to what that new record supports, re-audited |
+
+## Position register change
+
+The register gains the operatorless question, unnumbered, kept as a genuine
+question alongside Dark preclusion and the predeployment vehicle: when no
+one operates, which operator functions --- supervision, recordkeeping,
+emergency authority, accountability for harm --- can verifiable conduct
+evidence satisfy, which attach to the specification's author or its
+executors, and which have no bearer at all. The section requests approval
+of nothing (stated in its own text).
+
+## Cover
+
+Metadata bumped to Draft 8. The cover REMAINS AT EIGHT POSITIONS: the
+one-line operatorless mention was drafted and test-built twice (standalone
+paragraph; folded into the intro paragraph) and both renders overflowed to
+two pages, so per the coordinator's fallback the line was withdrawn and the
+statement alone carries the content. V-34's identifier, note, and
+warning-block requirements remain met; exactly one page.
+
+## Page-count status (FLAGGED, needs a coordinator call)
+
+The Draft 7 slack premise ("content ends with roughly half of page 7 empty
+... ~43% of the final text block free") does not match the recorded Draft 7
+artifact: the hash-verified `cftc-iac-written-statement-draft-7.pdf`
+(SHA-256 97bfee70...) has page 7 about 85 percent occupied (source notes 6
+through 12, the local-materials paragraph, and the gate note), leaving
+roughly 0.15 page of physical slack --- the addendum (about 0.55 page of
+body plus basis rows) could never have fit it. With both sanctioned trims
+applied, the basis rows set full-width, and the statement's twelve source
+notes set in two columns (layout only, entry text unchanged, noted in
+`typst/iac/sources.typ`; recovers about a third of a page),
+Draft 8 renders at EIGHT pages, where page 8 carries only review apparatus
+(the local-materials paragraph and the final-source gate note, about
+fifteen lines) and no filing content. Reaching seven pages requires one of:
+accepting the current 8-page render; sanctioning a content cut elsewhere in
+the statement (about fifteen 9.4pt lines' worth); or dropping an addendum
+beat, which the candidate memo itself marks as a go/no-go consideration,
+not a drafting one. No unsanctioned content was cut; every ceiling wording
+above is carried verbatim.
+
+## Draft 8 / perpetuals Draft 1 artifacts
+
+Built by `scripts/build-regulatory-pdfs.sh` (now producing the draft-8 IAC
+filenames and the perpetuals draft-1 target); page counts and SHA-256
+hashes are recorded in the build log of this lane's report and re-pin at
+the filing-day freeze (gate 4). Metadata marks: "DRAFT 7 FOR REVIEW - NOT
+FILED" (two joint comments), "DRAFT 8 FOR REVIEW - NOT FILED" (IAC
+statement and cover), "DRAFT 1 FOR REVIEW - NOT FILED" (perpetuals).
+The draft-7 IAC statement and cover PDFs are untouched on disk (the script
+now writes draft-8 filenames), so the Draft 7 section's hashes for those
+two remain valid; the two joint draft-7 PDFs were rebuilt by this round's
+script run with UNCHANGED sources (no `.typ` edit; content identical by
+construction), so their Draft 7 hashes now identify the pre-rebuild files
+only --- the standing Typst-timestamp caveat, re-pinned once at the
+filing-day freeze.

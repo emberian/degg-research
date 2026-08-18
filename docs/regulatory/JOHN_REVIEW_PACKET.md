@@ -1,22 +1,35 @@
-# Courtesy-review memo
+# Courtesy-review memo — ROUND 1 of 2
 
-Prepared 2026-08-18 for the final courtesy review. Everything below is
-preprocessed: the in-house analysis (`LEGAL_ANALYSIS.md`, attached) records
-the reasoning and primary-source verification behind each judgment, so each
-row here should cost a glance and only Section 3 asks for your time. Thank
-you — this is a favor and it is built to respect your hour.
+Prepared 2026-08-18 (updated 2026-08-19) for the courtesy review. The
+deadlines have real runway, so the review is structured as **two rounds**:
+this memo is **round 1 — substance**: the positions, the judgment table,
+and the specific questions, sent early so your feedback can be incorporated
+before anything freezes. Round 2 will be a short delta memo (protocol in
+Section 4). Everything below is preprocessed: the in-house analysis
+(`LEGAL_ANALYSIS.md`, attached) records the reasoning and primary-source
+verification behind each judgment, so each row here should cost a glance
+and only Section 3 asks for your time. Thank you — this is a favor and it
+is built to respect your hour.
 
 ## 1. What is being filed
 
-I am filing three public comments as an independent researcher, in my own
-name, with no client, product, offer, or deployed system involved. Two are
-responses to joint CFTC/SEC requests for comment due **Monday, August 24,
-2026** — one on product definitions (CFTC RIN 3038-AF71 / SEC File S7-2026-21,
-answering Questions 1 and 8) and one on data reporting (RIN 3038-AF70 /
-S7-2026-22, answering Questions 3, 8, and 19). The third is a written
-statement to the CFTC's Innovation Advisory Committee, docket CFTC-2026-1717,
-due **Thursday, August 27, 2026** (hard electronic cutoff 11:59 p.m. ET; the
-docket does not accept late comments).
+I am filing four public comment documents as an independent researcher, in
+my own name, with no client, product, offer, or deployed system involved.
+Two are responses to joint CFTC/SEC requests for comment due **Monday,
+August 24, 2026** — one on product definitions (CFTC RIN 3038-AF71 / SEC
+File S7-2026-21, answering Questions 1 and 8) and one on data reporting
+(RIN 3038-AF70 / S7-2026-22, answering Questions 3, 8, and 19). The third,
+new since the first version of this memo, is a narrow CFTC-only comment on
+the 24/7-trading and perpetual-contracts RFC (RIN 3038-AF75, docket
+CFTC-2026-1388), due **Wednesday, August 26, 2026** — it answers only the
+reference-price and observability questions, expressly takes no position on
+the energy-market, margin, or listing questions, and states that I have no
+energy market data. The fourth is a written statement to the CFTC's
+Innovation Advisory Committee, docket CFTC-2026-1717, due **Thursday,
+August 27, 2026** (hard electronic cutoff 11:59 p.m. ET; the docket does
+not accept late comments); it now carries a short agenda-responsive
+"operatorless agent" section that requests approval of nothing and asks the
+Committee to take up one question.
 
 Draft 6 changes the register: the filings now take **argued analytical
 positions** — for example, that publication of market software, without
@@ -65,8 +78,13 @@ citation behind these rows was verified against the primary source on
 | Publication-vs-operation is genuinely unsettled (functional triggers; one nonbinding staff letter; FinCEN analogy), so the filings' request for guidance is well-founded — and the filings never claim publication is safe | LA §5 | High |
 | Filing creates no meaningful exposure for the researcher: no solicitation/offer content, no operating activity described, prototype descriptions carry audited evidence ceilings, no CBI/PII | LA §6 risk register R-1..R-11 | High |
 | Two defects found and fixed before this memo was finalized: a source note misattributed CFTC Staff Letter 26-09 to the wrong division (sources.typ corrected, IAC PDF rebuilt); the repo README named a superseded retained-counsel gate (aligned to the actual in-house + courtesy-review process) | LA §8 | High |
+| **Filing a fourth comment** (24/7/perpetuals RFC) was a weighed go. For, in one line: the Commission asks this program's exact question in its own words (Questions 40, 50, 53, 66), the argument was already written, and it reinforces the IAC statement's Position 8 for a second audience. Against, in one line: an energy-adjacent docket with ~90 filers ahead where the program has no data, an RFC that asks for data, and Question 40 brackets the digital-asset context — so the comment argues the property set, not the substrate, scoped by an express no-energy-data disclaimer and keep-outs | `research-memos/CANDIDATE_247_PERPETUALS_COMMENT.md` (go/no-go); perpetuals section of `DRAFT5_CLAIM_LEDGER.md`; LA §9 rows 29-30 | High |
+| **Including the operatorless-agent addendum** in the IAC statement is agenda-responsive (the meeting notice's topics include artificial intelligence), takes no numbered position, requests approval of nothing, and every artifact sentence carries the independent artifact survey's ceiling wording, including the corrected live-session sentence; its one filing gate (the recorded suite re-run) was met before insertion | `research-memos/IAC_ADDENDUM_CANDIDATE.md`; Draft 8 section of `DRAFT5_CLAIM_LEDGER.md` | High |
 
-## 3. Questions for you (each ~1 minute; tentative answers included)
+## 3. Round-1 questions for you (each ~1 minute; tentative answers included)
+
+These are the round-1 questions; anything arising from your round-1
+feedback becomes the round-2 list.
 
 1. **The position register.** Draft 6 converts the old hedged observations
    into openly argued positions — most prominently: "Publication of market
@@ -107,22 +125,39 @@ A nod or a one-line reply per item is exactly the right amount of effort; if
 any answer is "needs a conversation," say so and I will not treat silence as
 sign-off.
 
-## 4. Attachments
+## 4. Round 2 protocol
+
+Round 2 will be a **delta memo**: what changed since round 1, item by item
+— each change in one line with why, nothing restated — with the final
+artifacts attached, so your second pass is a diff-read costing minutes, not
+a re-read. Between the rounds the claim ledgers re-pin at the filing-day
+freeze (final commits, artifact hashes, and docket revalidation), so the
+delta memo's evidence references are to frozen objects. The round-2
+question list is whatever your round-1 feedback raises; if it raises
+nothing, round 2 is a confirmation that the deltas are as described.
+
+## 5. Attachments
 
 1. `joint-definitions-comment-draft-7.pdf` (7 pp.)
 2. `joint-data-reporting-comment-draft-7.pdf` (8 pp.)
-3. `cftc-iac-written-statement-draft-7.pdf` (7 pp.; the final half page is
-   deliberately left free for a possible addendum under evaluation)
-4. `cftc-iac-cover-statement-draft-7.pdf` (1 p.)
-5. `LEGAL_ANALYSIS.md` (the in-house analysis this memo indexes; its
-   filing-text review describes Draft 5 — the Draft 6 register change and
-   the Draft 7 rebalance, with their per-position bases, are recorded in
-   the Draft 6 and Draft 7 sections of `DRAFT5_CLAIM_LEDGER.md`)
+3. `cftc-perpetuals-comment-draft-1.pdf` (4 pp.; the fourth filing, new in
+   this round)
+4. `cftc-iac-written-statement-draft-8.pdf` (8 pp.; the reserved half page
+   now carries the operatorless-agent section — the eighth page holds only
+   source apparatus, and whether to compress back to 7 pp. is an open
+   layout call noted in the ledger)
+5. `cftc-iac-cover-statement-draft-8.pdf` (1 p.)
+6. `LEGAL_ANALYSIS.md` (the in-house analysis this memo indexes; its
+   filing-text review describes Draft 5 — the Draft 6 register change, the
+   Draft 7 rebalance, the Draft 8 insertion, and the perpetuals conversion,
+   with their per-position bases, are recorded in the corresponding
+   sections of `DRAFT5_CLAIM_LEDGER.md`)
 
-Every material technical claim in the four PDFs carries a one-line
+Every material technical claim in the five PDFs carries a one-line
 evidentiary basis in its own appendix and is governed by a maintained
-evidence ledger in the repository (claim audits for Drafts 3-7, with SHA-256
-hashes of the exact Draft 7 artifacts); you do not need to verify any
-technical claim to review the legal posture. The drafts are watermarked
-"DRAFT 7 FOR REVIEW - NOT FILED" and identity placeholders remain visibly
-unresolved until the final identity gate.
+evidence ledger in the repository (claim audits for Drafts 3-8 and the
+perpetuals Draft 1; artifact hashes re-pin at the filing-day freeze); you
+do not need to verify any technical claim to review the legal posture.
+Every page of every draft is watermarked "FOR REVIEW - NOT FILED" with its
+draft number, and identity placeholders remain visibly unresolved until
+the final identity gate.

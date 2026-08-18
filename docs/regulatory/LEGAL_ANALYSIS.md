@@ -495,8 +495,9 @@ reasoning and is presented above for a glance, not a question.
 
 Every citation used in this analysis, its evidence path, and its retrieval
 date. "Fetched" = primary source retrieved and read 2026-08-18 in this
-session. Verified count: **28 fetched-primary items**; **2 items deliberately
-not verified and not relied on**.
+session. Verified count: **28 fetched-primary items** plus **2 items
+verified by the candidate-draft lane's 2026-08-18 retrieval** (rows 29-30);
+**2 items deliberately not verified and not relied on**.
 
 | # | Authority | Evidence path (2026-08-18) |
 |---|---|---|
@@ -528,6 +529,8 @@ not verified and not relied on**.
 | 26 | 17 CFR 39.2 ("fully collateralized position" definition); part 39 heading | Fetched: eCFR versioner API |
 | 27 | 17 CFR 43.4(e)-(g) (rounding, cap size), 43.5 (block-trade time delays); parts 43/45/49/145 headings; 17 CFR 145.9 (confidential treatment) | Fetched: eCFR versioner API |
 | 28 | U.S. Const. amend. I (petition clause); CFTC event page (no agenda posted); CFTC "Innovation at the CFTC" page (IAC + Innovation Task Force channels) | Fetched: law.cornell.edu; cftc.gov (2 pages) |
+| 29 | 91 FR 38334 (June 25, 2026), FR Doc 2026-12784, RIN 3038-AF75 (24/7 trading and perpetual energy contracts RFC; Sections F and I, Questions 38-41, 50-53, 62, 66; Appendix C factor summary; original deadline) | Verified by the candidate-draft lane's retrieval, 2026-08-18 (not re-verified in this session): GPO full text via the Federal Register full-text service, `https://www.federalregister.gov/documents/full_text/text/2026/06/25/2026-12784.txt`, read in full; quotations in the perpetuals comment checked against that retrieval (candidate memo, drafting facts) |
+| 30 | 91 FR 47158 (July 28, 2026), FR Doc 2026-15216 (extension of the comment period through Aug. 26, 2026; NYMEX 10-Barrel WTI Crude Oil futures self-certification July 8, 2026 and Commission stay July 9, 2026 under Regulation 40.2(c)) | Verified by the candidate-draft lane's retrieval, 2026-08-18 (not re-verified in this session): GPO full text via the Federal Register full-text service, `https://www.federalregister.gov/documents/full_text/text/2026/07/28/2026-15216.txt` (candidate memo, drafting facts) |
 
 **UNVERIFIED — flagged, not relied on:**
 

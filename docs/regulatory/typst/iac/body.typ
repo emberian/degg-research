@@ -247,6 +247,34 @@ venue during these minutes." I have produced no manipulation-cost
 measurement and no study of any real venue, and no number appears in this
 statement.
 
+= The operatorless agent
+
+The Committee's agenda includes artificial intelligence.#note_ref(9) The
+architecture in this statement extends to a market participant that is
+itself an AI agent and has no operator. A published specification fixes the
+agent's entire operating loop in advance, and execution is prepaid,
+permissionless work: anyone may perform a step offchain and submit the
+result, and the ledger accepts a step only if its certificates verify
+against the specification. This is the publication-versus-operation
+question of Position 2 in its sharpest form: in such a design there is no
+operator to register, and no operator to trust.
+
+Part of the certificate stack this needs is real: my local research
+artifacts implement a Lean-authored parse/guard STARK and a genuine
+TLSNotary 2PC integration, joined by a shared content commitment and
+tested for refusal, with no live model-provider session, no onchain
+posting path, and no verifiable-inference backend. Proving the whole
+execution history is a named, machine-readable gap, so the executing host
+is currently trusted; and the transcript leg pins a named notary, which is
+an operator for that function. These artifacts have enumerated trusted
+roles; they are not an operatorless system, and no such agent exists.
+
+I request approval of nothing. I ask the Committee to take up one question
+early: when no one operates, which operator functions --- supervision,
+recordkeeping, emergency authority, accountability for harm --- can
+verifiable conduct evidence satisfy, which attach to the specification's
+author or its executors, and which have no bearer at all.
+
 = Requested work products
 
 1. A milestone taxonomy for staged programmable transactions ---
@@ -303,5 +331,7 @@ deployed market infrastructure, and none has been independently audited.
   [An outcome declared before the evidence window closes can be falsified by remaining evidence; balance-type constraints cannot be checked in independent fragments and merged], [Model theorems in the submitter's candidate-result formalism; no oracle or legal finality process is implemented or validated],
   [The worked market's accounting: structural refusal of undercollateralized states (required collateral as the maximum liability over the immutable payout set); batch clearing verified by full recomputation of a frozen book], [Offline pure-Rust research prototype reviewed by the submitter; deterministic tests pass; tested, not formally verified; not deployed],
   [The manipulation-cost observation: the inputs that price a settlement-moving trade on a named onchain venue are public, and the cost bound is computable in advance], [Drafting analysis; no manipulation-cost measurement or study of any real venue has been produced, and no number appears in this statement],
+  table.cell(colspan: 2)[The operatorless-agent artifact sentence --- offline research artifacts and one pinned third-party integration, reviewed by the submitter; test suites independently reproduced from the pinned committed tree: 86 tests, zero failures, under the repository's own toolchain pin (record of August 19, 2026), with the Lean emit step not re-run: the committed emitted descriptor, whose Lean pinning is inherited from the commit, is what the tamper canaries exercised],
+  table.cell(colspan: 2)[The operatorless-agent boundary statements --- no live model-provider session (a live exchange-API MPC-TLS session was recorded July 11, 2026), no onchain posting path, no verifiable-inference backend, no deployed agent, no funded market; the executing host and the pinned notary are trusted --- rest on the submitter's repository status records and the pinned session record; research artifacts and open design questions, not products, offers, or compliance conclusions],
   [No artifact described in this statement is deployed, funded, offered, or operating, and the research artifacts do not presently compose into an end-to-end system], [The submitter's repository status records; a statement about the submitter's own artifacts, not about any third party],
 )

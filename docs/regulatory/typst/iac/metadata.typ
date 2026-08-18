@@ -1,6 +1,6 @@
 #let meta = (
-  document_kind: "CFTC IAC WRITTEN STATEMENT - DRAFT 7",
-  review_label: "DRAFT 7 FOR REVIEW - NOT FILED",
+  document_kind: "CFTC IAC WRITTEN STATEMENT - DRAFT 8",
+  review_label: "DRAFT 8 FOR REVIEW - NOT FILED",
   short_title: "IAC Written Statement",
   title: "Programmable Contingent Transactions, Privacy-Compatible Auditability, and Verifiable Market Controls",
   subtitle: "Technical research statement for the Innovation Advisory Committee",

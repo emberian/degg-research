@@ -12,12 +12,24 @@ I am filing three public comments as an independent researcher, in my own
 name, with no client, product, offer, or deployed system involved. Two are
 responses to joint CFTC/SEC requests for comment due **Monday, August 24,
 2026** — one on product definitions (CFTC RIN 3038-AF71 / SEC File S7-2026-21,
-answering Question 1 with proposed analytical criteria and no classification
-position) and one on data reporting (RIN 3038-AF70 / S7-2026-22, answering
-Questions 3, 8, and 19). The third is a written statement to the CFTC's
-Innovation Advisory Committee, docket CFTC-2026-1717, due **Thursday, August
-27, 2026** (hard electronic cutoff 11:59 p.m. ET; the docket does not accept
-late comments).
+answering Question 1) and one on data reporting (RIN 3038-AF70 / S7-2026-22,
+answering Questions 3, 8, and 19). The third is a written statement to the
+CFTC's Innovation Advisory Committee, docket CFTC-2026-1717, due **Thursday,
+August 27, 2026** (hard electronic cutoff 11:59 p.m. ET; the docket does not
+accept late comments).
+
+Draft 6 changes the register: the filings now take **argued analytical
+positions** — for example, that publication of market software, without
+more, creates no agreement, contract, or transaction; that exposure arises
+at funding; that prefunded atomic settlement performs no credit
+intermediation — each argued from primary text verified in the attached
+analysis. The positions are the commenter's own advocacy, which the comment
+process invites (5 U.S.C. 553(c): "written data, views, or arguments").
+None classifies a deployed product, claims any design of mine is exempt or
+compliant, or requests relief. The full position register, with each
+position's statutory basis and the strongest counterargument it answers, is
+the Draft 6 section of `DRAFT5_CLAIM_LEDGER.md` — **the positions are now
+the main thing to eyeball.**
 
 ## 2. Material legal judgments made in-house
 
@@ -30,7 +42,8 @@ citation behind these rows was verified against the primary source on
 | Anyone may file these comments; no counsel or credential is required; filing pro se is not practicing law | LA §1 (5 U.S.C. 553(c); the notices' own invitations; 5 U.S.C. 1009(a)(3) for the IAC) | High |
 | Comments are published permanently, unredacted, without agency review of PII/CBI; mitigation is what we omit, and nothing sensitive is in the drafts | LA §1, §6 R-6/R-7 (both notices' ADDRESSES terms, verified verbatim) | High |
 | 18 U.S.C. 1001 applies to statements in these submissions; the maintained claim-audit ledger and hash-frozen final texts are the accuracy control; residual risk low | LA §1, §6 R-2 | High |
-| The definitions comment actually holds its no-classification-position line; three near-the-line sentences reviewed, none crosses; one carried to you (Q1) | LA §2 (sentence-level review of the Draft 5 text) | High |
+| The definitions comment classifies no deployed product and claims no exemption; its Draft 6 positions are analytical advocacy about a class of staged structures, inclusionary where they approach classification (e.g., no SBS prong implicated on the worked example's face — LA §2's own INFERRED analysis) | LA §2; Draft 6 position register in `DRAFT5_CLAIM_LEDGER.md` | High |
+| Taking argued positions is invited comment content, not practice of law or a request for relief; each position's basis is a fetch-verified primary source, and no position crosses into "my design is therefore exempt/compliant" | LA §1 (5 U.S.C. 553(c)); position register (P-D1..7, P-R1..6, P-I1..7) | High |
 | The filings' legal recitals (swap definition, SBS prongs, mixed swaps, 2012 release, 40.11 + June 2026 proposal, facility definitions) are accurate as written | LA §2, §3, §5 (all recitals checked against fetched primary text) | High |
 | The crypto-native-objective-events scope keeps the examples clear of the 40.11/CEA 5c(c)(5)(C) enumerated activities without claiming any exemption — the correct ceiling | LA §3 | High |
 | The IAC statement is input to a solely-advisory FACA committee; it creates no status and requests only that the Committee recommend work | LA §4 (charter, 5 U.S.C. ch. 10, meeting notice) | High |
@@ -40,12 +53,17 @@ citation behind these rows was verified against the primary source on
 
 ## 3. Questions for you (each ~1 minute; tentative answers included)
 
-1. **One sentence.** The definitions comment says, of a published-but-unsigned
-   template: "Whatever this text is, it does not yet look like an agreement,
-   contract, or transaction, because there are no parties." I read this as a
-   hedged observation, not a legal conclusion, and plan to keep it. Would an
-   agency lawyer read it the same way, or should it be recast as a pure
-   question? (LA §2 item 1; a one-clause fix is staged if you prefer it.)
+1. **The position register.** Draft 6 converts the old hedged observations
+   into openly argued positions — most prominently: "Publication of market
+   software, without more, should not itself be a regulated activity,
+   because it creates no agreement, contract, or transaction." This is now
+   deliberate advocacy, argued from the statutory predicate (LA §2), not an
+   inadvertent legal conclusion. Two-part question: (a) are you comfortable
+   with an independent researcher filing argued positions of this kind at
+   all, and (b) does any single position in the register
+   (`DRAFT5_CLAIM_LEDGER.md`, Draft 6 section) read to an agency lawyer as
+   a claim about *my* conduct or products rather than as proposed general
+   analysis? A per-position skim is the review; each is one line.
 2. **Signature block.** I plan to sign name + "independent researcher" + one
    durable email, omitting postal address and phone from the permanently
    public artifacts. Anything imprudent in that presentation?
@@ -65,16 +83,19 @@ sign-off.
 
 ## 4. Attachments
 
-1. `joint-definitions-comment-draft-5.pdf` (9 pp.)
-2. `joint-data-reporting-comment-draft-5.pdf` (10 pp.)
-3. `cftc-iac-written-statement-draft-5.pdf` (9 pp.)
-4. `cftc-iac-cover-statement-draft-5.pdf` (1 p.)
-5. `LEGAL_ANALYSIS.md` (the in-house analysis this memo indexes)
+1. `joint-definitions-comment-draft-6.pdf` (6 pp.)
+2. `joint-data-reporting-comment-draft-6.pdf` (7 pp.)
+3. `cftc-iac-written-statement-draft-6.pdf` (6 pp.)
+4. `cftc-iac-cover-statement-draft-6.pdf` (1 p.)
+5. `LEGAL_ANALYSIS.md` (the in-house analysis this memo indexes; its
+   filing-text review describes Draft 5 — the Draft 6 register change and
+   its per-position bases are recorded in the Draft 6 section of
+   `DRAFT5_CLAIM_LEDGER.md`)
 
 Every material technical claim in the four PDFs carries a one-line
 evidentiary basis in its own appendix and is governed by a maintained
-evidence ledger in the repository (claim audits for Drafts 3-5, with SHA-256
-hashes of the exact Draft 5 artifacts); you do not need to verify any
+evidence ledger in the repository (claim audits for Drafts 3-6, with SHA-256
+hashes of the exact Draft 6 artifacts); you do not need to verify any
 technical claim to review the legal posture. The drafts are watermarked
-"DRAFT 5 FOR REVIEW - NOT FILED" and identity placeholders remain visibly
+"DRAFT 6 FOR REVIEW - NOT FILED" and identity placeholders remain visibly
 unresolved until the final identity gate.

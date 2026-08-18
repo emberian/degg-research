@@ -111,3 +111,147 @@ V-17 … V-34 (via the map above) and are marked with pointers to this file.
 `DRAFT5_CLAIM_DELTA.md` is the rewrite lane's account of Draft 5 and was
 verified by `DRAFT5_PACKET_AUDIT_VERDICT.md`; where V-38 supersedes a
 phrasing that the delta had verified verbatim, this ledger controls.
+
+---
+
+# Draft 6 section (appended 2026-08-18 by the Draft 6 rewrite lane)
+
+Draft 6 rewrites all four filings from an interrogative register to a
+declarative one under four coordinator directives: (1) positions stated and
+argued instead of questions asked; (2) audience ontology --- staff-attorney
+categories, research idiolect demoted to at most one-clause credentials;
+(3) ceiling-exhaust deletion --- defensive self-audit sentences removed
+unless a reasonable reader would otherwise draw a wrong, decision-relevant
+inference; (4) hard length budget (definitions 6 pp, data 7 pp, IAC 6 pp,
+cover 1 p; all met). Register rule, stated once here: **positions are the
+commenter's advocacy and are not bound by the factual-claim ceilings; every
+factual sentence about the submitter's artifacts keeps its exact ceiling
+wording. Ceilings bound the wording of claims a filing makes; they never
+generate sentences. Deleting a claim entirely is always permitted and
+violates no ceiling.** Nothing in this section raises any ceiling.
+
+## Draft 6 position register
+
+Positions are advocacy (PROPOSED analysis by the commenter), each argued in
+the filing from the verified legal base. "Basis" points into
+`LEGAL_ANALYSIS.md` (LA) sections whose citations were fetch-verified
+2026-08-18; no citation outside LA §9 or the existing `sources.typ` entries
+was introduced. "Counterargument" is the strongest objection the filing
+addresses in text.
+
+### Definitions comment (RIN 3038-AF71 / S7-2026-21)
+
+| ID | Position (short form) | Basis | Counterargument addressed |
+|---|---|---|---|
+| P-D1 | Classify staged programs milestone by milestone, as interpretive guidance within the 2012 framework | LA §2 (1a(47) predicate; 77 FR 48208 role; Question 1 framing) | Stage-relabeling gamesmanship; answered: the matrix reads binding effect, consideration, exposure --- facts, not labels |
+| P-D2 | Publication of market software, without more, should not itself be a regulated activity; operative events are funding and interaction | LA §2 (statutory predicate requires agreement/contract/transaction); LA §5 (publication is not a safe harbor either) | Publication as a step in solicitation/operation; answered via "without more" plus P-D7 functional analysis |
+| P-D3 | Formation where binding effect and consideration coincide (funding, in the worked example) | LA §2 (1a(47)(A)(i) option prong analogy) | Executory bilateral formation by mutual promises; answered: irrevocable instructions move formation earlier, revocable ones bind nobody |
+| P-D4 | Instrument formation and holder's contingent exposure are separate findings; a complete set plus recombination right is fully hedged; exposure starts at the first unbalancing transaction | LA §2 (1a(47)(A)(ii) dependence analysis) | Administrability ("use funding for everything"); answered: two findings serve different rules |
+| P-D5 | The reference object and payout structure allocate the category; the worked example implicates no SBS prong on its face, the issuer-referencing variant would | LA §2 (78c(a)(68)(A) three prongs, INFERRED application; mixed-swap narrowness) | One program spans both jurisdictions; answered: that is why only the reference object can carry the allocation |
+| P-D6 | Prefunding, loss ceilings, fail-closed terms are risk facts, not classification exclusions --- and the Commissions should say so | LA §2 (1a(47)(B) exclusions are instrument types) | Industry prefunding-exclusion reading and reflexive regulator distrust; both addressed |
+| P-D7 | Separate instrument / venue / intermediary / clearing findings; "the software" is not a unit of classification | LA §2 (CEA facility definitions verified); LA §5 | "Code is one thing" coarseness in both exempting and condemning directions |
+
+Kept as genuine questions: weight of transferability where not statutorily
+required (policy choice). Non-position on Questions 12-15 retained.
+
+### Data-reporting comment (RIN 3038-AF70 / S7-2026-22)
+
+| ID | Position (short form) | Basis | Counterargument addressed |
+|---|---|---|---|
+| P-R1 | Report normalized economic lifecycle events bound to ledger sources; provenance fields add to, never replace, economic/counterparty fields | LA §9 rows 1-2 (Question 3 read verbatim); the record-walk evidence | "The ledger is already the record"; answered: ownership, rejections, offchain events, fork meaning all absent |
+| P-R2 | Hedged complete-set funding is not a contingent-position print; report exposure at the first unbalancing transaction | Same economics as P-D4; LA §2 | Hash-to-trade administrability; answered: false positives at funding, omissions at close |
+| P-R3 | Corrections supersede, never overwrite | Part 45 lifecycle framework (LA §9 row 27) | Tape simplicity; answered: silent overwrite misleads |
+| P-R4 | Public dissemination as an explicit versioned leakage policy; confidential record stays exact and timely regardless | 17 CFR part 43 delays/caps (LA §9 row 27); parts 45/49 | Transparency absolutism; answered: the law already prices this trade-off |
+| P-R5 | A proof satisfies a reporting element only where the required proposition is exactly what its statement establishes; otherwise retain committed evidence | Analytical; within the request's Question 19 scope | Proof-as-complete-report |
+| P-R6 | Publish reporting rules as governed executable validators over the three-record structure | Question 19's own ask (LA §9 row 2) | An opaque implementation silently becoming the law |
+
+Kept as a genuine question: whether a Dark architecture can satisfy each
+obligation without a general opening path (research boundary, tested
+obligation by obligation).
+
+### IAC written statement (Docket CFTC-2026-1717)
+
+| ID | Position (short form) | Basis | Counterargument addressed |
+|---|---|---|---|
+| P-I1 | Adopt the milestone taxonomy (publication, funding, close, resolution, settlement) as the shared factual clock | LA §4 (advisory asks proper); LA §2 | Taxonomy rigidity; answered: milestones are events, not product categories |
+| P-I2 | Publication without more is not operation; guidance should state which functional combinations cross the line | LA §5 (Letter 26-09 VERIFIED; functional triggers; FinCEN analogy context) | Two symmetric errors named and rejected |
+| P-I3 | Exposure arises at funding; the published template creates none; prefunding fixes the ceiling in the same act | LA §2; V-38(d) fact support | Template-liability view; answered by the no-party, no-consideration analysis |
+| P-I4 | Prefunded atomic settlement without novation/credit/mutualization performs no credit intermediation; clearing analysis turns on custody, settlement control, default handling | LA §5 (7 U.S.C. 1a(15) credit-substitution core); LA §4 (17 CFR 39.2 fully collateralized position) | Part 39 coexistence; answered: collateralization does not excuse an entity performing clearing functions --- the position is about when functions arise, not relief once they do |
+| P-I5 | Real-time DCM fields are those surveillance/reconstruction obligations consume; the rest may stay encrypted if exact linked records are timely recoverable | LA §4 (part 38 obligations; 38.7 separation VERIFIED) | Plaintext-by-default; answered: the objective is access sufficiency |
+| P-I6 | Governed threshold disclosure can satisfy access objectives; regulator-observable Shielded is the reference architecture | LA §4 (38.7); repository privacy-modes definitions | "Encrypted means unavailable"; Dark fenced as the open research question |
+| P-I7 | Proofs admitted as evidence of exactly their encoded propositions, with negative cases and retained records; structured predeployment path | LA §4 (innovation channels); LA §5 (26-09 expires into rulemaking) | Proofs replacing surveillance/governance |
+
+Kept as genuine questions: Dark structural-preclusion (research boundary);
+the procedural vehicle for predeployment review (Commission's choice).
+
+### IAC cover statement
+
+C-1 through C-7 are the one-sentence forms of P-I1 through P-I7, each
+naming what it settles. The scope paragraph and the Clear/Shielded/Dark
+framing sentence are preserved from Draft 5 verbatim. This supersedes the
+V-34 "seven questions" register description; V-34's identifier, note, and
+warning-block requirements remain in force and are met.
+
+## Factual-row survival (V-17 ... V-38)
+
+Verified against the Draft 6 sources on 2026-08-18:
+
+- **Wording survives verbatim or narrowed:** V-17 ("not a deployed system,
+  a product, or an offer" restored verbatim in all three bodies; "tested,
+  not formally verified" in all three), V-18, V-19 (scope disclaimer
+  verbatim in definitions, IAC, cover), V-21, V-22 (walk compressed,
+  factual content unchanged), V-23 (verbatim), V-24 (verbatim), V-26
+  (parts 43/45/49 sentences verbatim), V-28, V-32, V-33 (all 11 IAC
+  note_refs still referenced; identifiers and deadline unchanged), V-35
+  ("onchain digital-asset price" retained in the P-D5 argument), V-36
+  (table intro claims only to walk the example), V-37 (template untouched),
+  V-38 (all retained sentences verbatim: the (b) batch-verifier, (c)
+  accumulator, (d) structural-collateral, (e) batch-prototype wordings, and
+  the (a)/(f) appendix "has been implemented offline with passing
+  deterministic tests" / "was built to accept / refuse / replay" rows).
+- **Claims deleted entirely (permitted; no ceiling violated):** the
+  guarded-commitment and candidate-result expository sections (V-03/V-04/
+  V-06/V-07-governed mechanics) are no longer load-bearing content anywhere;
+  the definitions paired-examples table (including the V-35-noted
+  "commodity price" hypothetical row); the definitions prose stage walk
+  (folded into the stage table); the data separate-outputs table; the data
+  governance failure-mode list; the IAC reference-architecture numbered list
+  (folded to one sentence); the IAC between-milestones events paragraph;
+  V-15's guarded-update reporting paragraph in its Draft 5 form (replaced by
+  the narrower N-4 credential below); V-25's three-design enumeration
+  (compressed to "three transcript designs"; all hedge sentences retained);
+  V-30/V-31 model-mechanics prose (replaced by the narrower N-2/N-3
+  credentials below). V-20/V-27 appendices remain accurate for the claims
+  each filing still makes; rows for deleted claims were removed with them.
+- **Register notes:** V-29's taxonomy is now advocated (P-I1) rather than
+  offered --- an advocacy-register change, not a factual upgrade; the
+  Draft 5 hedged sentence "Whatever this text is, it does not yet look like
+  an agreement..." is superseded by position P-D2/P-D3 advocacy (see the
+  John packet question 1 update).
+
+## New factual claims and ceilings (Draft 6)
+
+| ID | Claim as worded in Draft 6 | Ceiling |
+|---|---|---|
+| N-1 | "An order fixes who is acting, which balances may change, and the exact limits of the permitted fill; a fill outside those limits fails and changes nothing --- a property I have machine-checked in formal models of this order pattern" (definitions); "an order can be executed exactly as committed or not at all, a property I have machine-checked in formal models of the commitment pattern" and "a committed redemption executes at most once" / "no primitive allows an obligation whose amount or obligor is fixed later" (IAC) | Audience-language restatement of V-03/V-04 (accepted fill equals committed transition; guard violation fails closed; replay/nullifier refusal; no value- or authority-bearing hole). Must keep "formal models" / "machine-checked"; never "deployed controls," "cryptographically enforced," or a compliance property |
+| N-2 | "Declaring an outcome before the evidence window closes is not caution but error: a declaration the remaining evidence can falsify, a failure mode I have exhibited concretely in a formal model" (IAC) | V-30 counterexample direction only; model-only; no oracle or legal finality validated |
+| N-3 | "Two withdrawals can each be valid against the same pool and jointly overdraw it ... a fact I have machine-checked" (IAC) | V-31 counterexample direction only; model-only; supports serialization as design choice, not a deployed guarantee |
+| N-4 | "In my formal models I have machine-checked that a correction's authorized actor, target record, permitted fields, and governing rule version can be fixed in advance and enforced mechanically" (data) | Narrowed V-15/V-04 restatement; never a reporting adapter, compliance implementation, or accepted schema |
+| N-5 | "A small deterministic laboratory that replays four synthetic trading traces against three transcript designs and records which fields each design mechanically reveals and which deductions those fields enable" (data) | Compressed V-25/V-11; the hedge set ("measures no anonymity, cryptographic leakage, timing behavior, or real market") must travel with any use |
+
+## Draft 6 artifacts (built 2026-08-18; Typst embeds a creation timestamp, so a rebuild changes the hash --- these identify the artifacts currently in `output/pdf/`)
+
+- `joint-definitions-comment-draft-6.pdf` --- 6 pages, SHA-256
+  `dfdd8784db2559008586ceb85ddbbde926ad8633387d9e9a9245617b85dc0f00`
+- `joint-data-reporting-comment-draft-6.pdf` --- 7 pages, SHA-256
+  `c2a646c40cbcba0d97ca7f11a786caec4139128c3f6198ae00008b874103b78d`
+- `cftc-iac-written-statement-draft-6.pdf` --- 6 pages, SHA-256
+  `c6918fa545066d5c0aabe7c1ccc097a9491465f3d57a1d938b6ada9b9bc8edb0`
+- `cftc-iac-cover-statement-draft-6.pdf` --- 1 page, SHA-256
+  `63315caa69a6910af8abf081c2766d448b6ec04e8ee6cdfbbaa1043c66c7069f`
+
+Body word counts (Typst source, `wc -w`), Draft 5 to Draft 6: definitions
+3753 to 2695; data-reporting 4377 to 2968; IAC 4251 to 2708; cover 386 to
+462 (positions carry more content than questions at the same length class).
+Earlier draft PDFs are untouched. `scripts/build-regulatory-pdfs.sh` now
+builds the draft-6 filenames; `scripts/check.sh` passes.

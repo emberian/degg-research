@@ -233,8 +233,8 @@
   set text(font: body_font, size: 9.9pt, fill: ink, lang: "en", region: "US")
 
   show: house_rules
-  set par(leading: 0.64em, spacing: 1.06em)
-  set enum(indent: 2pt, body-indent: 0.6em, spacing: 0.6em)
+  set par(leading: 0.62em, spacing: 0.92em)
+  set enum(indent: 2pt, body-indent: 0.6em, spacing: 0.48em)
   show heading.where(level: 1): it => block(above: 11pt, below: 4pt, sticky: true)[
     #sc_label(it.body, size: 10pt, fill: accent, weight: "bold", tracking: 0.06em)
   ]

@@ -30,7 +30,7 @@
   4,
   "Exchange Act definition of security-based swap",
   "https://uscode.house.gov/view.xhtml?req=granuleid:USC-prelim-title15-section78c&num=0&edition=prelim",
-  [15 U.S.C. section 78c(a)(68). Current preliminary edition retrieved August 17, 2026; recheck before filing.],
+  [15 U.S.C. section 78c(a)(68), including its security-, security-index-, loan-, and issuer-event reference prongs. Current preliminary edition retrieved August 17, 2026; recheck before filing. This source establishes the definition, not the legal status of any actual digital asset.],
 )
 
 #source_entry(
@@ -51,10 +51,10 @@
   7,
   "Comment of FalconX Bravo, Inc. on the joint definitions request",
   "https://www.regulations.gov/comment/CFTC-2026-1355-0006",
-  [Comment CFTC-2026-1355-0006, Docket CFTC-2026-1355 (posted August 17, 2026). The listing-status proposal answered in position 7 is characterized from this filed comment. Retrieved August 18, 2026.],
+  [Comment CFTC-2026-1355-0006, Docket CFTC-2026-1355 (posted August 17, 2026). Primary source only for FalconX Bravo, Inc.'s own listing-status proposal described in position 7; not cited as legal authority. Retrieved August 18, 2026.],
 )
 
-== Local technical materials inspected
+== Local technical materials inspected August 18, 2026
 
 The technical descriptions were prepared from research artifacts reviewed by
 the submitter: the Dregg and Minidregg guarded-commitment research, the

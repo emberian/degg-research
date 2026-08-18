@@ -105,24 +105,33 @@ must be freshly specified with attribution.
   No IR compiler, Shielded backend, Dark backend, vFHE system, settlement
   adapter, or permissionless venue exists here.
 
-### 3.2 Regulatory Draft 3 packet
+### 3.2 Regulatory Draft 8 packet
 
-- **VERIFIED local artifact:** four Typst Draft 3 source trees and PDFs exist:
-  a one-page IAC cover, the full IAC statement, the joint definitions comment,
-  and the joint data-reporting comment. They are conspicuously marked
-  `DRAFT 3 FOR REVIEW - NOT FILED`.
-- Draft 3 adds the early-exit/compression/unwind lifecycle milestone, current
-  Regulation 40.11 versus proposed-rule distinction, DCM/SEF/ECP boundary,
-  crypto-native scope limitation, exact filing instructions, and a narrower
-  framing of Dark as a research boundary. Regulator-observable Shielded is the
-  practical pilot baseline; Dark is not presented as a compliance conclusion.
-- **VERIFIED local control:**
+- **VERIFIED local artifact:** four Typst Draft 8 filing-packet source trees and
+  PDFs exist: a one-page IAC cover, an eight-page IAC statement, a nine-page
+  joint data-reporting comment, and an eight-page joint-definitions comment.
+  They are conspicuously marked `DRAFT 8 FOR REVIEW - NOT FILED`.
+- Draft 8 preserves the early-exit/compression/unwind lifecycle milestone,
+  current Regulation 40.11 versus proposed-rule distinction, DCM/SEF/ECP
+  boundary, crypto-native scope limitation, exact filing instructions, and a
+  narrow framing of Dark as a research boundary. It now also distinguishes
+  gross claim issuance from net contingent exposure; narrows no-leverage,
+  no-adjudicator, manipulation-cost, and formal-verification claims; and treats
+  finite graded/range payouts as a representation result rather than a verified
+  pricing engine. Regulator-observable Shielded is the practical pilot baseline;
+  Dark is not presented as a compliance conclusion.
+- **VERIFIED local artifact, not filing-ready:** a separate six-page Draft 2
+  perpetuals research comment exists. It expressly disclaims energy expertise
+  and real-venue validation and remains outside the filing-ready packet.
+- **VERIFIED local control, earlier baseline:**
   [`docs/regulatory/DRAFT3_CLAIM_AUDIT.md`](docs/regulatory/DRAFT3_CLAIM_AUDIT.md)
-  maps 16 material claim families to exact local artifacts and separates
+  maps 16 Draft 3 claim families to exact local artifacts and separates
   semantic/formal, admission/control, proof/security, deployment, benchmark, and
   repository-inspection ceilings. Its strongest honest disposition is
   source-grounded formal models plus deterministic offline experiments, with no
-  demonstrated end-to-end Dark venue or production reporting system.
+  demonstrated end-to-end Dark venue or production reporting system. It is a
+  useful traceability baseline, not a completed Draft 8 claim audit; changed
+  Draft 8 claims require a fresh line-level pass before filing.
 - The Markdown drafts remain Draft 1 research memoranda and Draft 2 PDFs remain
   archived. The current source layout and build command are documented in
   [`docs/regulatory/typst/README.md`](docs/regulatory/typst/README.md).
@@ -227,17 +236,19 @@ Current stable experiment identity:
 - `experiments/dark-fba/vectors/v1.txt` SHA-256:
   `9a00d7393d00b5cca1e1b980a468a48cb7c21053fac8ae9e15abe2ba7fc9a767`.
 
-Latest observed Draft 3 review-byte identities under Typst 0.15.0 after the
+Latest observed Draft 8 review-byte identities under Typst 0.15.0 after the
 visual-QA build are:
 
 - IAC cover, 1 page:
-  `937cc67643a641ef6c7f563fea1e7fa065cdb7b2f069674fa61e1726955d437a`;
-- IAC full statement, 7 pages:
-  `ca43de19c5743c8fff27dfa78fca44fba114c99a472831e2edc8f1285d1e2177`;
-- joint data-reporting comment, 7 pages:
-  `e41a4295b8d9e3b0250f6b4910e20799ef78cbb361761605aa895ab959d0e737`;
-- joint definitions comment, 6 pages:
-  `4c3a65e23c33a9d160b6b4397fc61d9d9ce3b9f35cefb324d7d88e920c2d17a9`.
+  `f42d43234718e6cd3e1664fd776b2bc10c426fb6582ed7587085faa578d3b6ce`;
+- IAC full statement, 8 pages:
+  `024f050c16cfad0249951693560122ff572c75a06c8c7adbaccc08330367a621`;
+- joint data-reporting comment, 9 pages:
+  `c925c401ae9785ebf1ed364384fe5bb507b830c7786181a44e700e129a9d1a1e`;
+- joint definitions comment, 8 pages:
+  `4d0f7e1baa393b309390bedacad40084ae54a3364499217f27b694c742892933`;
+- separate perpetuals Draft 2 research comment, 6 pages:
+  `378b1a3db4f9b8178d0a7e29766707997de0547271ddec10e43a5cf1aa1fa194`.
 
 These hashes identify unfiled review bytes only. The source now has a local Git
 baseline, but Typst reports an unknown tool commit and rendered PDFs embed build
@@ -250,7 +261,7 @@ identity are frozen. Do not treat the local baseline alone as that manifest.
 
 ## 5. Regulatory calendar and human-only gates
 
-Primary-source research retrieved 2026-08-17 records:
+Primary-source research retrieved through 2026-08-18 records:
 
 - **2026-08-20, 1:00 p.m. ET:** public CFTC Innovation Advisory Committee
   meeting. Attendance/monitoring is a human decision; panel remarks are not a
@@ -274,7 +285,7 @@ be posted without removal of personal or confidential information.
 ### P0: transition and filing integrity
 
 1. **Regulatory traceability owner - `docs/regulatory/typst/**`:** map every
-   material factual/legal/formal claim in Draft 3 to a primary source or exact
+   material factual/legal/formal claim in Draft 8 to a primary source or exact
    local source path and commit. Mark unresolved claims; do not silently rewrite
    them as fact.
 2. **Filing-release owner - `docs/regulatory/**`, `output/pdf/**`:** after human
@@ -325,7 +336,7 @@ Start with a truth-and-release rehearsal, not a new cryptographic backend:
    `docs/research/DARK_RELATION_THREAT_MODEL.md`, and
    `docs/regulatory/SUBMISSION_WEEK_PLAN.md`;
 2. run the offline checks and confirm the Dark target still refuses;
-3. review the latest Draft 3 traceability findings and every human-only filing
+3. review the latest Draft 8 traceability findings and every human-only filing
    gate; do not contact, file, or publish;
 4. reconcile any late agent outputs into `docs/VERDICTS.md` only at their honest
    evidence level;

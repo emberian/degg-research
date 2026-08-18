@@ -15,14 +15,14 @@ worked example.
 2. Publication of market software, without more, should not itself be a
    regulated activity --- it creates no contract, transaction, or exposure;
    operator analysis begins at funding and interaction, not authorship.
-3. Economic exposure arises at funding, when collateral locks against a
-   contingency, and a fully prefunded design fixes that ceiling in the same
-   act --- where instrument analysis engages.
-4. A fully prefunded, fully collateralized claim set settled atomically ---
-   no novation, credit extension, or loss mutualization --- presents none
-   of the credit-intermediation facts behind DCO-style regulation; clearing
-   analysis should weigh custody, settlement control, and default
-   handling.
+3. Instrument creation, collateral lock, gross claim issuance, and net
+   contingent exposure are distinct milestones. In the worked example,
+   funding issues gross claims and fixes maximum payout liability, while a
+   complete set remains net-flat until an unbalancing transfer.
+4. Prefunding can remove novation, credit extension, and loss mutualization,
+   but does not itself decide DCO status: analysis should identify any
+   multilateral settlement or netting function, custody, settlement control,
+   and failure handling.
 5. The fields a DCM must read in real time are those its surveillance and
    reconstruction obligations consume; others may remain encrypted where
    exact linked records stay timely recoverable by the regulated function
@@ -37,8 +37,9 @@ worked example.
    this settles the evidentiary role of proofs.
 8. Removing settlement discretion relocates manipulation risk to the
    reference market rather than removing it; terms should state the full
-   reference specification so surveillance knows what to watch and when ---
-   settling what a frozen rule does not remove.
+   reference specification so surveillance can evaluate an
+   assumption-indexed manipulation-cost envelope and know what to watch and
+   when.
 
 *Scope.* Current Regulation 40.11 and a pending June 2026 proposal address event
 contracts involving enumerated activities and public-interest

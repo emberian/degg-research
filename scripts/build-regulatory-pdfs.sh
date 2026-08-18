@@ -7,15 +7,15 @@ mkdir -p "$output_dir"
 
 typst compile --root "$repo_root" \
   "$repo_root/docs/regulatory/typst/definitions/main.typ" \
-  "$output_dir/joint-definitions-comment-draft-7.pdf"
+  "$output_dir/joint-definitions-comment-draft-8.pdf"
 
 typst compile --root "$repo_root" \
   "$repo_root/docs/regulatory/typst/data-reporting/main.typ" \
-  "$output_dir/joint-data-reporting-comment-draft-7.pdf"
+  "$output_dir/joint-data-reporting-comment-draft-8.pdf"
 
 typst compile --root "$repo_root" \
   "$repo_root/docs/regulatory/typst/perpetuals/main.typ" \
-  "$output_dir/cftc-perpetuals-comment-draft-1.pdf"
+  "$output_dir/cftc-perpetuals-comment-draft-2.pdf"
 
 typst compile --root "$repo_root" \
   "$repo_root/docs/regulatory/typst/iac/main.typ" \
@@ -25,9 +25,9 @@ typst compile --root "$repo_root" \
   "$repo_root/docs/regulatory/typst/iac-cover/main.typ" \
   "$output_dir/cftc-iac-cover-statement-draft-8.pdf"
 
-pdfinfo "$output_dir/joint-definitions-comment-draft-7.pdf" >/dev/null
-pdfinfo "$output_dir/joint-data-reporting-comment-draft-7.pdf" >/dev/null
-pdfinfo "$output_dir/cftc-perpetuals-comment-draft-1.pdf" >/dev/null
+pdfinfo "$output_dir/joint-definitions-comment-draft-8.pdf" >/dev/null
+pdfinfo "$output_dir/joint-data-reporting-comment-draft-8.pdf" >/dev/null
+pdfinfo "$output_dir/cftc-perpetuals-comment-draft-2.pdf" >/dev/null
 pdfinfo "$output_dir/cftc-iac-written-statement-draft-8.pdf" >/dev/null
 pdfinfo "$output_dir/cftc-iac-cover-statement-draft-8.pdf" >/dev/null
 

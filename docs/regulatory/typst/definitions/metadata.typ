@@ -1,8 +1,8 @@
 #let meta = (
-  document_kind: "JOINT PUBLIC COMMENT - DRAFT 7",
-  review_label: "DRAFT 7 FOR REVIEW - NOT FILED",
+  document_kind: "JOINT PUBLIC COMMENT - DRAFT 8",
+  review_label: "DRAFT 8 FOR REVIEW - NOT FILED",
   short_title: "Definitions RFC",
-  title: "Objective Criteria for Staged and Automated Contingent Products",
+  title: "Lifecycle Criteria and Complete-Set Diagnostics for Staged Contingent Products",
   subtitle: "Comment on the further definition of swap and security-based swap",
   proceeding: "Joint Request for Comment on Further Definition of \"Swap\" and \"Security-Based Swap\" and on Alternative Compliance",
   identifiers: "CFTC RIN 3038-AF71 | SEC File S7-2026-21 | SEC RIN 3235-AN79",

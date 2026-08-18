@@ -19,53 +19,56 @@ and stays within what those artifacts support.
    milestone, from the economic facts in force at the milestone being
    classified, through interpretive guidance within the framework of the
    2012 Product Definitions Adopting Release.#note_ref(3)
-2. Publication of market software, without more, should not itself be a
-   regulated activity, because it creates no agreement, contract, or
-   transaction; the operative events are funding and interaction.
-3. An instrument is formed where binding effect and consideration coincide
-   --- in the worked example below, at funding, when collateral locks against
-   the market's frozen terms --- not at publication, and not at a revocable
-   signed instruction.
-4. Instrument formation and a participant's contingent exposure are separate
-   findings: the worked example's claims exist from funding, but a complete
-   claim set held with an unconditional right to exchange it for its
-   collateral is fully hedged, and the holder's contingent exposure arises
-   at the first transaction that unbalances the set.
-5. In answer to Question 8: classification should be invariant under
-   bundling and unbundling. A complete set of cash-or-nothing claims over
-   an exhaustive partition of one variable is a portfolio of such claims on
-   that variable, economically identical to its collateral, and the worked
-   example's terms convert bundle and parts into each other at no cost ---
-   so a criterion that classifies them differently contains a
-   classification arbitrage exercisable for free. Invariance is a test
-   proposed criteria must survive, not only a position.
-6. Full prefunding, fixed maximum loss, and deterministic fail-closed
-   settlement terms are risk facts --- material to credit and
-   customer-protection analysis --- not classification exclusions, and the
-   Commissions should say so expressly.
+2. On the worked example's stipulated facts, publication alone issues no
+   claim and locks no collateral. Deposit is its first instrument-bearing
+   milestone, and later order interaction presents distinct venue and conduct
+   facts; other terms may produce other milestones.
+3. Formation should be analyzed from the rights and obligations created at
+   each milestone, not from a universal proxy such as publication, signature,
+   or funding. On the worked example's stipulated terms, deposit is the first
+   event that locks collateral and issues claims; publication and a revocable,
+   unfilled instruction do neither. Other terms may produce a different
+   answer.
+4. Guidance should distinguish three questions that this architecture makes
+   easy to conflate: the gross classification of each issued claim; the
+   holder's net economic exposure across claims; and the effect of a
+   reversible complete-set operation. In the worked example each band claim
+   has a contingent payoff, while one of every band has a constant aggregate
+   payout and may be recombined for collateral before resolution.
+5. In answer to Question 8, the Commissions should use complete-set
+   decomposition as a diagnostic, not assume that economic equivalence is a
+   legal axiom. For any proposed criterion, guidance should identify the unit
+   classified, state whether gross rights or net exposure controls, and
+   explain any change in result when the holder uses an economically
+   reversible deposit or recombination operation.
+6. In the worked example, full prefunding, bounded loss under fully paid
+   terms, and deterministic fail-closed settlement are risk facts --- material
+   where credit or customer-protection rules make them relevant --- not
+   classification exclusions or proof that economic leverage is absent.
 7. The instrument, the venue, the intermediary, and clearing and settlement
    are separate findings that arise at different milestones and can attach
    to different persons; "the software" is not a unit of classification.
 
-Which reference objects place a contract in which Commission's category is
-well covered by other commenters on this docket; I add no competing
-framework, noting only that the worked example, paying on an onchain
-digital-asset price, implicates none of the security-based swap
-definition's prongs on its face,#note_ref(4) that the identical program
-pointed at a single issuer's security would, and that the invariance test
-of position 5 applies to every criterion proposed there. One
-matter I leave as a question, because it turns on policy choice rather than
-analysis: how much weight transferability should carry where the statute
-does not make it an element.
+For the worked example only, I assume the referenced digital asset is a
+non-security commodity and the settlement amount depends only on that
+commodity's pool price. On those assumed facts, the example is not offered
+as a security-based-swap case. Whether any actual digital asset is a security
+or commodity is outside this comment. Substituting a single security, a
+narrow-based security index, or an issuer-related event would require the
+separate analysis specified in the security-based-swap definition and in
+Question 8;#note_ref("1, 4") this comment leaves that classification
+open. One further matter I leave open is how much weight transferability
+should carry under a particular statutory prong.
 
 = The worked example
 
 A market asks one question: on a stated future date, in which of five stated
-price bands will the time-weighted price of a specific digital asset in a
-specific onchain liquidity pool fall? The bands cover every possible price
-and do not overlap --- exactly one must realize --- and the market's terms
-include a deterministic rule for every edge case: a missing observation, a
-malformed data page, a price exactly on a boundary.
+price bands will the time-weighted price of a stipulated non-security digital
+commodity in a specific onchain liquidity pool fall? The legal status of any
+actual asset is not assumed. The bands cover every possible price and do not
+overlap --- exactly one must realize --- and the market's terms include a
+deterministic rule for every edge case: a missing observation, a malformed
+data page, a price exactly on a boundary.
 
 The market's terms are frozen when it is created:
 
@@ -75,7 +78,7 @@ The market's terms are frozen when it is created:
 - *Recombination.* Anyone holding a complete set may return it at any time
   before resolution and withdraw the unit of collateral. A complete set and
   its collateral are interchangeable throughout the market's life.
-- *Trading.* Individual claims are ordinary transferable assets. Orders
+- *Trading.* Individual claims are separately transferable. Orders
   submitted to the market's batch venue accumulate until a stated close; at
   close the book freezes and a deterministic rule clears it at one
   consistent set of prices. An order fixes who is acting, which balances may
@@ -94,8 +97,14 @@ The market's terms are frozen when it is created:
   a full deposit, the pool covers the maximum payout the terms allow, by
   construction of the terms.
 
-The design creates no debt, margin, leverage, or liquidation. Maximum loss
-for every participant is fixed when their collateral or premium is paid.
+The worked example permits no borrowing and no undercollateralized issuance:
+complete sets are issued only against the full stated payout. It has no
+margin-call or liquidation mechanism. Those facts do not imply an absence of
+economic leverage; a claim bought for a limited price may have a larger
+state-contingent payout. Under the example's fully paid, long-only terms, a
+participant's maximum contractual payoff loss is the collateral deposited or
+purchase price paid, apart from fees. That statement does not address custody,
+implementation, collateral-value, or other operational loss.
 
 I have implemented the core of this design as an offline research prototype:
 a pure-Rust transition kernel with integer-exact arithmetic covering the
@@ -113,7 +122,7 @@ crypto-native facts: ledger states, program events, prices, ranges, and path
 statistics. None references politics, sports, gaming, or subjective social
 events. Regulation 40.11 and a pending June 2026 proposal address event
 contracts involving enumerated activities and public-interest
-review;#note_ref(5)#note_ref(6) the examples here are chosen to stay away
+review;#note_ref("5, 6") the examples here are chosen to stay away
 from that boundary. This scope choice is not a claim that any example falls
 outside the CEA or any other law.
 
@@ -123,15 +132,15 @@ the answer the positions give at each one.
 #table(
   columns: (1.15in, 1.55in, 1fr),
   table.header([*Stage*], [*Economic fact*], [*The position's answer*]),
-  [Authored policy], [Reusable software text; no parties], [Nothing exists to classify; regulation should not attach here.],
-  [Signed instruction], [Authenticated, possibly revocable direction], [Formation begins only with binding effect; a revocable instruction binds nobody.],
-  [Funded commitment], [Consideration passes; collateral locks], [The instrument is formed; a fully hedged whole carries no net exposure.],
+  [Authored policy], [Reusable software text; no parties], [On the stipulated facts, no claim, collateral lock, or transaction yet; surrounding conduct remains a separate inquiry.],
+  [Signed instruction], [Authenticated, revocable, and unfilled direction], [In this example it issues no claim and locks no collateral; different legal or technical terms may differ.],
+  [Funded commitment], [Collateral locks; the complete set issues], [The example's first instrument-bearing milestone: five gross claims, with constant aggregate exposure while held as a complete set.],
   [Early exit, compression, or unwind], [A right is canceled, netted, transferred, or closed before maturity], [Termination of the existing instrument, unless the terms deliver a new right or reintroduce discretion --- read the terms for exactly that.],
   [Admitted evidence], [The frozen rule accepts qualifying evidence], [Evidence of a fixed fact where the rule leaves no choice among economic outcomes; otherwise a discretion fact, analyzed as such.],
-  [Interaction or match], [Binding interests meet; prices exist], [Venue and intermediary functions are performed here; a separate finding.],
+  [Interaction or match], [Orders interact; a transfer may execute], [Venue or intermediary functions may arise here; make that finding separately from product classification.],
   [Resolution], [One outcome becomes authorized], [The named evidence rule, dispute procedure, and source-failure behavior carry the outcome's authority.],
   [Settlement or issuance], [Balances move or claims are delivered], [Performance of the earlier instrument; a delivered continuing claim restarts analysis.],
-  [Secondary transfer], [A resulting claim continues to trade], [Same instrument; new venue facts, found separately.],
+  [Secondary transfer], [A resulting claim continues to trade], [A continuing claim if its terms are unchanged; new venue and participant-conduct facts, found separately.],
 )
 
 The core distinction the table applies: technical incompleteness is not
@@ -158,104 +167,128 @@ be applied inconsistently. Question 1 asks whether new interpretations
 are warranted "[t]aking into account" the 2012 release;#note_ref(3) a
 milestone matrix is an answer in exactly that form. The strongest
 counterargument is gamesmanship --- designers relabeling stages to defer the
-regulated moment. But the matrix reads binding effect, consideration, and
-exposure, which are facts; renaming a stage changes nothing unless the facts
-change, and where they genuinely change, different treatment is accuracy,
-not evasion.
+regulated moment. But the matrix reads rights, obligations, collateral lock,
+issuance, transfer, and exposure, which are facts; renaming a stage changes
+nothing unless the facts change, and where they genuinely change, different
+treatment is accuracy, not evasion.
 
-== Position 2: publication is not the operative event
+== Position 2: publication alone is not the worked example's operative event
 
-At publication there are no parties, no consideration, and no binding
-effect; nothing satisfying the statutory predicate exists, and analysis that
-attaches to publication is classifying a text. The counterargument is that
-publication can be one step in a larger course of conduct --- solicitation,
-interface operation, transaction-linked compensation. True, and that is why
-the position says "without more": those are facts about a person's conduct,
-analyzed under Position 7, and publication is no safe harbor for what
-surrounds it. A template that deploys itself with the author's
-pre-authorized funding is not publication without more --- it is funding.
+At publication in the worked example there are no transaction parties, no
+issued claims, and no collateral lock. On those facts, treating publication
+as the product-formation event would classify reusable text rather than an
+agreement, contract, or transaction. Publication can still be part of a
+larger course of conduct --- solicitation, interface operation,
+transaction-linked compensation, or pre-authorized funding. Those surrounding
+facts require their own analysis under Position 7; publication supplies no
+safe harbor for them.
 
-== Position 3: formation at binding effect plus consideration
+== Position 3: identify the first instrument-bearing milestone from the terms
 
-The swap definition's option prong reaches "a put, call, cap, floor,
-collar, or similar option of any kind";#note_ref(1) an option exists when
-the premium passes and the writer is bound, not when the option form is
-drafted. So here: at funding, consideration passes and the depositor
-acquires rights only the market's frozen terms can defeat. Where a design
-instead makes signed instructions irrevocable and enforceable before value
-moves, binding effect arrives earlier, and formation with it. The general
-rule is the coincidence of binding effect and consideration; in fully
-prefunded onchain designs the two coincide at funding.
+The swap definition reaches an "agreement, contract, or transaction" within
+its enumerated prongs.#note_ref(1) The worked example therefore asks at each
+milestone what rights and obligations the stipulated terms have actually
+created. Authorship creates reusable text. The assumed revocable, unfilled
+instruction creates no claim and locks no collateral. Deposit, by contrast,
+atomically locks one collateral unit and issues five claims governed by the
+frozen terms. For this example, deposit is therefore the first
+instrument-bearing milestone.
 
-== Position 4: hedged wholes and unbalanced positions
+That conclusion is deliberately example-specific. This comment does not
+propose that consideration and binding effect must always coincide, or that
+funding is either necessary or sufficient in every architecture. Mutual
+promises may bind before funding; an executable order may create different
+rights; a purported deposit may fail to bind anyone. The requested guidance
+should require a terms-and-facts analysis and name the operative milestone,
+not replace that analysis with a universal software event.
 
-The event prong turns on a payment "dependent on the occurrence,
-nonoccurrence, or the extent of the occurrence of an event or
-contingency."#note_ref(1) A complete set plus the unconditional
-recombination right returns the deposit in every state of the world, by the
-terms themselves: the whole is not dependent on the contingency. The claims
-are instruments from funding --- transferable and priced --- but the holder
-of the balanced whole has no contingent exposure until a transaction
-unbalances it. Both findings are needed because they serve different rules:
-the instrument finding governs product treatment; the exposure finding
-governs when a participant's position becomes operative. The
-administrability objection --- use funding for everything --- collapses the
-two and misstates the economics of every depositor who never sells.
+== Position 4: separate gross instruments, net exposure, and operations
 
-== Position 5: classification invariant under bundling and unbundling
+Each band claim in the worked example pays only if its band realizes, so its
+gross payoff is contingent. But the aggregate payoff of one claim from every
+band is one unit of the same collateral in every permitted resolution state:
+exactly one claim pays one and the other four pay zero. This is a constant
+nominal payoff in collateral units, not a claim that the collateral's external
+value is stable. Before resolution, the holder may also recombine that set
+for the collateral unit. Thus the terms support three different descriptions
+at once:
+
+- *Gross instrument classification:* five separately issued and transferable
+  rights, each read from its own terms and the governing statutory criterion.
+- *Net economic exposure:* a holder of one complete set has a constant
+  aggregate payout under the stipulated resolution rule; selling or buying a
+  component can introduce contingent net exposure.
+- *Complete-set operation:* deposit and recombination transform collateral
+  and the five-claim set at the stated one-for-one rate before resolution.
+
+"Economically reversible" here describes only those stipulated protocol
+terms and payoff arithmetic. It does not assume away transaction fees,
+latency, implementation failure, insolvency, legal restrictions, or other
+deployment frictions.
+
+The second and third facts do not erase the first. Conversely, classifying
+each claim does not establish that a balanced holder has directional or
+contingent net risk. Guidance should say which layer matters to the rule being
+applied, including whether that rule permits or requires portfolio netting.
+
+== Position 5: use reversible complete sets as a diagnostic
 
 Question 8 asks when an event contract referencing securities is a "put,
 call, straddle, option, or privilege on" a security for purposes of the
 statutory exclusion from both swap definitions, and what distinguishes such
-contracts from options.#note_ref(1) Whatever the criteria, they should
-survive an operation these designs perform routinely. A contract paying a
-fixed amount on a stated outcome is a cash-or-nothing claim; a set of such
-claims covering every outcome of one reference variable, without overlap,
-is a portfolio of such claims on that variable; and the complete set, held
-together, is economically identical to the collateral it was issued
-against. In the worked example the conversion runs in both
-directions as ordinary operation --- deposit issues the set against
-collateral, recombination exchanges it back --- so a criterion that
-classifies the bundle and its parts differently contains a classification
-arbitrage exercisable at zero cost. The administrability objection --- a
-venue could list an exhaustive set to convert options into event contracts,
-or one claim to convert an event contract into an option --- is the
-argument for invariance, not against it: under an invariant criterion
-neither relabeling changes the answer, so neither is worth doing.
+contracts from options.#note_ref(1) A complete-set architecture supplies a
+useful diagnostic for any proposed answer. In a security-reference
+hypothetical corresponding to the commodity example, deposit would create
+several separately transferable, cash-or-nothing claims on disjoint price
+bands. Holding one of every band would produce a constant aggregate payout,
+and recombination would return the collateral before resolution.
 
-The statutory text supports invariance. The exclusion's operative words are
-broad --- "any put, call, straddle, option, or privilege" on a security or
-group or index of securities, "including any interest therein or based on
-the value thereof" --- and the swap definition's option prong is drawn just
-as broadly;#note_ref(1) neither turns on payoff shape, and a binary option
-and a categorical claim on the same security's price at the same time pay
-the same amounts in the same states of the world. The
-apparent overlap with the event prongs arises because a price band is
-simultaneously a contingency and a function of value --- a collision the
-CEA already resolves in favor of the price reading, carving "a change in
-the price, rate, value, or level of a commodity" out of the
-excluded-commodity definition's occurrence-and-contingency
-category.#note_ref(2) The security-based swap event prong then does its
-work where settlement turns on a fact about an issuer rather than on a
-price or value,#note_ref(4) and the exclusion should not be read to swallow
-it. The resulting test reads three facts off a contract's frozen terms: the
-reference variable; whether the settlement amount is a function of the
-price or value of a security or index; and whether the outcome set is
-exhaustive and non-overlapping --- with the third fact never changing the
-answer the first two give.
+Economic reversibility does not itself compel one legal classification for
+the collateral, the complete portfolio, and every component. Statutory text
+may classify a gross right by its own reference and payoff; another rule may
+measure a person's net position; legal form, transferability, issuance, or a
+specific status predicate may matter. The diagnostic instead requires the
+decisionmaker to expose those choices. For each proposed Question 8
+criterion, the Commissions should state:
+
+1. whether the classified unit is an individual claim, a documented
+   complete-set arrangement, or a participant's net position;
+2. whether the result turns on gross contingent rights or net economic
+   exposure;
+3. whether deposit, separation, transfer of one component, or recombination
+   changes the result, and why; and
+4. which statutory words justify any different treatment of economically
+   reversible states.
+
+This test does not presume that packaging is irrelevant. It identifies when
+packaging is doing legal work and asks the Commissions to say whether that is
+because the underlying instrument changed, because a portfolio-risk rule
+allows netting, or because a separate status or conduct rule applies. That
+explanation is especially important here because the options exclusion uses
+the broad terms "put, call, straddle, option, or privilege" on a security or
+security index, including an interest based on its value, while the
+security-based-swap definition separately identifies security and
+issuer-related references.#note_ref("1, 4") This comment asks the
+Commissions to resolve that statutory boundary; it does not supply a legal
+identity axiom in its place.
 
 == Position 6: risk facts, not classification exclusions
 
 Nothing in section 1a(47) excludes an instrument for being prefunded,
 collateralized, or deterministic; the statutory exclusions are instrument
-types, not risk controls.#note_ref(1) Silence here breeds two symmetric
-errors. Industry will argue that full prefunding takes a product out of the
-definitions; it does not --- it changes the credit risk, not the category.
-Regulators may discount real controls as window dressing; that is also
-wrong --- where a loss ceiling is encoded in the terms, correctly
-implemented, and bound to settlement, credit and customer-protection
-analysis should credit it. An express statement that these are risk facts
-with risk-analysis weight, and nothing more, forecloses both errors.
+types, not risk controls.#note_ref(1) Full prefunding may reduce counterparty
+credit exposure and, under the worked example's terms, prevents issuance
+above the pool's stated payout capacity. It does not decide product category,
+and it does not establish an absence of economic leverage. Likewise,
+deterministic or fail-closed settlement terms describe how a system handles
+specified inputs and failures; they do not establish oracle integrity,
+operational availability, or legal compliance.
+
+Formal verification, where it exists, is evidence only for the named property,
+model, assumptions, and implementation correspondence. The prototype
+described here is not formally verified. Guidance should credit demonstrated
+risk controls when a credit, custody, or customer-protection rule makes them
+relevant, without converting those controls into classification exclusions.
 
 == Position 7: separate findings for separate functions
 
@@ -274,23 +307,22 @@ interface, holding custody, and receiving transaction-linked compensation
 are different facts, and treating them all as "code" is too coarse in both
 directions.
 
-A recent comment on this docket proposes the opposite rule for one product
-class, and deserves a direct answer. FalconX Bravo, Inc. would classify a
+A recent comment on this docket illustrates the need to identify the role of
+status predicates. FalconX Bravo, Inc. would classify a
 cash-settled perpetual contract on a single security or narrow-based
 security index by whether it is listed under the security-futures
 framework: listed, a security futures product; offered bilaterally, over
 the counter, on a non-U.S. venue, or through a decentralized finance
-protocol, a security-based swap.#note_ref(7) The rule's appeal is real ---
-listing status is objective and easy to verify --- but it makes the venue
-finding dispositive of the instrument finding, and the same instrument
-offered two ways is the same instrument: a category that flips with the
-venue is defeasible by re-venuing the offer, the defect the invariance
-test of position 5 screens for. The objectivity sought is available one layer down, in the
-instrument's own terms --- reference, payout, contingency --- which do not
-move when the offer does. The venue fact remains real and separately
-findable; this position asks only that it be found as a venue fact, and
-this comment does not ask this proceeding to decide any facility's
-registration status.
+protocol, a security-based swap.#note_ref(7) That proposal makes listing
+status part of the category test, not merely evidence about where trading
+occurs. This comment does not resolve whether the governing security-futures
+provisions require that result. It asks the Commissions to state expressly
+when listing or venue status is a constituent statutory product fact and when
+it is a separate conduct or facility fact. Reference, payout, contingency,
+listing, and venue can all be objective facts; the guidance should identify
+which legal element each one satisfies instead of allowing one label to
+silently substitute for another. Nothing here asks the proceeding to decide
+any facility's registration status.
 
 = Specific requests
 
@@ -298,23 +330,27 @@ registration status.
    funding, interaction, match, resolution, settlement, issuance, secondary
    transfer --- as interpretive guidance within the 2012 framework, stating
    which economic facts control at each stage. (Position 1.)
-2. State that publication of market software, without more, creates no
-   agreement, contract, or transaction; that formation occurs where binding
-   effect and consideration coincide; and that a participant's contingent
-   exposure is found separately, distinguishing a fully hedged holding from
-   an unbalanced one. (Positions 2 through 4.)
-3. In answering Question 8, adopt classification criteria that are
-   invariant under bundling and unbundling, and test any proposed criterion
-   against the complete-set operation before adopting it. (Position 5.)
-4. State expressly that full prefunding, fixed maximum loss, fail-closed
-   settlement terms, and formal verification are risk facts relevant where
-   risk is the operative question, not classification exclusions.
+2. State that, on facts like the worked example's, publication alone issues
+   no claim and locks no collateral; require the operative milestone to be
+   identified from the terms and facts; and report gross instrument
+   classification separately from net exposure and complete-set operations.
+   (Positions 2 through 4.)
+3. In answering Question 8, apply the complete-set diagnostic: identify the
+   classified unit, state whether gross rights or net exposure controls, and
+   explain whether and why deposit, separation, transfer, or recombination
+   changes the result. (Position 5.)
+4. State expressly that full prefunding, bounded participant loss under
+   fully paid terms, fail-closed settlement, and any precisely scoped formal
+   verification are risk evidence where the operative rule makes them
+   relevant, not classification exclusions and not proof that economic
+   leverage is absent.
    (Position 6.)
 5. Use separate instrument, venue, intermediary, and clearing findings;
-   analyze software activity by function performed; state that a venue or
-   listing finding does not decide the instrument finding; and provide a
-   bounded process through which a developer can present a staged design's
-   factual matrix and receive stage-specific guidance before deployment.
+   analyze software activity by function performed; state when a listing or
+   venue status is a constituent product fact and when it is a separate
+   conduct or facility fact; and provide a bounded process through which a
+   developer can present a staged design's factual matrix and receive
+   stage-specific guidance before deployment.
    (Position 7.)
 
 = Limits
@@ -323,9 +359,12 @@ The worked example is a research design, and the artifacts behind it are an
 offline prototype and formal models, not production market infrastructure.
 No artifact described in this comment is deployed, funded, offered, or
 operating, and nothing here requests permission to deploy one. The positions
-are my analysis of how the definitions should treat a class of staged
-structures; none is a claim that any design of mine falls outside either
-Commission's jurisdiction or satisfies any current rule.
+are my analysis of questions raised by one stipulated staged structure; none
+is a legal opinion or a claim that any design of mine falls outside either
+Commission's jurisdiction or satisfies any current rule. The assumed
+non-security-commodity reference is an analytic stipulation, not a conclusion
+about any actual digital asset. The comment does not classify the worked
+example, a security-reference variant, or any third-party product.
 
 #block(breakable: false)[
   #v(18pt, weak: true)
@@ -352,6 +391,7 @@ market infrastructure, and none has been independently audited.
   [The Exchange Act defines security-based swap], [15 U.S.C. section 78c(a)(68); source note 4],
   [Regulation 40.11 and a pending 2026 proposal address event contracts and public-interest review], [Source notes 5 and 6],
   [The description of the FalconX Bravo listing-status proposal], [The filed comment; source note 7],
+  [Under the worked example's stipulated payout table, one claim from every band pays one collateral unit in aggregate in every permitted resolution state], [Direct arithmetic from the five-band terms stated in this comment; an economic observation, not a legal-classification conclusion],
   [An order can fix actor, affected balances, and the exact limits of the permitted fill, with a nonconforming fill failing and changing nothing], [Model theorems in the submitter's guarded-commitment research; not deployed controls],
   [The worked example's core accounting --- deposit, recombination, resolution, redemption, with conservation and pool-coverage checks --- has been implemented offline with passing deterministic tests], [Pure-Rust research prototype reviewed by the submitter; tested, not formally verified; not deployed],
   [No artifact described in this comment is deployed, funded, offered, or operating], [The submitter's repository status records; a statement about the submitter's own artifacts, not about any third party],

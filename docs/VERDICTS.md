@@ -171,14 +171,21 @@ PROPOSED: Prepare a nonduplicative filing set:
 4. A private-meeting request and technical appendix describing exact factual
    matrices for Clear Eggs, Guarded Holes, and Dark Eggs research.
 
-VERIFIED (local repository state): Draft 1 Markdown memoranda, three archived
-Draft 2 review PDFs, and four Draft 3 Typst review editions now exist. Draft 3
-adds a one-page IAC cover, the early-exit lifecycle milestone, Regulation 40.11
-scope, exact deadline instructions, and a narrower Dark research boundary. The
-Typst editions compile to letter-size PDFs and remain conspicuously marked as
-unfiled review drafts. They are not release artifacts: identity placeholders
-remain, the repository has no committed baseline, and no source-build-output
-manifest has been frozen.
+VERIFIED (local repository state): Draft 1 Markdown memoranda and archived
+earlier review PDFs remain available. The current Typst packet consists of a
+one-page Draft 8 IAC cover, an eight-page Draft 8 IAC statement, a nine-page
+Draft 8 joint data-reporting comment, and an eight-page Draft 8 joint-definitions
+comment. Draft 8 distinguishes gross instrument creation from net contingent
+exposure; narrows no-leverage, no-adjudicator, manipulation-cost, and formal-
+verification claims; preserves the early-exit lifecycle milestone and Regulation
+40.11 scope; and states the transparent-prototype versus proposed-Shielded
+boundary. A separate six-page Draft 2 perpetuals research comment is not in the
+filing-ready set because its energy-market and real-venue evidence remains
+insufficient. All five Typst editions compile to tagged, embedded-font,
+letter-size PDFs and remain conspicuously marked as unfiled review drafts. They
+are not submission artifacts: identity placeholders, live-docket revalidation,
+privacy review, legal review, and a frozen source-build-output manifest remain
+open gates.
 
 Nothing has been submitted and no meeting has been requested by this repository.
 

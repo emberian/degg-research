@@ -17,9 +17,12 @@ about my research artifacts stays within what those artifacts support.
    bound to its exact ledger sources, with chain-provenance fields added
    to --- never substituted for --- ordinary economic and counterparty
    fields; a transaction hash is an address of bytes, not a report.
-2. Funding of a fully hedged complete claim set should not be reported as a
-   contingent position; contingent exposure should be reported where it
-   arises, at the first transaction that unbalances the set.
+2. Funding and gross issuance of a fully hedged complete claim set should be
+   reported as lifecycle events, with the claims, collateral, parties, and
+   provenance preserved exactly in the confidential record. A distinct net
+   contingent-exposure field should remain zero while the set and its
+   unconditional recombination right remain together, and should change at
+   the first transaction that unbalances the set.
 3. Corrections must supersede, never overwrite: a reorganization, dispute,
    or repair should link to and preserve the superseded record.
 4. Public dissemination should be adopted as an explicit, versioned,
@@ -80,46 +83,56 @@ transaction: there are no parties, no funding, and no exposure. A reporting
 adapter that mapped this ledger write to "trade" would invent a trade with
 no participants: ledger writes precede reportable events.
 
-*Funding.* A wallet deposits one unit of collateral and receives a complete
-set: one claim per band. The public bytes are precise --- pool address,
-wallet address, amount, time. They are not an identification: nothing on the
-ledger says who controls the wallet. And they are not a contingent position:
-a complete set plus the right to recombine it into its collateral is fully
-hedged, interchangeable with the deposit itself. Exposure arises later, when
-the depositor sells some claims and keeps others --- and that sale may occur
-in a venue whose individual orders never touch this ledger. A hash-to-trade
-mapping records exposure here that does not exist and misses the transaction
-where exposure actually arises. Supervision needs a confidential
-account-to-party linkage, so the deposit, the later orders, and the eventual
-redemption read as one owner's lifecycle.
+*Funding and issuance.* A wallet deposits one unit of collateral and receives
+a complete set: one claim per band. This is a reportable funding and gross
+issuance event, and the exact confidential record should preserve the
+deposit, every claim issued, the parties, amounts, time, and ledger
+provenance. The public bytes are precise --- pool address, wallet address,
+amount, time --- but they do not establish the controller's legal or
+beneficial identity. The separate net contingent-exposure value is
+zero at this milestone: a complete set plus the unconditional right to
+recombine it into its collateral is fully hedged and interchangeable with
+the deposit itself. Net contingent exposure arises later, when the depositor
+sells some claims and keeps others --- and that sale may occur in a venue
+whose individual orders never touch this ledger. A hash-to-trade mapping
+that labels funding itself as net contingent exposure records exposure that
+does not exist, while a mapping that ignores offchain events misses the
+transaction where it actually arises. Supervision needs a confidential
+account-to-party linkage, so gross issuance and funding, the later orders,
+the unbalancing transaction, and eventual redemption read as one owner's
+exact lifecycle.
 
 *Close and match.* Orders accumulate until the stated close; at close the
 book freezes and a deterministic rule clears it at one consistent set of
-prices. The ledger can carry little of this --- perhaps a root committing to
-the accepted orders, the clearing prices, and aggregate fills. The records
-market-conduct examination cares most about --- instructions rejected before
-admission, modifications, cancellations, arrival sequence --- may never
-become ledger bytes at all, because they never changed the ledger's state.
-They are reported from the venue's own records or they are not reported.
-This milestone is also where machine verification is strongest: because the
-clearing rule is deterministic over a frozen book,
-anyone holding the book can recompute the result. In my research prototype,
-I built the batch verifier to accept a submitted clearing only if
+prices. In the current transparent offline prototype, the frozen book is
+available to the verifier and no order concealment is claimed. A proposed
+Shielded form could instead let a named executor or committee see the
+individual orders while the ledger carries only a root committing to the
+accepted set, the clearing prices, and aggregate fills. In either form, the
+records market-conduct examination cares most about --- instructions rejected
+before admission, modifications, cancellations, arrival sequence --- may
+never become ledger bytes at all, because they never changed the ledger's
+state. They are reported from the venue's own records or they are not
+reported. This milestone is also where machine verification is strongest:
+because the clearing rule is deterministic over a frozen book, anyone
+authorized to hold that book can recompute the result. In my research
+prototype, I built the batch verifier to accept a submitted clearing only if
 recomputation from the frozen book reproduces it exactly, never trusting the
 submitter's claimed quantities. A reporting rule with that shape is more
 than a format check: the rule is the check.
 
 *Resolution.* Between the close of trading and resolution, the outcome is
 genuinely undetermined: any band may realize, and each band's claim trades
-at a price. Nothing in the software makes one outcome authoritative before
-the frozen observation program accepts qualifying evidence and the repair
-period lapses --- there is no reporter and no discretion. Reporting
-vocabulary should be able to say this without pretending: pending, disputed,
-unsupported, and expired are distinct states; none is "resolved," and none
-is an error. Even after certification, a ledger reorganization or an
-application-level dispute can supersede what was observed. The record needs
-a correction linkage that preserves the superseded event, not a silent
-overwrite.
+at a price. An actor may submit evidence, but nothing in the software makes
+one outcome authoritative before the frozen observation program admits
+qualifying evidence and the repair period lapses. The narrower claim is that,
+under the frozen rule and its admitted evidence, no discretionary adjudicator
+chooses among outcomes. Reporting vocabulary should be able to say this
+without pretending: pending, disputed, unsupported, and expired are distinct
+states; none is "resolved," and none is an error. Even after certification,
+a ledger reorganization or an application-level dispute can supersede what
+was observed. The record needs a correction linkage that preserves the
+superseded event, not a silent overwrite.
 
 *Settlement.* The realized band's claims redeem from the pool. The public
 bytes show outflows. They do not show which redemption closes which position
@@ -141,9 +154,11 @@ modifications, allocation, and the meaning of a fork or dispute --- and
 where several ledger instructions jointly implement one reportable event, or
 one transaction contains several, the hash-to-event mapping fails in both
 directions. A reporting framework for onchain markets should distinguish, at
-minimum: order creation and authorization; funding or collateral lock;
-receipt, acceptance, rejection, modification, and cancellation; batch close
-and accepted-set inclusion; match, execution, and allocation; pending,
+minimum: order creation and authorization; funding or collateral lock; gross
+claim issuance and recombination; net contingent exposure, including the
+recognized complete-set offset and the event that unbalances it; receipt,
+acceptance, rejection, modification, and cancellation; batch close and
+accepted-set inclusion; match, execution, and allocation; pending,
 disputed, unsupported, or expired resolution; certification; early exit,
 unwind, or replacement; settlement, delivery, maturity, or correction; and
 replacement caused by reorganization or dispute. Each report should bind the
@@ -188,31 +203,42 @@ combination of wallet, timestamp, size, price, product, and settlement
 destination can re-identify a trader, and repeated behavior can reveal entry
 policy, inventory limits, hedge timing, or an algorithm's responses. Sparse
 or bespoke markets heighten the risk, because an otherwise anonymous event
-can be unique. In the worked example, the batch conceals individual orders,
-but a settlement graph paying redemptions directly to the original wallets
-can undo that concealment after the fact.
+can be unique. The current transparent offline batch prototype does not
+conceal individual orders. In a proposed Shielded form, a named executor or
+committee could keep them from public view, but a settlement graph paying
+redemptions directly to the original wallets could undo that concealment
+after the fact.
 
 Purpose-limited publication is not a novelty: the real-time public reporting
 rules already delay the public print of certain large trades and cap the
 disseminated notional.#note_ref(2) What is new for onchain markets is that
-the regulated tape is not the only publication channel: the base chain
-leaks on surfaces no dissemination policy governs --- observable by anyone,
-permanently, however conservative the tape. A dissemination review that
-scores only the tape misses all five:
+the regulated tape is not the only disclosure channel. On Solana there is no
+public global mempool: before landing, a transaction is visible only to the
+client and whichever RPC operator, relay or forwarding node, and current or
+next leader actually receives it; a direct TPU path can bypass RPC. A
+transaction dropped before landing leaves no public ledger record. If a
+failed transaction lands in a confirmed block, however, its transaction data
+and failure metadata are public.#note_ref("6, 7") Other ledgers have
+different ingress and publication models. A dissemination review that scores
+only the tape should therefore separate local pre-landing disclosure to
+ingress actors from public, durable post-landing leakage:
 
 #table(
-  columns: (1.35in, 1fr),
+  columns: (1.55in, 1fr),
   table.header([*Leakage surface*], [*What it reveals, independent of any tape*]),
-  [Public mempool], [A submitted instruction is visible before it executes: intent, size, and limit can be public pre-trade, before any print exists.],
-  [Fee payer], [The account paying execution fees links otherwise separate transactions; one reused funding account joins strategies into one actor.],
-  [Funding graph], [The path from an exchange withdrawal or a prior market's payout into a deposit is public and durable, connecting positions across markets and time.],
-  [Failed instruction], [A failed instruction still becomes public bytes, revealing a strategy's trigger and limit without any trade occurring.],
-  [Settlement graph], [Redemptions paying the original wallets undo a batch's concealment after the fact, reattaching outcomes to the accounts that traded them.],
+  [RPC ingress], [An RPC operator sees the signed transaction it accepts before landing; preflight rejection or later dropping may remain only in client and operator records, not on the public ledger.],
+  [Relay or forwarding ingress], [A relay service or forwarding node sees the packets it actually handles. This is topology- and trust-specific disclosure, not global broadcast.],
+  [Leader ingress], [A current or next leader receiving the transaction directly or from an RPC path can observe intent before deciding whether it lands; that visibility is not public mempool visibility.],
+  [Fee payer], [For a landed transaction, the account paying execution fees links otherwise separate transactions; one reused funding account can join strategies into one actor.],
+  [Funding graph], [Landed transfers can make the path from an exchange withdrawal or a prior market's payout into a deposit public and durable, connecting positions across markets and time.],
+  [Landed failed transaction], [A failed transaction included in a block exposes its signed message and failure metadata without an execution succeeding; a dropped or preflight-rejected transaction is not public ledger bytes.],
+  [Settlement graph], [Public redemptions to original wallets can defeat a proposed Shielded batch's public-order concealment after the fact, reattaching outcomes to accounts that traded.],
 )
 
 Evaluation should therefore measure both the dissemination policy and this
-independently observable base-chain leakage, stating per surface whether a
-design closes, narrows, or leaves it open. Each public field should carry a stated transparency
+independently observable protocol and operational leakage, stating per
+surface who can observe it, when, and whether a design closes, narrows, or
+leaves it open. Each public field should carry a stated transparency
 objective and a reviewed re-identification analysis; caps, delays, buckets,
 and aggregation should be explicit, deterministic, and versioned.
 
@@ -359,7 +385,7 @@ audited.
   [The lifecycle reporting framework expects exact creation and continuation data with counterparty and transaction identifiers], [17 C.F.R. part 45; source note 3],
   [Repository confidentiality and access rules govern reported swap data], [17 C.F.R. part 49; source note 4],
   [The description of the Ariadne Dataworks recommendations], [The filed comment; source note 5],
-  [The enumeration of base-chain leakage surfaces], [Analytical description of public-ledger mechanics; not a measurement of any deployed system or real market],
+  [Solana has no public global mempool; pre-landing visibility follows the RPC, relay or forwarding, and leader path actually used; a landed failure is public ledger data only when included in a confirmed block], [Official Solana transaction-ingress guide and RPC JSON structures; source notes 6 and 7],
   [The worked example's core accounting --- deposit, recombination, resolution, redemption, with conservation and pool-coverage checks --- has been implemented offline with passing deterministic tests], [Pure-Rust research prototype reviewed by the submitter; tested, not formally verified; not deployed],
   [The prototype's batch verifier was built to accept a submitted clearing only if full recomputation from the frozen book reproduces it], [Prototype source and deterministic tests reviewed by the submitter; offline research code, not a deployed venue],
   [The prototype's observation accumulator was built to refuse questions its retained information cannot support], [Prototype source and deterministic tests reviewed by the submitter; offline research code],

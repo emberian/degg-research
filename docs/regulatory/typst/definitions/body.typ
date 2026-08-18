@@ -278,7 +278,7 @@ structures; none is a claim that any design of mine falls outside either
 Commission's jurisdiction or satisfies any current rule.
 
 #block(breakable: false)[
-  #v(18pt)
+  #v(18pt, weak: true)
   Respectfully submitted,
 
   [FULL NAME]  \

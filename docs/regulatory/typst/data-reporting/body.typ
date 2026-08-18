@@ -302,7 +302,7 @@ argues for reduced regulatory access because a transaction is onchain, and
 no design of mine is claimed to satisfy any current reporting obligation.
 
 #block(breakable: false)[
-  #v(18pt)
+  #v(18pt, weak: true)
   Respectfully submitted,
 
   [FULL NAME]  \

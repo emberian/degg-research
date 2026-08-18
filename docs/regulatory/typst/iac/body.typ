@@ -260,7 +260,7 @@ systems, and not compliance conclusions. The Committee's duties are solely
 advisory,#note_ref(8) and I ask only that it recommend work.
 
 #block(breakable: false)[
-  #v(18pt)
+  #v(18pt, weak: true)
   Respectfully submitted,
 
   [FULL NAME]  \

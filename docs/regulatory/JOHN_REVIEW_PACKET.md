@@ -36,7 +36,7 @@ citation behind these rows was verified against the primary source on
 | The IAC statement is input to a solely-advisory FACA committee; it creates no status and requests only that the Committee recommend work | LA §4 (charter, 5 U.S.C. ch. 10, meeting notice) | High |
 | Publication-vs-operation is genuinely unsettled (functional triggers; one nonbinding staff letter; FinCEN analogy), so the filings' request for guidance is well-founded — and the filings never claim publication is safe | LA §5 | High |
 | Filing creates no meaningful exposure for the researcher: no solicitation/offer content, no operating activity described, prototype descriptions carry audited evidence ceilings, no CBI/PII | LA §6 risk register R-1..R-11 | High |
-| Two defects found and routed: a source note misattributes CFTC Staff Letter 26-09 to the wrong division (fix queued before filing); the repo README still names a retained-counsel gate (being aligned) | LA §8 | High |
+| Two defects found and fixed before this memo was finalized: a source note misattributed CFTC Staff Letter 26-09 to the wrong division (sources.typ corrected, IAC PDF rebuilt); the repo README named a superseded retained-counsel gate (aligned to the actual in-house + courtesy-review process) | LA §8 | High |
 
 ## 3. Questions for you (each ~1 minute; tentative answers included)
 

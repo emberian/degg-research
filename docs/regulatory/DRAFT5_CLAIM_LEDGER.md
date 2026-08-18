@@ -78,10 +78,12 @@ owns the ID space from Draft 5 forward.
   dragons-clutch `toolchain/PINNED_PROOF_TOOLS.md` states the pinned Verus
   and Rocq record no verification result, and the `verus/` stubs carry no
   passing proof. Do not upgrade this claim on installed tools alone.
-  (Cross-repo note, not a filing defect: the dragons-clutch `README.md`
-  Status section still reads "Verus is not yet installed or pinned," which
-  its own `toolchain/PINNED_PROOF_TOOLS.md` contradicts; the filing wording
-  is unaffected because it asserts only the tested-not-verified boundary.)
+  (Cross-repo note, not a filing defect: at re-pin time the dragons-clutch
+  `README.md` Status section still read "Verus is not yet installed or
+  pinned," contradicting its own `toolchain/PINNED_PROOF_TOOLS.md`; that
+  README was corrected later the same night (dragons-clutch commit
+  `a23c7e9`). The filing wording is unaffected either way because it
+  asserts only the tested-not-verified boundary.)
 - On filing day, this section is re-pinned once at the frozen commit; the
   filings themselves carry no per-commit specifics after V-38.
 

@@ -474,10 +474,14 @@ reasoning and is presented above for a glance, not a question.
 
 1. `typst/iac/sources.typ` note 3: change "Division of Market Oversight" to
    "Market Participants Division" for Staff Letter 26-09 (§5). Body text
-   unaffected.
+   unaffected. *Applied in the same change set as this analysis:
+   `sources.typ` now reads "Market Participants Division" and the IAC PDF
+   was rebuilt.*
 2. `README.md` "Before any filing" item 1 still carries the retained-counsel
    gate ("Have U.S. commodities counsel review..."). `SUBMISSION_WEEK_PLAN.md`
-   now states the actual process; README should be aligned by its owner.
+   now states the actual process; README should be aligned by its owner. *Applied in the same change set as this analysis: README item 1
+   now states the in-house analysis plus designated-reviewer courtesy
+   review.*
 3. The IAC docket does not allow late comments (`allowLateComments: false`,
    Regulations.gov API 2026-08-18); the effective electronic cutoff is
    Aug. 27, 11:59 p.m. ET. Plan buffer accordingly.

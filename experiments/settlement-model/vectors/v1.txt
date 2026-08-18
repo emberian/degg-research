@@ -1,0 +1,131 @@
+degg-settlement/v0 transcript
+== scenario balanced-residual
+public outcome: settled tick=2 volume=5
+receipt binding: 234dacaa4ce8146a0d504572efcaeded77ad79ee367fe914d78a41bc4b91a963
+delivery root: 7c4f4629f951fcdfd6ddfb24a248fa2824d1b6613d1aa8abffbffbb3844b782a
+obligated: 4
+executions:
+  seq=0 owner=0 base=5 quote=0 settlement-nullifier=e59b43e67446e7ce950b8f3968e393c7209d36ae3be936a1637f093d9868141a
+  seq=1 owner=1 base=0 quote=6 settlement-nullifier=a95029a5ee3873d5582d4fca3f4e8f1ea9f9d03f0dda9dc636fcf36e8c4d8776
+  seq=2 owner=2 base=1 quote=9 settlement-nullifier=7f442b1a3a19d0f983665d73098298e5f2eaaac67b8b7bb21630363d2ab1e480
+  seq=3 owner=3 base=2 quote=6 settlement-nullifier=c5806e7de2f2b7f42800d3b12e304b03ab42da69ce3f45ce23da307137fb92f7
+positions:
+  owner=0 asset=quote escrow=15 state=settled nullifier=37af77df497fddb2d68457d33068f4df4d561c6ae1e2ac8390fd19fbb67eed2a
+  owner=1 asset=quote escrow=6 state=settled nullifier=5d5a808ea88fe595e595627e34891650b47e784d7b0ea3f1f3986551adef5b39
+  owner=2 asset=base escrow=4 state=settled nullifier=6eeacd6ee428cc04b6b27e4c92ffc4bd1324f86e123cfe5c5ef55fbd3df71be7
+  owner=3 asset=base escrow=4 state=settled nullifier=891e8f0981764a13f996cc3bae03289544d27a132985ce4b810b7e75905d1eef
+pool: base=0 quote=0
+accounts:
+  owner=0 base=5 quote=0
+  owner=1 base=0 quote=6
+  owner=2 base=1 quote=9
+  owner=3 base=2 quote=6
+conserves: true
+per-claim surface:
+  deposit account=0 asset=quote amount=15 epoch=10
+  deposit account=1 asset=quote amount=6 epoch=10
+  deposit account=2 asset=base amount=4 epoch=10
+  deposit account=3 asset=base amount=4 epoch=10
+  claim account=0 seq=0 base=5 quote=0 epoch=10
+  claim account=1 seq=1 base=0 quote=6 epoch=10
+  claim account=2 seq=2 base=1 quote=9 epoch=10
+  claim account=3 seq=3 base=2 quote=6 epoch=10
+reconstruction from the public surface alone:
+  account=0 seq=0 side=buy fill=5 budget=15 buy-candidates=[(0, 15), (2, 5)]
+  account=1 seq=1 side=buy fill=0 budget=6 buy-candidates=[(0, 6), (1, 3), (2, 2)]
+  account=2 seq=2 side=sell fill=3 budget=4 sell-quantity<=4
+  account=3 seq=3 side=sell fill=2 budget=4 sell-quantity<=4
+netted surface:
+  account=0 base=+5 quote=-15
+  account=1 base=+0 quote=+0
+  account=2 base=-3 quote=+9
+  account=3 base=-2 quote=+6
+shielded-agent surface: agent=degg-named-settlement-agent/v0 credited base=8 quote=21 refunded base=0 quote=0
+dark target: Err(DarkSettlementAbsent)
+== scenario no-trade
+public outcome: settled no-trade volume=0
+receipt binding: 97b1788a2975d05d4f3eea9c182fc50a8db2a3259e98fa0a13b5137b2af8d9db
+delivery root: 226e0d0dfae6c71bb3557eeb7053fa7b5154ac184025613fae93a6775943de9d
+obligated: 2
+executions:
+  seq=0 owner=0 base=0 quote=2 settlement-nullifier=a46713ab258c4e4f151b26c21578725157d41111a305a115f9046760666417ab
+  seq=1 owner=1 base=2 quote=0 settlement-nullifier=71e5bffe5e9f5253238693f975d4327617145cadf5e29e73f2b811a7d98c46ef
+positions:
+  owner=0 asset=quote escrow=2 state=settled nullifier=37af77df497fddb2d68457d33068f4df4d561c6ae1e2ac8390fd19fbb67eed2a
+  owner=1 asset=base escrow=2 state=settled nullifier=5d5a808ea88fe595e595627e34891650b47e784d7b0ea3f1f3986551adef5b39
+pool: base=0 quote=0
+accounts:
+  owner=0 base=0 quote=2
+  owner=1 base=2 quote=0
+  owner=2 base=0 quote=0
+  owner=3 base=0 quote=0
+conserves: true
+per-claim surface:
+  deposit account=0 asset=quote amount=2 epoch=10
+  deposit account=1 asset=base amount=2 epoch=10
+  claim account=0 seq=0 base=0 quote=2 epoch=10
+  claim account=1 seq=1 base=2 quote=0 epoch=10
+reconstruction from the public surface alone:
+  account=0 seq=0 side=buy fill=0 budget=2 buy-candidates=[(0, 2), (1, 1)]
+  account=1 seq=1 side=sell fill=0 budget=2 sell-quantity<=2
+netted surface:
+  account=0 base=+0 quote=+0
+  account=1 base=+0 quote=+0
+shielded-agent surface: agent=degg-named-settlement-agent/v0 credited base=2 quote=2 refunded base=0 quote=0
+dark target: Err(DarkSettlementAbsent)
+== scenario under-reserved
+public outcome: refused class=17
+abort: relation-refused
+refunded: 12
+positions:
+  owner=0 asset=quote escrow=12 state=refunded nullifier=37af77df497fddb2d68457d33068f4df4d561c6ae1e2ac8390fd19fbb67eed2a
+  owner=1 asset=base escrow=0 state=refunded nullifier=5d5a808ea88fe595e595627e34891650b47e784d7b0ea3f1f3986551adef5b39
+pool: base=0 quote=0
+accounts:
+  owner=0 base=0 quote=12
+  owner=1 base=0 quote=0
+  owner=2 base=0 quote=0
+  owner=3 base=0 quote=0
+conserves: true
+per-claim surface:
+  deposit account=0 asset=quote amount=12 epoch=10
+  deposit account=1 asset=base amount=0 epoch=10
+  refund account=0 asset=quote amount=12 epoch=10
+  refund account=1 asset=base amount=0 epoch=10
+netted surface:
+  account=0 base=+0 quote=+0
+  account=1 base=+0 quote=+0
+shielded-agent surface: agent=degg-named-settlement-agent/v0 credited base=0 quote=0 refunded base=0 quote=12
+dark target: Err(DarkSettlementAbsent)
+== scenario compute-exhausted
+abort: compute-exhausted
+refunded: 29
+positions:
+  owner=0 asset=quote escrow=15 state=refunded nullifier=37af77df497fddb2d68457d33068f4df4d561c6ae1e2ac8390fd19fbb67eed2a
+  owner=1 asset=quote escrow=6 state=refunded nullifier=5d5a808ea88fe595e595627e34891650b47e784d7b0ea3f1f3986551adef5b39
+  owner=2 asset=base escrow=4 state=refunded nullifier=6eeacd6ee428cc04b6b27e4c92ffc4bd1324f86e123cfe5c5ef55fbd3df71be7
+  owner=3 asset=base escrow=4 state=refunded nullifier=891e8f0981764a13f996cc3bae03289544d27a132985ce4b810b7e75905d1eef
+pool: base=0 quote=0
+accounts:
+  owner=0 base=0 quote=15
+  owner=1 base=0 quote=6
+  owner=2 base=4 quote=0
+  owner=3 base=4 quote=0
+conserves: true
+per-claim surface:
+  deposit account=0 asset=quote amount=15 epoch=10
+  deposit account=1 asset=quote amount=6 epoch=10
+  deposit account=2 asset=base amount=4 epoch=10
+  deposit account=3 asset=base amount=4 epoch=10
+  refund account=0 asset=quote amount=15 epoch=19
+  refund account=1 asset=quote amount=6 epoch=19
+  refund account=2 asset=base amount=4 epoch=19
+  refund account=3 asset=base amount=4 epoch=19
+netted surface:
+  account=0 base=+0 quote=+0
+  account=1 base=+0 quote=+0
+  account=2 base=+0 quote=+0
+  account=3 base=+0 quote=+0
+shielded-agent surface: agent=degg-named-settlement-agent/v0 credited base=0 quote=0 refunded base=8 quote=21
+dark target: Err(DarkSettlementAbsent)
+occupied positions: [0, 1, 2, 3]

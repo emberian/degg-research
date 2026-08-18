@@ -1,0 +1,22 @@
+[package]
+name = "degg-settlement-model"
+version = "0.0.0"
+edition = "2024"
+publish = false
+license = "AGPL-3.0-or-later"
+description = "Offline model of the settlement relation: authorized custody, settlement nullifiers, idempotent retries, exact conservation, and the transfer-surface leakage measurement"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "degg-settlement-vectors"
+path = "src/bin/vectors.rs"
+
+[dependencies]
+degg-inclusion-availability = { path = "../inclusion-availability" }
+degg-relation-ir = { path = "../relation-ir/ir" }
+degg-shielded-baseline = { path = "../shielded-baseline" }
+
+[lints.rust]
+unsafe_code = "forbid"

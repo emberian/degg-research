@@ -311,3 +311,96 @@ The first compiler refuses:
 
 That refusal surface is part of the product.
 
+
+## Addendum, 2026-08-18: frozen v0 instance and Clear lowering
+
+This section records the first implementation of this document's boundary:
+`experiments/relation-ir` ([README](../experiments/relation-ir/README.md)).
+It changes nothing above; sections 1 through 12 remain the PROPOSED general
+design. What follows is frozen for exactly one relation instance and proposed
+for everything else.
+
+### Frozen, for `dark-fba/n4-k4-q15/v0` only
+
+VERIFIED implementation, offline and dependency-free:
+
+- **The module as data.** `degg-relation-ir` expresses the relation as one
+  `RelationModule` value: identity, numeric parameters, input and output ports
+  with visibility annotations (`Public`, `PrivateToOwner`, `Executor`),
+  admission predicates with their check priority, clearing rule
+  (maximize-volume, ties-low), allocation rule (largest remainder,
+  earliest-slot residual tie), the refusal-class vocabulary, and seven receipt
+  shapes with an explicit emitted-versus-declared-only status.
+- **Canonical bytes and identity digests.** Every IR object has one canonical
+  `degg-cbe/v1` byte string and therefore one SHA-256 digest; the module
+  digest is the relation identity, so changing any frozen field, including
+  the check order, visibly changes the relation. Golden digests for the
+  module, the policy, and named fixture batches, outcomes, owner outputs, and
+  receipts are pinned byte-for-byte in
+  `experiments/relation-ir/goldens/v1.txt`.
+- **The refusal order as a frozen field.** The 2026-08-18 two-oracle
+  differential proved that prose alone underdetermined which public class a
+  multi-fault witness refuses with. The IR closes that gap at the IR level:
+  check priority is a data field of the module, not a property of an
+  implementation. The frozen value adopts the reference oracle's observed
+  order, because the published golden vectors pin that artifact; the same
+  choice is frozen at the specification level in `DARK_FBA_RELATION.md`
+  section 4.1 (same date), whose class vocabulary the IR spells verbatim. The
+  rejected pre-freeze alternative order remains expressible as a *different*
+  module value with a different digest, and tests pin that the two orders
+  publish different classes on the differential's minimal witnesses. The
+  decision itself remains PROPOSED as mechanism design: it is a stability
+  choice that makes the public failure output a function of the witness, not
+  an economic recommendation.
+- **The Clear lowering.** `lower(module, target)` compiles the module to an
+  evaluator that interprets the module's data. VERIFIED on 2026-08-18: over
+  2,116,916 enumerated batches (exhaustive books at quantity ceiling 3;
+  ceiling-1 books crossed with all owner assignments and four surplus
+  patterns; six base books under every perturbation subset of size at most
+  two from 82 applications; and the named fixtures) the lowering agrees with
+  both existing oracles on every accept-versus-refuse verdict, every refusal
+  class, every clearing tick and volume, every fill vector, and every
+  owner-local output, with zero divergences. These bounds are deliberately
+  smaller than the 300M-case oracle-versus-oracle run: they test the
+  lowering's fidelity to two already-cross-validated implementations.
+- **Receipts, minimally real.** The Clear evaluator emits a computation
+  receipt for every evaluation, settled or refused, binding module digest,
+  input digest, and public-outcome digest, plus one output-delivery receipt
+  per owner. The other five receipt domains are DeclaredOnly types. Nothing
+  signs or verifies any receipt, and a digest over low-entropy private data is
+  brute-forceable: receipts here hide nothing and prove nothing.
+
+### Visibility honesty
+
+The IR carries Shielded- and Dark-relevant annotations as types only. The one
+lowering is Clear; `ShieldedCommittee` and `DarkTarget` lowering requests
+refuse with typed errors, and a batch requesting `DarkTarget` execution is
+refused before any witness is inspected, with the same discipline as both
+oracles. The Clear evaluator's widening is stated in a declared disclosure
+constant rather than implied. No privacy claim of any kind is made by the
+crate, this addendum, or the annotations.
+
+### Still proposed
+
+Everything else in this document: the general type table beyond this
+instance's needs, structural market operators as reusable library pieces, the
+leakage-manifest derivation, backend capability descriptors, joined receipts,
+settlement adapters, and every non-Clear backend. The canonical encoding is
+frozen only as `degg-cbe/v1` for these objects; it is a naming scheme for
+digests, not a wire protocol or commitment scheme.
+
+### Next lowering targets, in order
+
+1. **Proof-carrying verify-not-find Clear.** Same semantics, but the evaluator
+   emits an artifact an independent checker verifies against the module
+   digest and input root, separating computation from acceptance.
+2. **Shielded single executor as a named backend descriptor,** consuming the
+   inclusion/availability lane's admission log and receipts so the four
+   boundary booleans stop being executor-supplied statements.
+3. **Shielded committee (MPC/threshold),** which must state enrollment,
+   corruption threshold, abort, and local-output delivery before it may be
+   called anything but Clear.
+
+A Dark lowering is not next: it requires the frozen leakage manifest,
+corruption model, and local-output story of `DARK_FBA_RELATION.md` sections 8
+through 10, none of which an IR annotation supplies.

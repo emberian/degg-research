@@ -1,0 +1,19 @@
+[package]
+name = "degg-relation-ir-differ"
+description = "Differential harness: the IR Clear lowering against both existing dark-fba oracles"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "relation-ir-differ"
+path = "src/main.rs"
+
+[dependencies]
+degg-relation-ir = { path = "../ir" }
+dark-fba-toy = { path = "../../dark-fba" }
+degg-batch-oracle = { path = "../../dark-fba-independent/oracle" }
+
+[lints]
+workspace = true

@@ -1,0 +1,17 @@
+[package]
+name = "degg-relation-ir"
+description = "Typed Dark Relation IR frozen for dark-fba/n4-k4-q15/v0, with canonical bytes and a Clear lowering"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "relation-ir-goldens"
+path = "src/bin/goldens.rs"
+
+[lints]
+workspace = true

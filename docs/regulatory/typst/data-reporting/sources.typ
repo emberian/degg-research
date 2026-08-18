@@ -30,6 +30,13 @@
   [17 C.F.R. part 49, current through August 14, 2026 and retrieved August 17, 2026. Recheck immediately before filing.],
 )
 
+#source_entry(
+  5,
+  "Comment of Ariadne Dataworks Ltd. on the joint data-reporting request",
+  "https://www.regulations.gov/comment/CFTC-2026-1354-0002",
+  [Comment CFTC-2026-1354-0002, Docket CFTC-2026-1354 (posted July 14, 2026); the endorsed recommendations are characterized from this filed comment. Retrieved August 18, 2026.],
+)
+
 == Local technical materials inspected
 
 The technical descriptions were prepared from research artifacts reviewed by
@@ -38,11 +45,10 @@ Dragon's Clutch offline conditional-asset prototype (a pure-Rust research
 kernel, observation accumulator, and batch-clearing verifier with passing
 deterministic tests; tested, not formally verified; not a deployed system,
 product, or offer), and a deterministic synthetic-transcript leakage
-laboratory. The Clear, Shielded, and Dark taxonomy is used as a proposed
-analytical distinction, not a claim of a deployed confidential venue, complete
-compliance system, production proof stack, or vFHE system. The local prototype
-history includes serious FHE, MPC, threshold, and private-proof experiments,
-but its strongest composed paths remain Shielded rather than end-to-end Dark.
+laboratory. The Clear, Shielded, and Dark taxonomy is a proposed analytical
+distinction, not a claim of any deployed confidential system; the strongest
+composed paths in the submitter's research remain Shielded, as the comment
+states.
 A final public edition should cite frozen public repository commits and exact
 paths if those repositories are public by filing time; otherwise it should
 retain this limited description and avoid claims of independent public

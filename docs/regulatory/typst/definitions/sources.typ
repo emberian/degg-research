@@ -1,5 +1,8 @@
 #import "../shared/template.typ": review_note, source_entry
 
+#set text(size: 9.4pt)
+#set par(leading: 0.55em)
+
 = Source notes
 
 #source_entry(
@@ -13,7 +16,7 @@
   2,
   "Commodity Exchange Act definitions",
   "https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title7-section1a",
-  [7 U.S.C. section 1a, including the definitions of derivatives clearing organization, swap execution facility, and trading facility. Current preliminary edition retrieved August 17, 2026.],
+  [7 U.S.C. section 1a, including the definitions of derivatives clearing organization, swap execution facility, and trading facility, and the excluded-commodity definition in section 1a(19). Current preliminary edition retrieved August 17, 2026.],
 )
 
 #source_entry(
@@ -42,6 +45,13 @@
   "Prediction Markets; Public Interest Determinations",
   "https://www.govinfo.gov/content/pkg/FR-2026-06-12/pdf/2026-11854.pdf",
   [91 Fed. Reg. 35806 (June 12, 2026), proposing amendments to Regulation 40.11 and a new Appendix F to part 40. Proposed, not current law. Retrieved August 17, 2026.],
+)
+
+#source_entry(
+  7,
+  "Comment of FalconX Bravo, Inc. on the joint definitions request",
+  "https://www.regulations.gov/comment/CFTC-2026-1355-0006",
+  [Comment CFTC-2026-1355-0006, Docket CFTC-2026-1355 (posted August 17, 2026). The listing-status proposal answered in position 7 is characterized from this filed comment. Retrieved August 18, 2026.],
 )
 
 == Local technical materials inspected

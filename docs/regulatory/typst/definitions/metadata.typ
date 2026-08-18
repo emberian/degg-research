@@ -1,6 +1,6 @@
 #let meta = (
-  document_kind: "JOINT PUBLIC COMMENT - DRAFT 6",
-  review_label: "DRAFT 6 FOR REVIEW - NOT FILED",
+  document_kind: "JOINT PUBLIC COMMENT - DRAFT 7",
+  review_label: "DRAFT 7 FOR REVIEW - NOT FILED",
   short_title: "Definitions RFC",
   title: "Objective Criteria for Staged and Automated Contingent Products",
   subtitle: "Comment on the further definition of swap and security-based swap",

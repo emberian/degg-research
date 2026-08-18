@@ -12,11 +12,11 @@ I am filing three public comments as an independent researcher, in my own
 name, with no client, product, offer, or deployed system involved. Two are
 responses to joint CFTC/SEC requests for comment due **Monday, August 24,
 2026** — one on product definitions (CFTC RIN 3038-AF71 / SEC File S7-2026-21,
-answering Question 1) and one on data reporting (RIN 3038-AF70 / S7-2026-22,
-answering Questions 3, 8, and 19). The third is a written statement to the
-CFTC's Innovation Advisory Committee, docket CFTC-2026-1717, due **Thursday,
-August 27, 2026** (hard electronic cutoff 11:59 p.m. ET; the docket does not
-accept late comments).
+answering Questions 1 and 8) and one on data reporting (RIN 3038-AF70 /
+S7-2026-22, answering Questions 3, 8, and 19). The third is a written
+statement to the CFTC's Innovation Advisory Committee, docket CFTC-2026-1717,
+due **Thursday, August 27, 2026** (hard electronic cutoff 11:59 p.m. ET; the
+docket does not accept late comments).
 
 Draft 6 changes the register: the filings now take **argued analytical
 positions** — for example, that publication of market software, without
@@ -28,8 +28,21 @@ process invites (5 U.S.C. 553(c): "written data, views, or arguments").
 None classifies a deployed product, claims any design of mine is exempt or
 compliant, or requests relief. The full position register, with each
 position's statutory basis and the strongest counterargument it answers, is
-the Draft 6 section of `DRAFT5_CLAIM_LEDGER.md` — **the positions are now
-the main thing to eyeball.**
+the Draft 6 section of `DRAFT5_CLAIM_LEDGER.md`, as amended by the Draft 7
+section — **the positions are now the main thing to eyeball.**
+
+Draft 7 recenters the filings on positions no other filer on these dockets
+argues (a survey of all eleven filed comments is in
+`research-memos/FILED_COMMENTS_LANDSCAPE.md`), and for the first time
+engages two other filed comments **by name and docket number**: the
+definitions comment answers FalconX Bravo, Inc.'s proposed listing-status
+classification (CFTC-2026-1355-0006) directly and respectfully, and the
+data comment endorses — rather than restates — Ariadne Dataworks Ltd.'s
+machine-readable-reporting recommendations (CFTC-2026-1354-0002). The
+definitions comment adds a bundling-invariance position answering
+Question 8; the IAC statement adds a deliberately self-critical
+manipulation-cost position (no computed number appears) and cites the
+Committee's published meeting agenda.
 
 ## 2. Material legal judgments made in-house
 
@@ -43,7 +56,9 @@ citation behind these rows was verified against the primary source on
 | Comments are published permanently, unredacted, without agency review of PII/CBI; mitigation is what we omit, and nothing sensitive is in the drafts | LA §1, §6 R-6/R-7 (both notices' ADDRESSES terms, verified verbatim) | High |
 | 18 U.S.C. 1001 applies to statements in these submissions; the maintained claim-audit ledger and hash-frozen final texts are the accuracy control; residual risk low | LA §1, §6 R-2 | High |
 | The definitions comment classifies no deployed product and claims no exemption; its Draft 6 positions are analytical advocacy about a class of staged structures, inclusionary where they approach classification (e.g., no SBS prong implicated on the worked example's face — LA §2's own INFERRED analysis) | LA §2; Draft 6 position register in `DRAFT5_CLAIM_LEDGER.md` | High |
-| Taking argued positions is invited comment content, not practice of law or a request for relief; each position's basis is a fetch-verified primary source, and no position crosses into "my design is therefore exempt/compliant" | LA §1 (5 U.S.C. 553(c)); position register (P-D1..7, P-R1..6, P-I1..7) | High |
+| Taking argued positions is invited comment content, not practice of law or a request for relief; each position's basis is a fetch-verified primary source, and no position crosses into "my design is therefore exempt/compliant" | LA §1 (5 U.S.C. 553(c)); position register (P-D1..8, P-R1..6, P-I1..8) | High |
+| Engaging other filed comments by name and docket number (answering FalconX Bravo's CFTC-2026-1355-0006; endorsing Ariadne Dataworks' CFTC-2026-1354-0002) is ordinary notice-and-comment practice; both characterizations are limited to what the cited comments' filed text says, and both citations carry regulations.gov URLs with retrieval dates | Draft 7 section of `DRAFT5_CLAIM_LEDGER.md`; `research-memos/FILED_COMMENTS_LANDSCAPE.md` (the comments read in full) | High |
+| The IAC statement's new manipulation-cost position is self-critical analysis of the commenter's own design pattern, states no computed number, names no reference-data or oracle provider, and asserts nothing about what will occur at the August 20 meeting; the published agenda is cited only for its listed Session III topics | Draft 7 section of `DRAFT5_CLAIM_LEDGER.md`; `research-memos/definitions-q15-reference-integrity.md`; `research-memos/OPEN_MATTERS_MAP.md` Part 1 | High |
 | The filings' legal recitals (swap definition, SBS prongs, mixed swaps, 2012 release, 40.11 + June 2026 proposal, facility definitions) are accurate as written | LA §2, §3, §5 (all recitals checked against fetched primary text) | High |
 | The crypto-native-objective-events scope keeps the examples clear of the 40.11/CEA 5c(c)(5)(C) enumerated activities without claiming any exemption — the correct ceiling | LA §3 | High |
 | The IAC statement is input to a solely-advisory FACA committee; it creates no status and requests only that the Committee recommend work | LA §4 (charter, 5 U.S.C. ch. 10, meeting notice) | High |
@@ -76,6 +91,17 @@ citation behind these rows was verified against the primary source on
    or missing — especially R-2 (resting the 1001 accuracy control on the
    maintained claim-audit ledger) and R-3/R-4 (that the filings cannot
    reasonably be read as an offer or as operating activity)?
+5. **Engaging named commenters.** Draft 7 answers FalconX Bravo, Inc.'s
+   filed definitions comment by name (a CEO-signed filing that directly
+   contradicts one of my positions; its founder sits on the IAC) and
+   endorses Ariadne Dataworks Ltd.'s data-reporting recommendations by
+   name. My tentative answer is that this is appropriate and normal:
+   responding to other comments on the same public record is ordinary
+   notice-and-comment practice, the FalconX answer is respectful and
+   credits the rule's objectivity before disagreeing, the endorsement
+   adopts rather than affiliates, and both cite the comments' public
+   docket numbers. Flag if either engagement reads to you as adversarial,
+   as implying affiliation, or as otherwise imprudent for a pro se filer.
 
 A nod or a one-line reply per item is exactly the right amount of effort; if
 any answer is "needs a conversation," say so and I will not treat silence as
@@ -83,19 +109,20 @@ sign-off.
 
 ## 4. Attachments
 
-1. `joint-definitions-comment-draft-6.pdf` (6 pp.)
-2. `joint-data-reporting-comment-draft-6.pdf` (7 pp.)
-3. `cftc-iac-written-statement-draft-6.pdf` (6 pp.)
-4. `cftc-iac-cover-statement-draft-6.pdf` (1 p.)
+1. `joint-definitions-comment-draft-7.pdf` (7 pp.)
+2. `joint-data-reporting-comment-draft-7.pdf` (8 pp.)
+3. `cftc-iac-written-statement-draft-7.pdf` (7 pp.; the final half page is
+   deliberately left free for a possible addendum under evaluation)
+4. `cftc-iac-cover-statement-draft-7.pdf` (1 p.)
 5. `LEGAL_ANALYSIS.md` (the in-house analysis this memo indexes; its
    filing-text review describes Draft 5 — the Draft 6 register change and
-   its per-position bases are recorded in the Draft 6 section of
-   `DRAFT5_CLAIM_LEDGER.md`)
+   the Draft 7 rebalance, with their per-position bases, are recorded in
+   the Draft 6 and Draft 7 sections of `DRAFT5_CLAIM_LEDGER.md`)
 
 Every material technical claim in the four PDFs carries a one-line
 evidentiary basis in its own appendix and is governed by a maintained
-evidence ledger in the repository (claim audits for Drafts 3-6, with SHA-256
-hashes of the exact Draft 6 artifacts); you do not need to verify any
+evidence ledger in the repository (claim audits for Drafts 3-7, with SHA-256
+hashes of the exact Draft 7 artifacts); you do not need to verify any
 technical claim to review the legal posture. The drafts are watermarked
-"DRAFT 6 FOR REVIEW - NOT FILED" and identity placeholders remain visibly
+"DRAFT 7 FOR REVIEW - NOT FILED" and identity placeholders remain visibly
 unresolved until the final identity gate.

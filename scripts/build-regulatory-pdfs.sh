@@ -7,23 +7,23 @@ mkdir -p "$output_dir"
 
 typst compile --root "$repo_root" \
   "$repo_root/docs/regulatory/typst/definitions/main.typ" \
-  "$output_dir/joint-definitions-comment-draft-6.pdf"
+  "$output_dir/joint-definitions-comment-draft-7.pdf"
 
 typst compile --root "$repo_root" \
   "$repo_root/docs/regulatory/typst/data-reporting/main.typ" \
-  "$output_dir/joint-data-reporting-comment-draft-6.pdf"
+  "$output_dir/joint-data-reporting-comment-draft-7.pdf"
 
 typst compile --root "$repo_root" \
   "$repo_root/docs/regulatory/typst/iac/main.typ" \
-  "$output_dir/cftc-iac-written-statement-draft-6.pdf"
+  "$output_dir/cftc-iac-written-statement-draft-7.pdf"
 
 typst compile --root "$repo_root" \
   "$repo_root/docs/regulatory/typst/iac-cover/main.typ" \
-  "$output_dir/cftc-iac-cover-statement-draft-6.pdf"
+  "$output_dir/cftc-iac-cover-statement-draft-7.pdf"
 
-pdfinfo "$output_dir/joint-definitions-comment-draft-6.pdf" >/dev/null
-pdfinfo "$output_dir/joint-data-reporting-comment-draft-6.pdf" >/dev/null
-pdfinfo "$output_dir/cftc-iac-written-statement-draft-6.pdf" >/dev/null
-pdfinfo "$output_dir/cftc-iac-cover-statement-draft-6.pdf" >/dev/null
+pdfinfo "$output_dir/joint-definitions-comment-draft-7.pdf" >/dev/null
+pdfinfo "$output_dir/joint-data-reporting-comment-draft-7.pdf" >/dev/null
+pdfinfo "$output_dir/cftc-iac-written-statement-draft-7.pdf" >/dev/null
+pdfinfo "$output_dir/cftc-iac-cover-statement-draft-7.pdf" >/dev/null
 
 printf '%s\n' "regulatory PDFs built in $output_dir"

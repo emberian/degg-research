@@ -5,16 +5,15 @@
 The Commissions ask how to distinguish swaps, mixed swaps, security-based
 swaps, securities, and instruments excluded from the definition of swap, and
 whether new or revised rules or interpretations are warranted.#note_ref(1)
-I write in response to Question 1, and I take no position on Questions 12
-through 15 concerning alternative compliance.
+I write in response to Questions 1 and 8, and I take no position on
+Questions 12 through 15 concerning alternative compliance.
 
 I am a software and formal-methods researcher; I study programmable markets
 whose legal and economic character changes as code is published, signed,
-funded, matched, resolved, and settled. This comment takes positions and
-argues them. The positions are my own analysis as a commenter, argued from
-the statutory text and one worked example; what the comment reports about my
-research artifacts is stated separately, and stays within what those
-artifacts support.
+funded, matched, resolved, and settled. This comment takes positions --- my
+own analysis as a commenter, argued from the statutory text and one worked
+example; what it reports about my research artifacts is stated separately,
+and stays within what those artifacts support.
 
 1. Classification of a staged program should be decided milestone by
    milestone, from the economic facts in force at the milestone being
@@ -32,11 +31,14 @@ artifacts support.
    claim set held with an unconditional right to exchange it for its
    collateral is fully hedged, and the holder's contingent exposure arises
    at the first transaction that unbalances the set.
-5. Product category should follow the reference object and the payout
-   structure, not the software form: a categorical claim paying on a
-   digital-asset price implicates none of the security-based swap
-   definition's prongs on its face, and the identical program pointed at a
-   single issuer's security would.#note_ref(4)
+5. In answer to Question 8: classification should be invariant under
+   bundling and unbundling. A complete set of cash-or-nothing claims over
+   an exhaustive partition of one variable is a portfolio of such claims on
+   that variable, economically identical to its collateral, and the worked
+   example's terms convert bundle and parts into each other at no cost ---
+   so a criterion that classifies them differently contains a
+   classification arbitrage exercisable for free. Invariance is a test
+   proposed criteria must survive, not only a position.
 6. Full prefunding, fixed maximum loss, and deterministic fail-closed
    settlement terms are risk facts --- material to credit and
    customer-protection analysis --- not classification exclusions, and the
@@ -45,9 +47,16 @@ artifacts support.
    are separate findings that arise at different milestones and can attach
    to different persons; "the software" is not a unit of classification.
 
-One matter I leave as a question, because it turns on policy choice rather
-than analysis: how much weight transferability should carry where the
-statute does not make it an element.
+Which reference objects place a contract in which Commission's category is
+well covered by other commenters on this docket; I add no competing
+framework, noting only that the worked example, paying on an onchain
+digital-asset price, implicates none of the security-based swap
+definition's prongs on its face,#note_ref(4) that the identical program
+pointed at a single issuer's security would, and that the invariance test
+of position 5 applies to every criterion proposed there. One
+matter I leave as a question, because it turns on policy choice rather than
+analysis: how much weight transferability should carry where the statute
+does not make it an element.
 
 = The worked example
 
@@ -125,15 +134,13 @@ the answer the positions give at each one.
   [Secondary transfer], [A resulting claim continues to trade], [Same instrument; new venue facts, found separately.],
 )
 
-#key_point("Core distinction", [
-  Technical incompleteness is not economic incompleteness. At batch close,
-  nobody knows which band will realize --- yet consideration is paid,
-  collateral is locked, the outcomes are exhaustively enumerated, each
-  payout is stated, and nobody retains discretion to change any of it. The
-  reverse also holds: the same arithmetic run as an unfunded local
-  simulation binds nobody and moves nothing. Classification should read the
-  economic facts, not the software's description of its own state.
-])
+The core distinction the table applies: technical incompleteness is not
+economic incompleteness. At batch close nobody knows which band will
+realize --- yet consideration is paid, collateral is locked, the outcomes
+are exhaustively enumerated, each payout is stated, and nobody retains
+discretion to change any of it; the same arithmetic run as an unfunded
+local simulation binds nobody and moves nothing. Classification should
+read the economic facts, not the software's description of its own state.
 
 = The argument
 
@@ -146,8 +153,8 @@ what a bilateral confirmation fuses into one signing --- authorship,
 signature, funding, interaction, resolution, and settlement can be days
 apart, with different parties present and different rights enforceable at
 each --- so the statutory question has a potentially different answer at each
-milestone, and guidance that does not name the milestone it is analyzing
-will be applied inconsistently. Question 1 asks whether new interpretations
+milestone, and guidance that does not name the milestone it analyzes will
+be applied inconsistently. Question 1 asks whether new interpretations
 are warranted "[t]aking into account" the 2012 release;#note_ref(3) a
 milestone matrix is an answer in exactly that form. The strongest
 counterargument is gamesmanship --- designers relabeling stages to defer the
@@ -191,24 +198,51 @@ are instruments from funding --- transferable and priced --- but the holder
 of the balanced whole has no contingent exposure until a transaction
 unbalances it. Both findings are needed because they serve different rules:
 the instrument finding governs product treatment; the exposure finding
-governs when a participant's position becomes economically operative. The
+governs when a participant's position becomes operative. The
 administrability objection --- use funding for everything --- collapses the
 two and misstates the economics of every depositor who never sells.
 
-== Position 5: the reference object allocates the category
+== Position 5: classification invariant under bundling and unbundling
 
-The security-based swap definition has three prongs: a narrow-based security
-index, a single security or loan, and an event relating to a single issuer
-that directly affects its financial statements, condition, or
-obligations.#note_ref(4) The worked example references an onchain
-digital-asset price and no security, loan, issuer, or securities index; none
-of the three prongs is implicated on its face. Point the identical program
-at a single issuer's security and the prongs engage; the mixed-swap
-category, which the Commissions have said is intentionally narrow, enters
-only when both kinds of reference are present. Software generality is the
-reason for this position, not an objection to it: because one program can
-span both agencies' jurisdictions, only the reference object and payout
-structure can carry the allocation.
+Question 8 asks when an event contract referencing securities is a "put,
+call, straddle, option, or privilege on" a security for purposes of the
+statutory exclusion from both swap definitions, and what distinguishes such
+contracts from options.#note_ref(1) Whatever the criteria, they should
+survive an operation these designs perform routinely. A contract paying a
+fixed amount on a stated outcome is a cash-or-nothing claim; a set of such
+claims covering every outcome of one reference variable, without overlap,
+is a portfolio of such claims on that variable; and the complete set, held
+together, is economically identical to the collateral it was issued
+against. In the worked example the conversion runs in both
+directions as ordinary operation --- deposit issues the set against
+collateral, recombination exchanges it back --- so a criterion that
+classifies the bundle and its parts differently contains a classification
+arbitrage exercisable at zero cost. The administrability objection --- a
+venue could list an exhaustive set to convert options into event contracts,
+or one claim to convert an event contract into an option --- is the
+argument for invariance, not against it: under an invariant criterion
+neither relabeling changes the answer, so neither is worth doing.
+
+The statutory text supports invariance. The exclusion's operative words are
+broad --- "any put, call, straddle, option, or privilege" on a security or
+group or index of securities, "including any interest therein or based on
+the value thereof" --- and the swap definition's option prong is drawn just
+as broadly;#note_ref(1) neither turns on payoff shape, and a binary option
+and a categorical claim on the same security's price at the same time pay
+the same amounts in the same states of the world. The
+apparent overlap with the event prongs arises because a price band is
+simultaneously a contingency and a function of value --- a collision the
+CEA already resolves in favor of the price reading, carving "a change in
+the price, rate, value, or level of a commodity" out of the
+excluded-commodity definition's occurrence-and-contingency
+category.#note_ref(2) The security-based swap event prong then does its
+work where settlement turns on a fact about an issuer rather than on a
+price or value,#note_ref(4) and the exclusion should not be read to swallow
+it. The resulting test reads three facts off a contract's frozen terms: the
+reference variable; whether the settlement amount is a function of the
+price or value of a security or index; and whether the outcome set is
+exhaustive and non-overlapping --- with the third fact never changing the
+answer the first two give.
 
 == Position 6: risk facts, not classification exclusions
 
@@ -238,9 +272,25 @@ The same discipline applies to software activity: publishing a
 general-purpose language, authoring product-specific terms, operating an
 interface, holding custody, and receiving transaction-linked compensation
 are different facts, and treating them all as "code" is too coarse in both
-directions. This comment does not ask this proceeding to decide the
-registration status of any facility; it asks that the findings be kept
-separate so that question can be decided accurately when it arises.
+directions.
+
+A recent comment on this docket proposes the opposite rule for one product
+class, and deserves a direct answer. FalconX Bravo, Inc. would classify a
+cash-settled perpetual contract on a single security or narrow-based
+security index by whether it is listed under the security-futures
+framework: listed, a security futures product; offered bilaterally, over
+the counter, on a non-U.S. venue, or through a decentralized finance
+protocol, a security-based swap.#note_ref(7) The rule's appeal is real ---
+listing status is objective and easy to verify --- but it makes the venue
+finding dispositive of the instrument finding, and the same instrument
+offered two ways is the same instrument: a category that flips with the
+venue is defeasible by re-venuing the offer, the defect the invariance
+test of position 5 screens for. The objectivity sought is available one layer down, in the
+instrument's own terms --- reference, payout, contingency --- which do not
+move when the offer does. The venue fact remains real and separately
+findable; this position asks only that it be found as a venue fact, and
+this comment does not ask this proceeding to decide any facility's
+registration status.
 
 = Specific requests
 
@@ -253,18 +303,18 @@ separate so that question can be decided accurately when it arises.
    effect and consideration coincide; and that a participant's contingent
    exposure is found separately, distinguishing a fully hedged holding from
    an unbalanced one. (Positions 2 through 4.)
-3. Publish paired examples that hold the computation constant and vary the
-   reference object, so the swap, security-based swap, and mixed-swap
-   boundaries are illustrated by nexus facts rather than software labels.
-   (Position 5.)
+3. In answering Question 8, adopt classification criteria that are
+   invariant under bundling and unbundling, and test any proposed criterion
+   against the complete-set operation before adopting it. (Position 5.)
 4. State expressly that full prefunding, fixed maximum loss, fail-closed
    settlement terms, and formal verification are risk facts relevant where
    risk is the operative question, not classification exclusions.
    (Position 6.)
 5. Use separate instrument, venue, intermediary, and clearing findings;
-   analyze software activity by function performed; and provide a bounded
-   process through which a developer can present a staged design's factual
-   matrix and receive stage-specific guidance before deployment.
+   analyze software activity by function performed; state that a venue or
+   listing finding does not decide the instrument finding; and provide a
+   bounded process through which a developer can present a staged design's
+   factual matrix and receive stage-specific guidance before deployment.
    (Position 7.)
 
 = Limits
@@ -296,11 +346,12 @@ market infrastructure, and none has been independently audited.
 #table(
   columns: (1fr, 2.1in),
   table.header([*Claim*], [*Basis*]),
-  [The Commissions request objective criteria distinguishing the product categories (Question 1)], [Joint request for comment; source note 1],
+  [The Commissions request objective criteria distinguishing the product categories and ask when event contracts referencing securities fall within the options exclusion (Questions 1 and 8)], [Joint request for comment; source note 1],
   [The CEA separately defines trading-facility, swap-execution-facility, and derivatives-clearing-organization functions], [7 U.S.C. section 1a; source note 2],
   [The 2012 joint release adopted the current product definitions], [77 Fed. Reg. 48208; source note 3],
   [The Exchange Act defines security-based swap], [15 U.S.C. section 78c(a)(68); source note 4],
   [Regulation 40.11 and a pending 2026 proposal address event contracts and public-interest review], [Source notes 5 and 6],
+  [The description of the FalconX Bravo listing-status proposal], [The filed comment; source note 7],
   [An order can fix actor, affected balances, and the exact limits of the permitted fill, with a nonconforming fill failing and changing nothing], [Model theorems in the submitter's guarded-commitment research; not deployed controls],
   [The worked example's core accounting --- deposit, recombination, resolution, redemption, with conservation and pool-coverage checks --- has been implemented offline with passing deterministic tests], [Pure-Rust research prototype reviewed by the submitter; tested, not formally verified; not deployed],
   [No artifact described in this comment is deployed, funded, offered, or operating], [The submitter's repository status records; a statement about the submitter's own artifacts, not about any third party],

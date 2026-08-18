@@ -263,3 +263,113 @@ Body word counts (Typst source, `wc -w`), Draft 5 to Draft 6: definitions
 462 (positions carry more content than questions at the same length class).
 Earlier draft PDFs are untouched. `scripts/build-regulatory-pdfs.sh` now
 builds the draft-6 filenames; `scripts/check.sh` passes.
+
+---
+
+# Draft 7 section (appended 2026-08-18 by the Draft 7 rebalance lane)
+
+Draft 7 recenters the three filings on the ground no other filer occupies,
+implementing the three recommendations of
+`research-memos/FILED_COMMENTS_LANDSCAPE.md` (the survey of all eleven
+comments filed across the three dockets as of 2026-08-18), with meeting-agenda
+facts from `research-memos/OPEN_MATTERS_MAP.md` Part 1. The Draft 6 register
+rule is unchanged and restated by reference: positions are advocacy; every
+factual sentence about the submitter's artifacts keeps its exact ceiling
+wording; ceilings bound wording and never generate sentences; deleting a
+claim entirely is always permitted. Nothing in this section raises any
+ceiling. Citing other filed comments by name and docket number is ordinary
+notice-and-comment practice; both engagements below characterize the cited
+comments only as the landscape memo records their filed text.
+
+## Draft 7 position register changes
+
+### Definitions comment (RIN 3038-AF71 / S7-2026-21) — now answers Questions 1 and 8
+
+| Change | Detail | Basis |
+|---|---|---|
+| P-D5 DEMOTED | No longer a numbered position. One sentence after the summary list acknowledges the reference-object allocation question is well covered by other commenters (four of the five other definitions filers argue it, landscape §3.2) and retains the SBS-prong observation as a clause, keeping V-35's "onchain digital-asset price" wording. The mixed-swap-narrowness sentence and the paired-examples request were deleted (permitted). | Landscape recommendation 2 |
+| P-D8 PROMOTED (summary position 5) | Bundling-invariance, promoted from `research-memos/definitions-q8-event-contracts-and-options-on-securities.md` (rated Strong): a complete set of cash-or-nothing claims over an exhaustive partition is a portfolio of such claims on one reference variable, economically identical to its collateral; the worked example's deposit/recombination terms perform bundling and unbundling at no cost; a criterion that classifies bundle and parts differently contains a classification arbitrage exercisable for free. Framed as a TEST proposed criteria must survive, not only a position. The no-position statement on Questions 12-15 is unchanged. | Options exclusion and option prong as quoted in the joint request (note 1, 91 FR 37874-76); 7 U.S.C. 1a(19)(iv) via note 2; 15 U.S.C. 78c(a)(68)(A) via note 4 — all fetch-verified in LA §9 rows 8, 9, 11. Counterargument addressed: administrability/relabeling, answered per the memo (under invariance neither relabeling changes the answer) |
+| By-name engagement (in P-D7's argument) | FalconX Bravo, Inc., comment CFTC-2026-1355-0006 (posted 2026-08-17), proposes classifying cash-settled perpetuals on a single security/NBSI by listing status — the venue finding dispositive of the instrument finding, the collapse P-D7 rejects. Answered directly and collegially: the rule's objectivity is credited; the answer is that the same instrument offered two ways is the same instrument, a category that flips with the venue is defeasible by re-venuing (the defect the invariance test screens for), and the objectivity sought is available in the instrument's own terms. New source note 7 (regulations.gov URL, retrieved 2026-08-18); appendix row added; P-D7's request now asks the Commissions to state that a venue or listing finding does not decide the instrument finding. | Landscape §3.4 and recommendation 2. Tone calibrated collegial-direct (the comment's author is an IAC member, per coordinator/open-matters intel) |
+
+### Data-reporting comment (RIN 3038-AF70 / S7-2026-22)
+
+| Change | Detail | Basis |
+|---|---|---|
+| P-R6 NARROWED to endorsement plus delta | The generic executable-validator layer is ceded BY NAME to Ariadne Dataworks Ltd., comment CFTC-2026-1354-0002 (posted 2026-07-14): its field dictionary, executable openly licensed validation logic with public conformance corpus, and normative lifecycle event model are endorsed, expressly not restated. The seven-item Q19 package was deleted as a list. Retained as this filing's own three layers: (1) binding validators to the three-record structure, with the validation package as the fully-public third record; (2) the recomputation-validator form — "the rule is the check" — distinguished from conformance testing; (3) the failure taxonomy with rejected and backend-unavailable held deliberately apart. New source note 5 (regulations.gov URL, retrieved 2026-08-18); appendix row added. | Landscape §3.2 (P-R6 "not white space and we are second to it") and recommendation 1 |
+| Question 8 deepened | The one-sentence leakage-surface list expanded into a five-row table of base-chain surfaces outside any regulated tape — public mempool, fee payer, funding graph, failed instruction, settlement graph — each with what it reveals independently of dissemination policy, plus the ask that evaluation state per surface whether a design closes, narrows, or leaves it open. These are analytical claims about public-ledger mechanics; a new appendix row marks them analytical, not measurements. The N-5 laboratory hedge set is intact and unchanged. | Landscape recommendation 1 ("the only technical content in either docket that no other filer touches at all") |
+
+### IAC written statement (Docket CFTC-2026-1717)
+
+| Change | Detail | Basis |
+|---|---|---|
+| P-I8 NEW | Manipulation-cost position from `research-memos/definitions-q15-reference-integrity.md`, scope-blocked in the definitions comment by its own no-position statement on Questions 12-15, unblocked here, landing on P-I5's surveillance territory: removing settlement discretion relocates manipulation risk to the reference market rather than removing it; the inputs that price the attack on an onchain reference are public, so a manipulation-cost bound is computable in advance and surveillance should consume it as a screening input; the ask is the reference specification (venue, statistic, sampling grid, window, source-failure rule) in the terms — inputs, not a conclusion. Deliberately self-critical about the submitter's own design pattern. NO number appears, per the memo's own gate; a new appendix row records "drafting analysis; no manipulation-cost measurement or study of any real venue." Method-neutral as to reference/oracle providers (none is named). | Landscape recommendation 3; memo positions 1-3 and its counterargument section |
+| Machine-checked negatives TABLE | N-1/N-2/N-3 rendered as a three-column table (property / counterexample shown (formal model) / consequence for supervision). Ceiling wording carried verbatim into the cells: N-1's "a property I have machine-checked in formal models of the commitment pattern" and "no primitive allows an obligation whose amount or obligor is fixed later"; N-2's full sentence including ", a failure mode I have exhibited concretely in a formal model"; N-3's "Two withdrawals can each be valid against the same pool and jointly overdraw it --- a fact I have machine-checked" and "cannot be checked in independent fragments and merged." The walk's duplicate attributions were compressed (the wording lives in the table); the table intro and row 3's consequence restate model-only / not-a-compliance-conclusion / serialization as a choice to verify, not a guarantee to assume. The consequence column is advocacy and creates no new factual claim. | Landscape recommendation 3; N-1/N-2/N-3 ceilings, no change in claim content |
+| Agenda citation | New source note 12: the published meeting agenda (cftc.gov PDF announced by Press Release 9283-26, August 13, 2026; retrieved 2026-08-18), cited once in Position 8 for the fact that Session III lists market surveillance and manipulation concerns. The statement asserts nothing about what will occur at the meeting. | OPEN_MATTERS_MAP Part 1 |
+| Deletions and compressions (permitted) | The five-row milestone summary table deleted (the taxonomy remains in P-I1, the five-paragraph walk, and requested work product 1); the standalone two-questions paragraph reduced to the Dark question, with the procedural-vehicle openness folded into Position 7's close ("which vehicle, the Commission's choice") — both still stated as open questions; six legal-recital appendix rows merged into one consolidated row (all bases and note references preserved); assorted prose tightened. | Page budget and the reserved slack |
+| Slack reserved | Content ends with roughly half of page 7 empty (measured ~43% of the final text block free) so a possible attestable-autonomous-agents addendum (Session II-responsive, drafted separately) is not crowded out. | Coordinator direction |
+
+### IAC cover statement
+
+Eight positions now: C-8 added as the one-sentence form of P-I8; heading and
+metadata title updated to "Eight Positions on Programmable Contingent
+Transactions" (supersedes the Draft 6 seven-position description; V-34's
+identifier, note, and warning-block requirements remain met). Exactly one
+page. In the squeeze, C-1 dropped its label examples (they remain in the
+statement's position 1) and several items were shortened; the scope
+disclaimer sentence is retained verbatim.
+
+## Micro-nits fixed (smartquote rendering)
+
+- "Regulation 40.11's" possessive rephrased ("The current scope of
+  Regulation 40.11, ...") — Typst renders a prime after a digit.
+- Two new digit-possessives avoided during drafting ("position 5's" →
+  "the invariance test of position 5").
+- Possessives after abbreviation periods ("Ariadne Dataworks Ltd.'s",
+  "FalconX Bravo, Inc.'s"), which Typst renders with an opening quote,
+  rephrased out.
+
+## Factual-row survival (verified against the Draft 7 sources, 2026-08-18)
+
+- **Verbatim or narrowed:** V-17 ("not a deployed system, a product, or an
+  offer" and "tested, not formally verified" in all three bodies), V-18,
+  V-19 (scope disclaimer verbatim in definitions, IAC, cover), V-21, V-22,
+  V-23/V-38(b) (verbatim), V-24/V-38(c) (verbatim), V-26, V-28, V-32, V-33
+  (all IAC note_refs 1-11 still referenced, now plus 12; identifiers and
+  deadline unchanged; per-filing note_ref-to-source-entry bijection verified
+  by script for all four filings), V-35 ("onchain digital-asset price"
+  retained in the demoted P-D5 sentence), V-36 (table intro unchanged),
+  V-37 (template untouched this draft), V-38(d)/(e) (verbatim), V-38(a)/(f)
+  appendix rows (verbatim), N-1 definitions (verbatim), N-1/N-2/N-3 IAC
+  (wording now carried in the negatives table, as recorded above), N-4
+  (verbatim), N-5 (laboratory description and full hedge set verbatim).
+- **Deleted entirely (permitted; no ceiling violated):** the definitions
+  Position 5 (reference-object) argument section including the mixed-swap
+  sentence; the definitions paired-examples request; the definitions
+  key_point callout (re-rendered as a plain paragraph, content preserved);
+  the data seven-item Q19 list (superseded by the endorsement plus the three
+  retained layers); the IAC milestone summary table; assorted transition
+  sentences recorded in the compressions row above.
+- **Register notes:** the demoted P-D5 remains the commenter's observation,
+  not a classification of any product; P-D8 and P-I8 are advocacy argued
+  from fetch-verified sources already in LA §9; the IAC "kept as genuine
+  questions" set is intact (Dark preclusion; the predeployment vehicle).
+
+## Draft 7 artifacts (built 2026-08-18; Typst embeds a creation timestamp, so a rebuild changes the hash — these identify the artifacts currently in `output/pdf/`)
+
+- `joint-definitions-comment-draft-7.pdf` — 7 pages, SHA-256
+  `69b21b1952f95378c793eebb025767a72f78daa9bc82e047e907b5bc02328678`
+- `joint-data-reporting-comment-draft-7.pdf` — 8 pages, SHA-256
+  `08341ad3f650ede9374464cca47ec53e5a62076c2e12c4912363d3bde9d06285`
+- `cftc-iac-written-statement-draft-7.pdf` — 7 pages (content ends with
+  roughly half of page 7 empty), SHA-256
+  `97bfee7090938b9b0bc95a1a4b38bf49d7b7101037a98ecac3b9607c2e6a1211`
+- `cftc-iac-cover-statement-draft-7.pdf` — 1 page, SHA-256
+  `6fc12d9960e9578a5dae3698db4f92f8251e9073d13dc184f6a105d39e109297`
+
+Page budgets equal the frozen-typography Draft 6 counts (7/8/7/1) and are
+met. Body word counts (Typst source, `wc -w`), Draft 6 to Draft 7:
+definitions 2695 to 3288; data-reporting 2968 to 3394; IAC 2708 to 2910;
+cover 462 to 439. Draft 6 and earlier PDFs are untouched.
+`scripts/build-regulatory-pdfs.sh` now builds the draft-7 filenames;
+`scripts/check.sh` passes. Metadata marks read "DRAFT 7 FOR REVIEW - NOT
+FILED" on all four.

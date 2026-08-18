@@ -1,0 +1,61 @@
+{
+  "schema": "leakage-lab-v1",
+  "provenance": "synthetic hand-authored bounded traces; no network or private data",
+  "traces": [
+    {
+      "trace_id": "balanced-cross",
+      "batch_id": "batch-001",
+      "market_id": "asset-x/asset-y",
+      "epoch": 7,
+      "cutoff_tick": 100,
+      "root": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "orders": [
+        {"slot": 0, "owner": "alice", "side": "buy", "limit": 102, "quantity": 5, "submitted_tick": 94, "wire_bytes": 64},
+        {"slot": 1, "owner": "bob", "side": "buy", "limit": 101, "quantity": 2, "submitted_tick": 98, "wire_bytes": 96},
+        {"slot": 2, "owner": "carol", "side": "sell", "limit": 100, "quantity": 3, "submitted_tick": 95, "wire_bytes": 64},
+        {"slot": 3, "owner": "dave", "side": "sell", "limit": 101, "quantity": 4, "submitted_tick": 99, "wire_bytes": 128}
+      ],
+      "audit": {"requests": 1, "match_count": 1, "record_ids": ["receipt-0"]}
+    },
+    {
+      "trace_id": "no-cross",
+      "batch_id": "batch-002",
+      "market_id": "asset-x/asset-y",
+      "epoch": 8,
+      "cutoff_tick": 200,
+      "root": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "orders": [
+        {"slot": 0, "owner": "alice", "side": "buy", "limit": 100, "quantity": 3, "submitted_tick": 194, "wire_bytes": 64},
+        {"slot": 1, "owner": "bob", "side": "sell", "limit": 103, "quantity": 3, "submitted_tick": 197, "wire_bytes": 64}
+      ],
+      "audit": {"requests": 0, "match_count": 0, "record_ids": []}
+    },
+    {
+      "trace_id": "availability-abort",
+      "batch_id": "batch-003",
+      "market_id": "asset-x/asset-y",
+      "epoch": 9,
+      "cutoff_tick": 300,
+      "root": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "abort": "UNAVAILABLE_BEFORE_CUTOFF",
+      "orders": [
+        {"slot": 0, "owner": "alice", "side": "buy", "limit": 102, "quantity": 5, "submitted_tick": 294, "wire_bytes": 64},
+        {"slot": 1, "owner": "bob", "side": "sell", "limit": 100, "quantity": 5, "submitted_tick": 299, "wire_bytes": 64}
+      ],
+      "audit": {"requests": 2, "match_count": 4, "record_ids": ["receipt-0", "receipt-1", "receipt-2", "receipt-3"]}
+    },
+    {
+      "trace_id": "lowest-price-tie",
+      "batch_id": "batch-004",
+      "market_id": "asset-x/asset-y",
+      "epoch": 10,
+      "cutoff_tick": 400,
+      "root": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+      "orders": [
+        {"slot": 0, "owner": "alice", "side": "buy", "limit": 102, "quantity": 5, "submitted_tick": 394, "wire_bytes": 64},
+        {"slot": 1, "owner": "bob", "side": "sell", "limit": 100, "quantity": 5, "submitted_tick": 395, "wire_bytes": 64}
+      ],
+      "audit": {"requests": 0, "match_count": 0, "record_ids": []}
+    }
+  ]
+}

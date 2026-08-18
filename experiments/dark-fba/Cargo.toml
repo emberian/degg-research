@@ -1,0 +1,18 @@
+[package]
+name = "dark-fba-toy"
+version = "0.0.0"
+edition = "2024"
+publish = false
+license = "AGPL-3.0-or-later"
+description = "Offline fixed-grid frequent-batch relation research toy"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "dark-fba-vectors"
+path = "src/main.rs"
+
+[lints.rust]
+unsafe_code = "forbid"
+

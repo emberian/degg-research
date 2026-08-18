@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+output_dir="$repo_root/output/pdf"
+mkdir -p "$output_dir"
+
+typst compile --root "$repo_root" \
+  "$repo_root/docs/regulatory/typst/definitions/main.typ" \
+  "$output_dir/joint-definitions-comment-draft-3.pdf"
+
+typst compile --root "$repo_root" \
+  "$repo_root/docs/regulatory/typst/data-reporting/main.typ" \
+  "$output_dir/joint-data-reporting-comment-draft-3.pdf"
+
+typst compile --root "$repo_root" \
+  "$repo_root/docs/regulatory/typst/iac/main.typ" \
+  "$output_dir/cftc-iac-written-statement-draft-3.pdf"
+
+typst compile --root "$repo_root" \
+  "$repo_root/docs/regulatory/typst/iac-cover/main.typ" \
+  "$output_dir/cftc-iac-cover-statement-draft-3.pdf"
+
+pdfinfo "$output_dir/joint-definitions-comment-draft-3.pdf" >/dev/null
+pdfinfo "$output_dir/joint-data-reporting-comment-draft-3.pdf" >/dev/null
+pdfinfo "$output_dir/cftc-iac-written-statement-draft-3.pdf" >/dev/null
+pdfinfo "$output_dir/cftc-iac-cover-statement-draft-3.pdf" >/dev/null
+
+printf '%s\n' "regulatory PDFs built in $output_dir"

@@ -1,0 +1,16 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+target/
+build/
+dist/
+out/
+__pycache__/
+*.py[cod]
+tmp/
+state/
+artifacts/private/
+*.pem
+*.key
+*.secret

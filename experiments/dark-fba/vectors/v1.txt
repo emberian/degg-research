@@ -1,0 +1,9 @@
+dark-fba-vectors-v1
+case=balanced-residual|status=ok|executed=shielded-single-executor|tick=2|volume=5|fills=5,0,3,2|owners=o0:b5:s0:db5:dq-15:rb0:rq0;o1:b0:s0:db0:dq0:rb0:rq6;o2:b0:s3:db-3:dq9:rb1:rq0;o3:b0:s2:db-2:dq6:rb2:rq0|root=1111111111111111111111111111111111111111111111111111111111111111
+case=price-tie-low|status=ok|executed=clear|tick=1|volume=4|fills=4,4,0,0|owners=o0:b4:s0:db4:dq-8:rb0:rq4;o1:b0:s4:db-4:dq8:rb0:rq0;o2:b0:s0:db0:dq0:rb0:rq0;o3:b0:s0:db0:dq0:rb0:rq0|root=2222222222222222222222222222222222222222222222222222222222222222
+case=no-trade|status=ok|executed=clear|tick=none|volume=0|fills=0,0,0,0|owners=o0:b0:s0:db0:dq0:rb0:rq2;o1:b0:s0:db0:dq0:rb2:rq0;o2:b0:s0:db0:dq0:rb0:rq0;o3:b0:s0:db0:dq0:rb0:rq0|root=3333333333333333333333333333333333333333333333333333333333333333
+case=late-order|status=refused|error=order[0]:ArrivedAfterCutoff
+case=payload-unavailable|status=refused|error=boundary:PayloadUnavailable
+case=duplicate-nullifier|status=refused|error=order[1]:DuplicateNullifier { first_slot: 0 }
+case=under-reserved|status=refused|error=order[0]:InsufficientReservation { required: 12, supplied: 11 }
+case=dark-target|status=refused|error=dark-backend-absent

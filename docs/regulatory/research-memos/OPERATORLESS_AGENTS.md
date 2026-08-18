@@ -411,3 +411,15 @@ addendum decision rides the Draft 7 freeze. If the answer is no-go, this
 memo stands alone as research, and the full-length version of section 3
 belongs to the software-provider rulemaking that Letter 26-09 anticipates
 rather than to this statement.
+
+
+> **Ceiling correction (2026-08-19, primary-source verified):** breadstuffs
+> commit `183d82817` (2026-07-11) records an executed live MPC-TLS 2PC session
+> against real `api.coinbase.com` (real socket, Mozilla root store, genuine
+> cert chain, selective disclosure of the price field, local separate notary,
+> recorded value and command). "No live provider session" is therefore too
+> strong as an unqualified statement. The precise ceiling: **a live MPC-TLS
+> session against a real third-party HTTPS host (an exchange price API) was
+> performed and recorded on 2026-07-11; no live MODEL-provider session
+> (Anthropic or Bedrock) has been performed.** This is a commit-message record
+> plus the committed code path, not a fresh reproduction (gate R).

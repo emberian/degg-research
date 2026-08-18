@@ -58,7 +58,7 @@ facts that cut in different regulatory directions.
 Part of the certificate stack this needs is real: my local research
 artifacts implement a Lean-authored parse/guard STARK and a genuine
 TLSNotary 2PC integration, joined by a shared content commitment and
-tested for refusal, with no live-provider session, no onchain posting
+tested for refusal, with no live model-provider session, no onchain posting
 path, and no verifiable-inference backend. Proving the whole execution
 history is a named, machine-readable gap, so the executing host is
 currently trusted; and the transcript leg pins a named notary, which is an
@@ -78,7 +78,7 @@ own toolchain pin (record of 2026-08-19) --- with the Lean emit step not
 re-run: the committed emitted descriptor, whose Lean pinning is inherited
 from the commit, is what the tamper canaries exercised.
 
-No live provider session, no onchain posting path, no verifiable-inference
+No live model-provider session (a live exchange-API MPC-TLS session was recorded 2026-07-11), no onchain posting path, no verifiable-inference
 backend, no deployed agent, no funded market; the executing host and the
 pinned notary are trusted.
 

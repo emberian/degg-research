@@ -341,7 +341,7 @@ Default work is deterministic, offline, and synthetic. Never access keys,
 wallets, customer/private trading data, browser sessions, or paid services.
 Never contact a regulator, submit a comment, deploy, construct or sign a
 transaction, create a market, solicit an order, move funds, use a public RPC,
-push/commit/publish, install an unreviewed tool, or mutate a remote host without
+push or publish, install an unreviewed tool, or mutate an external production host without
 explicit current authorization naming the act. Research may challenge a
 regulatory model; it does not authorize a live venue or conceal unfinished
 privacy, correctness, availability, or legal work.

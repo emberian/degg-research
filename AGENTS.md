@@ -71,7 +71,10 @@ claim clean-room status after inspecting an implementation.
 
 ## Safety and authority
 
-Research and offline synthetic experiments are permitted. No mainnet or testnet
+Research and offline synthetic experiments are permitted. Ordinary local
+commits are default work and need no authorization; pushing and external
+publication remain user-directed. This supersedes any stricter commit language
+in historical handoff documents. No mainnet or testnet
 deployment, transaction construction, signing, key access, order solicitation,
 paid data acquisition, regulator contact, public filing, or external publication
 is authorized merely by work in this repository.

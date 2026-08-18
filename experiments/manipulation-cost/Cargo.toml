@@ -1,0 +1,17 @@
+[package]
+name = "degg-manipulation-cost"
+version = "0.0.0"
+edition = "2024"
+publish = false
+license = "AGPL-3.0-or-later"
+description = "Offline exact-integer lower bounds on the cost of moving a venue-read TWAP across a decision boundary, on synthetic constant-product pools"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "manipulation-cost-vectors"
+path = "src/bin/vectors.rs"
+
+[lints.rust]
+unsafe_code = "forbid"

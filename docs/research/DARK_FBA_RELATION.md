@@ -279,3 +279,146 @@ source or fixtures were transplanted from sibling repositories. Because the
 author previously inspected related implementations, this document does not
 claim clean-room status. See
 [`PROVENANCE.md`](../../experiments/dark-fba/PROVENANCE.md).
+
+## 13. Addendum, 2026-08-18: independent implementation and differential run
+
+This section records a second implementation of the relation and an exhaustive
+differential comparison against `experiments/dark-fba`. It adds no privacy
+claim, and it does not weaken or restate any claim above. Both oracles are Clear
+or `ShieldedSingleExecutor` semantics; nothing here is evidence about a Dark
+backend, which still does not exist.
+
+### 13.1 What was built
+
+`experiments/dark-fba-independent/oracle` is a second, dependency-free Rust
+oracle for `dark-fba/n4-k4-q15/v0`, written from `relations/CLEARING_V0.md` and
+sections 1 through 11 of this document alone. Its own 35-test suite covering
+admission refusals, curve construction, maximum-volume and ties-low selection,
+largest-remainder exactness, residual rank, and conservation passed before any
+line of the existing implementation's source was read. The file digests at that
+boundary are recorded in
+`experiments/dark-fba-independent/INDEPENDENCE.md`. The existing implementation
+was then read once, in order to write the adapter, and neither implementation
+was modified: the recorded digests were re-verified after the differential run
+and are unchanged, so the comparison ran against the pre-read artifact exactly.
+
+`experiments/dark-fba-independent/differ` enumerates finite domains of batches,
+runs both oracles on every batch, and compares complete outputs: accept versus
+refuse, refusal class, clearing tick or no-trade tag, public volume, the
+per-slot allocation vector, and every owner-local output.
+
+### 13.2 Differential domain and case counts
+
+| Domain | Content | Cases |
+|---|---|---:|
+| A | Every book over the complete frozen order domain: four padded slots, each vacant or a (side, tick, quantity) triple with quantity `1..=15`; `121^4` | 214,358,881 |
+| B | Every book over quantity `1..=2` (`17^4`) crossed with all `4^4` owner assignments and four reservation-surplus patterns | 85,525,504 |
+| C | Six base books crossed with every subset of size at most three drawn from 78 admission perturbations | 474,948 |
+| | Total | 300,359,333 |
+
+Domain A is exhaustive over the whole frozen order domain of section 2, so the
+clearing and allocation semantics are compared on every book the relation
+admits, not on a sample. Domain A holds owner `i` at slot `i` and reserves
+exactly the required amount; domain B varies exactly those two dimensions.
+Domain C is the refusal surface, and its multi-perturbation subsets are what
+expose disagreement about which rule wins when one witness violates several.
+
+### 13.3 Result
+
+VERIFIED on 2026-08-18, at exactly these bounds: over 300,359,333 enumerated
+batches the two independent implementations agree on every accept-versus-refuse
+verdict, and on every settled batch they agree on the clearing tick or no-trade
+tag, the public volume, the complete per-slot allocation vector, and every
+owner-local output. Domains A and B produced zero divergences of any kind.
+
+Domain C produced 11,587 divergences, all of one kind: both oracles refuse the
+same batch but name different refusal classes. They fall into sixteen class
+pairs, and all sixteen are consequences of two check-priority choices that
+neither this document nor `CLEARING_V0.md` fixes:
+
+1. Order of the two domain checks. The independent oracle tests the limit tick
+   before the quantity; the existing toy tests the quantity before the limit.
+   Minimal witness, one slot, everything else empty and canonical:
+   `slot0 = buy(owner 0, limit 4, quantity 0, reserved 0, nullifier 1)`. The
+   independent oracle answers `limit-out-of-domain`; the existing toy answers
+   `order[0]:QuantityOutOfRange`. 4,311 cases.
+
+2. Position of the nullifier rules. The existing toy tests each slot's zero and
+   duplicate nullifier before that slot's arrival, authorization, eligibility,
+   inclusion, and reservation rules, and returns at the first failing slot. The
+   independent oracle applies every per-slot rule to every slot first and tests
+   batch-scoped nullifier uniqueness afterwards. Minimal witness:
+   `slot0 = buy(owner 0, limit 0, quantity 1, reserved 1, nullifier 1)`,
+   `slot1 = buy(owner 0, limit 0, quantity 1, reserved 0, nullifier 1)`. The
+   independent oracle answers `reservation-insufficient`; the existing toy
+   answers `order[1]:DuplicateNullifier { first_slot: 0 }`. 7,276 cases across
+   the remaining fifteen pairs.
+
+A third, deliberately naive rule enumerator in the harness checks every
+admission rule independently rather than at first failure. In all 11,587
+divergences it confirms that both reported classes correspond to rules the
+witness genuinely violates: neither oracle ever names a rule that is not
+broken. The disagreement is therefore about priority among simultaneously
+violated rules, not about the admission predicate.
+
+This is a real gap in the specification, not a defect in either
+implementation. Section 4 says a malformed batch is refused and must not be
+reinterpreted as no trade, but it does not say which class a batch violating
+several rules must report. A backend that publishes a typed refusal class makes
+that class an observable, and section 8 already requires failure to be a public
+typed class; two conforming implementations can therefore disagree publicly.
+Freezing a check order, or declaring the reported class underdetermined, is
+open work for v0.
+
+The sixteen pairs, with counts, are:
+
+```text
+batch-binding-mismatch   vs nullifier-repeated       216
+inclusion-absent         vs nullifier-repeated       494
+inclusion-absent         vs nullifier-zero           591
+ineligible               vs nullifier-repeated       517
+ineligible               vs nullifier-zero           606
+late-arrival             vs nullifier-repeated       563
+late-arrival             vs nullifier-zero           636
+limit-out-of-domain      vs nullifier-repeated       369
+limit-out-of-domain      vs quantity-out-of-domain  4311
+market-binding-mismatch  vs nullifier-repeated       209
+nullifier-zero           vs nullifier-repeated       111
+owner-out-of-domain      vs nullifier-repeated       397
+quantity-out-of-domain   vs nullifier-repeated       501
+reservation-insufficient vs nullifier-repeated       905
+unauthorized             vs nullifier-repeated       540
+unauthorized             vs nullifier-zero           621
+```
+
+### 13.4 Golden vector reproduction
+
+The published corpus `experiments/dark-fba/vectors/v1.txt` was regenerated from
+the independent oracle. Every settled line, and therefore every number in the
+corpus, reproduces byte-for-byte unaided. The five refusal lines carry each
+implementation's own class spelling; passing the independent oracle's classes
+through a declared one-to-one vocabulary map reproduces the whole file
+byte-for-byte, SHA-256
+`9a00d7393d00b5cca1e1b980a468a48cb7c21053fac8ae9e15abe2ba7fc9a767`. The
+reproduction is checked in at
+`experiments/dark-fba-independent/vectors/v1-independent-reproduction.txt`.
+
+### 13.5 Boundaries of this addendum
+
+- No privacy, noninterference, leakage, or confidentiality property is claimed,
+  tested, or implied. This is Clear-mode semantic falsification only.
+- Agreement between two implementations is not a proof. It is a falsification
+  attempt that failed on the stated domains; no formal theorem, mechanized
+  refinement, cryptographic argument, or independent audit is claimed.
+- The domains bound the claim exactly. Domain A is exhaustive over the frozen
+  order domain, but domain B restricts quantities to `1..=2`, and domain C
+  restricts admission faults to at most three simultaneous perturbations of six
+  base books.
+- One admission statement is untested by the differential: the existing toy's
+  `reservation_bound` witness, which stands for the custody-binding obligation
+  of section 4. The independent oracle does not model it and the harness always
+  supplies it as present. That the independent oracle omits a statement this
+  document requires is itself a finding about the independent oracle.
+- The vector layout was transcribed from the published corpus file, since a
+  serialization shape is a rendering convention rather than a semantic property
+  of the relation.

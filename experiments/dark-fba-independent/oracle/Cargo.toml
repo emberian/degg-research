@@ -1,0 +1,13 @@
+[package]
+name = "degg-batch-oracle"
+description = "Independent spec-derived oracle for the dark-fba/n4-k4-q15/v0 fixed-grid batch relation"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[lints]
+workspace = true

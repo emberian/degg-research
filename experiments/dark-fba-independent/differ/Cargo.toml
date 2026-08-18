@@ -1,0 +1,18 @@
+[package]
+name = "degg-batch-differ"
+description = "Exhaustive differential harness over two independent dark-fba oracles"
+version.workspace = true
+edition.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "degg-batch-differ"
+path = "src/main.rs"
+
+[dependencies]
+degg-batch-oracle = { path = "../oracle" }
+dark-fba-toy = { path = "../../dark-fba" }
+
+[lints]
+workspace = true

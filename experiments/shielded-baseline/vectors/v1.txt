@@ -1,0 +1,119 @@
+model degg-shielded-baseline/v0
+relation dark-fba/n4-k4-q15/v0
+module_digest a525e23aa7a8183753e631c846fa9a04d6272556e1c68fee6bfd5f1bbff66bfd
+inclusion_model degg-inclusion-availability/v0
+mode shielded-single-executor executor_learns_every_private_field=true
+
+[scenario balanced-residual]
+log submitted=4 admitted=4 refused=0 leaves=4
+cutoff_root a8d341ef638caf98dde85ec361a2cea9e7750c4b4997824ade00852e96670341
+boundary 0 port=admission-log-final holds=true object=observed CutoffRoot and BatchMachine phase
+boundary 1 port=root-binds-slots holds=true object=one verified InclusionReceipt per committed position
+boundary 2 port=no-conflicting-root holds=true object=absence of a verified EquivocationVerdict for this domain
+boundary 3 port=payloads-available holds=true object=availability reports against the domain threshold
+public settled tick=tick-2 volume=5
+label shielded-single-executor
+receipt status=settled
+receipt module_digest a525e23aa7a8183753e631c846fa9a04d6272556e1c68fee6bfd5f1bbff66bfd
+receipt input_digest 1f25e60cf2a1784c87be75dbacc733d639b94562db21447413b25f403fc045db
+receipt outcome_digest f414fe8a3bad9f73e74e2f857b8c74221065a46b64f42f6ac95ab581dc8db563
+receipt delivery_root 7c4f4629f951fcdfd6ddfb24a248fa2824d1b6613d1aa8abffbffbb3844b782a
+receipt binding 234dacaa4ce8146a0d504572efcaeded77ad79ee367fe914d78a41bc4b91a963
+delivery seq=0 padding=false fill=5 entry=93581b1b8ebb4dd54938ce16cef54102c54ef90f0b70acd6efc7b834255ebc5b path=2
+delivery seq=1 padding=false fill=0 entry=6e8a7cd5ea4146f7dc7e98f33fd40f88bc976823deb3758a9eec3fdba96c78ec path=2
+delivery seq=2 padding=false fill=3 entry=860a6b782b9fcf719d6920d94f2fbf3a4d3e2dcba5c9bdfd380615b6ffda0f19 path=2
+delivery seq=3 padding=false fill=2 entry=7ece90f27b83688d109d2e672ef5e01c4ab8b8465986296be7dade773ca4c6fd path=2
+owner 0 positions=1 findings=0 refusal=None delivered=3c639ec3263f10e11afafef656b978279a33e6b35777a403ba514a416b46ff60
+owner 1 positions=1 findings=0 refusal=None delivered=2da95bfcdd04344be59625ac8fa520bb6247553437204d6282497709048fdee7
+owner 2 positions=1 findings=0 refusal=None delivered=967ac90c897278b20f782d0eb186edaea77a061ccb0d4744ad0385214e0e8044
+owner 3 positions=1 findings=0 refusal=None delivered=b0109e3f435ab77fa40625d44ab6cd043e8a4b3b4be95c26bb1a212f3dca2265
+
+[scenario price-tie-low]
+log submitted=2 admitted=2 refused=0 leaves=4
+cutoff_root 3e93db70329f408741c5a4f3f11a89dabb571e1789f1bc41323092b42f79619c
+boundary 0 port=admission-log-final holds=true object=observed CutoffRoot and BatchMachine phase
+boundary 1 port=root-binds-slots holds=true object=one verified InclusionReceipt per committed position
+boundary 2 port=no-conflicting-root holds=true object=absence of a verified EquivocationVerdict for this domain
+boundary 3 port=payloads-available holds=true object=availability reports against the domain threshold
+public settled tick=tick-1 volume=4
+label shielded-single-executor
+receipt status=settled
+receipt module_digest a525e23aa7a8183753e631c846fa9a04d6272556e1c68fee6bfd5f1bbff66bfd
+receipt input_digest 0102664fedd04751a1aeb1ab4b64f19498be5ab5bd5291309eac549ecb855325
+receipt outcome_digest 8521dbf2500a90880a37f2f5d759c5a28df30908b5ca0ff992bb36c8e50b7720
+receipt delivery_root fe70c647a32196ff533801aaa6e0dd861d1cff395735b79e38d261a9471b294c
+receipt binding b67b50fc6dd5900f000c8f601aff347d5a7cef60290a2ccbaa5e9446ad8857a3
+delivery seq=0 padding=false fill=4 entry=f391b7b3643712c7a70946ade0df2defda2158d36cdb2511c659ea903657a0da path=2
+delivery seq=1 padding=false fill=4 entry=1638a4f2f19df49c13ff0ba2b2cf33331698d67d9bbdb3803702d0296f099df4 path=2
+delivery seq=2 padding=true none entry=4905d4dd2f18bc60e505ebf6d618734dc6a01a7ce9a80564f37d0cfbf8ba377a path=2
+delivery seq=3 padding=true none entry=243feaa4455a3b2b4115b368724cad67662d3dcff778391cc5fe95d381ee7745 path=2
+owner 0 positions=1 findings=0 refusal=None delivered=1fb3e8adeb1778a4227597c6fd4aa0e39052751c63cf3af5f94d5515d3c988dc
+owner 1 positions=1 findings=0 refusal=None delivered=0f67279aa0a0a3d989cc14e8139d091bd9de26c0f8b6a5f9c0de9794870e73d2
+owner 2 positions=0 findings=0 refusal=None delivered=7c9db1d81d180179386b4f5d76b3e977808997b61d99ee65e071ddf5551df328
+owner 3 positions=0 findings=0 refusal=None delivered=c2915512356e182d3797647ac4b2cf47d701eb75c0cb45b887fe2c6c3570c501
+
+[scenario no-trade]
+log submitted=2 admitted=2 refused=0 leaves=4
+cutoff_root 15969d124efccd80448e18f4ca4bb1f55ceef62706fce40c830a6dbf916534a3
+boundary 0 port=admission-log-final holds=true object=observed CutoffRoot and BatchMachine phase
+boundary 1 port=root-binds-slots holds=true object=one verified InclusionReceipt per committed position
+boundary 2 port=no-conflicting-root holds=true object=absence of a verified EquivocationVerdict for this domain
+boundary 3 port=payloads-available holds=true object=availability reports against the domain threshold
+public settled tick=no-trade volume=0
+label shielded-single-executor
+receipt status=settled
+receipt module_digest a525e23aa7a8183753e631c846fa9a04d6272556e1c68fee6bfd5f1bbff66bfd
+receipt input_digest bd2eef7e2b7d52c40ad9e1cfdcbb7749ea13028ff574f307672f89d881faf18f
+receipt outcome_digest 5eb8e839797afda1136ee21f89fb3f4a6cb83064c2b36c0a9ab059de42b74d33
+receipt delivery_root 226e0d0dfae6c71bb3557eeb7053fa7b5154ac184025613fae93a6775943de9d
+receipt binding 97b1788a2975d05d4f3eea9c182fc50a8db2a3259e98fa0a13b5137b2af8d9db
+delivery seq=0 padding=false fill=0 entry=9cfa6928641ce289ca9bb4e5fa21781a8f252078cd661190c754c51399ba77d8 path=2
+delivery seq=1 padding=false fill=0 entry=2e7e81fe22ccd96290ea2a1e1a03c381228403955cd0fa36c643c85b2fe34a1c path=2
+delivery seq=2 padding=true none entry=4905d4dd2f18bc60e505ebf6d618734dc6a01a7ce9a80564f37d0cfbf8ba377a path=2
+delivery seq=3 padding=true none entry=243feaa4455a3b2b4115b368724cad67662d3dcff778391cc5fe95d381ee7745 path=2
+owner 0 positions=1 findings=0 refusal=None delivered=b41b59965740733ba45d17485aa4e979d89661b6d8db57489aa8ba6a4b1e4a79
+owner 1 positions=1 findings=0 refusal=None delivered=1536c3f478e3e7ccea348d79b8405e5664ea99b4e80f3d830c7b4dce74b47665
+owner 2 positions=0 findings=0 refusal=None delivered=7c9db1d81d180179386b4f5d76b3e977808997b61d99ee65e071ddf5551df328
+owner 3 positions=0 findings=0 refusal=None delivered=c2915512356e182d3797647ac4b2cf47d701eb75c0cb45b887fe2c6c3570c501
+
+[scenario under-reserved]
+log submitted=2 admitted=2 refused=0 leaves=4
+cutoff_root d87c5341e69b25dc0a80630c04f43719588013cae225db52e16641b4f01a1cac
+boundary 0 port=admission-log-final holds=true object=observed CutoffRoot and BatchMachine phase
+boundary 1 port=root-binds-slots holds=true object=one verified InclusionReceipt per committed position
+boundary 2 port=no-conflicting-root holds=true object=absence of a verified EquivocationVerdict for this domain
+boundary 3 port=payloads-available holds=true object=availability reports against the domain threshold
+public refused class=reservation-insufficient
+receipt status=refused:reservation-insufficient
+receipt module_digest a525e23aa7a8183753e631c846fa9a04d6272556e1c68fee6bfd5f1bbff66bfd
+receipt input_digest 5903c4f2392cad2ed385e433f25b2055a66b72341a4756df6c06af440e02f50c
+receipt outcome_digest c7fd4e53263dbf4d10ca960643a89b899c53bc69f42c37991be7aaad71408b0d
+receipt delivery_root 54075323da763c456f83c89bae55d0318e8e34e44b0c954ed16a69ea17c3c2bd
+receipt binding 1dad7406e2de9aed2b77526f12d109f311ea2844a89abbe04026e15a17e9be77
+delivery seq=0 padding=false none entry=228dd41cd272854661555bd0401ab8ac4b709dc8b613171718d2d2f23ee0bddd path=2
+delivery seq=1 padding=false none entry=60a1997433735fd09868bf0ee55e7e07038f536f56539313d4cb44fe2f14b18a path=2
+delivery seq=2 padding=true none entry=4905d4dd2f18bc60e505ebf6d618734dc6a01a7ce9a80564f37d0cfbf8ba377a path=2
+delivery seq=3 padding=true none entry=243feaa4455a3b2b4115b368724cad67662d3dcff778391cc5fe95d381ee7745 path=2
+owner 0 positions=1 findings=0 refusal=Some(NotAttributable) delivered=none
+owner 1 positions=1 findings=0 refusal=Some(OwnPositionViolates { seq: 1 }) delivered=none
+owner 2 positions=0 findings=0 refusal=Some(NotAttributable) delivered=none
+owner 3 positions=0 findings=0 refusal=Some(NotAttributable) delivered=none
+
+[disputes]
+omission seq=2 verdict 45a305e24ac88fc9b4f0bc2e3277ccd519299fb652ddf6639c0e9d9859ca0a6b
+outcome_equivocation class=conflicting-outcome verdict 8f9865e5c16a34c58451644243dd20cc595e3ac583bab6f98c72b4d4d5b5fe13
+substituted_public_result_evades_every_owner_check true
+
+[abort]
+escrowed 29
+crash phase=compute-timeout epoch=15
+crash phase=compute-exhausted epoch=19
+consequence RefundEveryAdmittedRecord
+claim seq=0 refund=15
+claim seq=1 refund=6
+claim seq=2 refund=4
+claim seq=3 refund=4
+ledger refunded=29 settled=0 outstanding=0 conserves=true
+gap_c1 relation=refused:reservation-insufficient lifecycle_phase=settled phase-not-refundable:settled
+gap_c1 cutoff_withheld_class=cutoff-root-withheld
+gap_c1 fresh_watcher_phase=open

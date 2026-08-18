@@ -74,7 +74,7 @@ Both sources were retrieved August 17, 2026. Their filing and disclosure instruc
 
 **PROPOSED:**
 
-1. Have U.S. commodities counsel review the instrument, venue, clearing, intermediary, state-law, sanctions/AML, tax, and public-communications analysis. This packet intentionally does not conclude any of those questions.
+1. Confirm the in-house legal analysis ([`LEGAL_ANALYSIS.md`](./LEGAL_ANALYSIS.md)) is current for the exact final text, and obtain the designated reviewer's courtesy review of the final artifacts via [`JOHN_REVIEW_PACKET.md`](./JOHN_REVIEW_PACKET.md).
 2. Replace every bracketed identity placeholder and remove all drafting notes.
 3. Recheck all three official records for an extension, corrected notice, changed filing instruction, and, for the IAC, a late agenda.
 4. Confirm every cited link still resolves and every proposal is still accurately labeled **proposed**, not final.

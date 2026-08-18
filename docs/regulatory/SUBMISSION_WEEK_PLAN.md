@@ -42,11 +42,21 @@ Claim-label convention: **VERIFIED** is directly inspected; **SOURCED** is suppo
 - Run the repository checker and link checker; record unresolved links rather than silently deleting support.
 - Search all drafts for private keys, addresses, token holdings, revenue plans, counterparties, unannounced security details, home addresses, and unnecessary personal facts.
 
-### August 18: counsel and technical review
+### August 18: legal-analysis and technical review
 
 **PROPOSED:**
 
-- Ask U.S. commodities/securities counsel to review the instrument, swap/SBS/mixed-swap, venue, clearing, intermediary, confidentiality, and public-communications boundaries.
+- Complete and keep current the in-house legal analysis
+  ([`LEGAL_ANALYSIS.md`](./LEGAL_ANALYSIS.md)): the comment-filing act, the
+  instrument/venue/intermediary/clearing exposure map, the event-contract
+  boundary, publication-vs-operation, and the project risk register — every
+  legal citation verified against a fetched primary source with a recorded
+  retrieval date. There is no retained counsel; this analysis is research
+  work-product, not legal advice.
+- Send the user's designated reviewer the courtesy-review packet
+  ([`JOHN_REVIEW_PACKET.md`](./JOHN_REVIEW_PACKET.md)) with the exact review
+  artifacts; the packet preprocesses everything so the review is a short,
+  bounded favor answering the specific questions it poses.
 - Ask a technical reviewer to challenge the guarded-hole and candidate-result descriptions against the frozen commits.
 - Ask a privacy/security reviewer to challenge the leakage claims, disclosure governance, key recovery, finality, and failure modes.
 - Resolve whether “maximum possible value movement” is actually fixed by every application described; narrow any statement that overgeneralizes the primitive.
@@ -84,7 +94,7 @@ Claim-label convention: **VERIFIED** is directly inspected; **SOURCED** is suppo
 **PROPOSED:**
 
 - Replace all identity/date placeholders.
-- Delete every pre-filing note block, unless counsel affirmatively wants the research-label note retained.
+- Delete every pre-filing note block, unless the user affirmatively decides the research-label note should be retained.
 - Render or convert each comment to the intended submission format and visually inspect headings, tables, footnotes, URLs, and page breaks.
 - Compare each title, RIN, SEC file number, and question number against the official notice.
 - Recheck the deadline and submission page.
@@ -97,7 +107,7 @@ Claim-label convention: **VERIFIED** is directly inspected; **SOURCED** is suppo
 
 **PROPOSED:**
 
-- Before filing, decide with counsel/submitter which agency route to use for each joint comment and confirm whether a filing through one route is reflected in both agencies’ records. Do not assume cross-posting from the notice’s silence.
+- Before filing, the user decides which agency route or routes to use for each joint comment, informed by [`LEGAL_ANALYSIS.md`](./LEGAL_ANALYSIS.md) §7 item 3 and the designated reviewer’s answer. Do not assume cross-posting from the notice’s silence.
 - Use only the authorized method for the selected route; do not send duplicate copies through multiple channels absent an intentional, reviewed reason.
 - Confirm that the Definitions filing references the exact joint title and **RIN 3038-AF71** if using the CFTC route, or **File No. S7-2026-21** if using the SEC route.
 - Confirm that the Data filing references the exact joint title and **RIN 3038-AF70** if using the CFTC route, or **File No. S7-2026-22** if using the SEC route.
@@ -110,7 +120,7 @@ Claim-label convention: **VERIFIED** is directly inspected; **SOURCED** is suppo
 - Update the IAC draft with only the most relevant verified meeting information.
 - Remove detailed responses already made in the two joint RFC comments; summarize and link to the public comments only if they are publicly accessible.
 - Preserve the IAC statement’s distinct ask: a milestone taxonomy, privacy-compatible audit criteria, proof/control test objectives, and functional developer/interface guidance.
-- Re-run counsel, privacy, source, and public-disclosure review.
+- Re-run the in-house legal, privacy, source, and public-disclosure review; confirm [`LEGAL_ANALYSIS.md`](./LEGAL_ANALYSIS.md) is still current for the final IAC text.
 
 ### August 27: IAC statement deadline
 
@@ -124,7 +134,9 @@ Claim-label convention: **VERIFIED** is directly inspected; **SOURCED** is suppo
 
 - [ ] Exact docket/RIN/file number and deadline reverified on the filing day.
 - [ ] Identity and affiliation complete; unnecessary personal data removed.
-- [ ] Counsel review complete for the final text, not an earlier version.
+- [ ] In-house legal analysis ([`LEGAL_ANALYSIS.md`](./LEGAL_ANALYSIS.md)) complete and current for the final text, not an earlier version, with every legal citation verified against a fetched primary source.
+- [ ] Final courtesy review by the user’s designated reviewer completed on the exact final artifacts, and the reviewer’s open questions ([`JOHN_REVIEW_PACKET.md`](./JOHN_REVIEW_PACKET.md) §3) answered — silence is not sign-off.
+- [ ] The user has reviewed the risk register and approved filing without retained counsel.
 - [ ] Current legal claims cite official primary sources with retrieval dates.
 - [ ] Proposals are labeled as proposals; staff letters are not called Commission rules; pending proposals are not called final.
 - [ ] Local theorem claims match frozen source commits and are not described as product readiness.

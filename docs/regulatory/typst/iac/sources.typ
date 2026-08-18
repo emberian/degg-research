@@ -23,7 +23,7 @@
   3,
   "CFTC Staff Letter No. 26-09",
   "https://www.cftc.gov/csl/26-09/download",
-  [Division of Market Oversight, March 17, 2026. Fact-specific, conditional, nonbinding staff no-action position involving a frontend and registered DCM collaborators. Retrieved August 17, 2026.],
+  [Market Participants Division, March 17, 2026. Fact-specific, conditional, nonbinding staff no-action position involving a frontend and registered DCM collaborators. Retrieved August 17, 2026.],
 )
 
 #source_entry(

@@ -518,3 +518,15 @@ script run with UNCHANGED sources (no `.typ` edit; content identical by
 construction), so their Draft 7 hashes now identify the pre-rebuild files
 only --- the standing Typst-timestamp caveat, re-pinned once at the
 filing-day freeze.
+
+### Perpetuals Draft 1 correction (2026-08-19, experiment-driven)
+
+The manipulation-cost experiment (experiments/manipulation-cost, run
+2026-08-19) refuted the window-LENGTH framing: cost depends on sampling
+structure (print count and required hold fraction), not window seconds.
+Both filing passages restated accordingly ("sampling structure of the
+window"; "lengthening a window without adding samples buys nothing"),
+and the basis clauses tightened to the wording true under every reading:
+"no measurement of any real venue and no market data study" (exact
+arithmetic over a synthetic model now exists and is not a measurement).
+PDF rebuilt; re-pin hash at the filing-day freeze.

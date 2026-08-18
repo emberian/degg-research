@@ -30,10 +30,11 @@ is stated separately and stays within what those artifacts support.
    as assurances held by an exchange or a vendor.
 2. For a contract settling on a time-weighted statistic read off a named
    venue, the cost of moving that statistic far enough to change a
-   payment, for the length of the window, is computable in advance from
-   the same stated terms. Surveillance thresholds and funding-interval
-   design should consume that number --- and in a market that never
-   closes, window and interval design is the only dial that sets it.
+   payment, for the required fraction of the window's samples, is
+   computable in advance from the same stated terms. Surveillance
+   thresholds and funding-interval design should consume that number ---
+   and in a market that never closes, the sampling structure of the
+   window is the only dial that sets it.
 3. The demonstration Question 53 asks about should be specified as a
    recomputation: a reference methodology stated precisely enough that any
    party can recompute every funding-interval print from public inputs.
@@ -100,8 +101,10 @@ contract puts at stake at that interval.
 
 Three consequences. First, funding-interval design is not an operational
 detail but the manipulation-cost dial: a futures contract has a close, a
-perpetual has only its windows, and window length and sampling density are
-where "manipulation-resistant" is purchased or forfeited. Overnight and
+perpetual has only its windows, and the sampling structure --- how many
+independent prints a window takes and what fraction an adversary must
+hold --- is where "manipulation-resistant" is purchased or forfeited;
+lengthening a window without adding samples buys nothing. Overnight and
 weekend liquidity reduction (Question 51) enters the same computation as
 an input --- a thinner surface raises no new category of risk, it lowers a
 computable cost, and the terms can respond by widening the window or
@@ -117,7 +120,7 @@ contract's terms. A computed cost is a model output, sensitive to
 assumptions about depth, latency, and attacker inventory, and the
 Commission should not be asked to trust a number of that kind; the
 requirement belongs on the *inputs*. The number is a screening tool; the
-inputs are facts. I have produced no manipulation-cost measurement and no
+inputs are facts. I have produced no measurement of any real venue and no
 analysis of any real venue, and I state no number here.
 
 = The evidentiary basis is a replay (Questions 52, 53)
@@ -152,7 +155,7 @@ market's liquidity, storage, or delivery mechanics, and no position on
 whether any contract discussed in the request should be listed. The
 artifacts behind this comment are offline research prototypes: tested,
 not formally verified; not deployed; holding no funds. I
-have produced no manipulation-cost measurement, no market data study, and
+have produced no measurement of any real venue, no market data study, and
 no analysis of any real venue. The positions are my analysis as a
 commenter of how reference-price integrity should be specified and
 demonstrated; none is a compliance conclusion, a product proposal, or
@@ -180,5 +183,5 @@ has been independently audited.
   [The comment period extension to August 26, 2026, and the NYMEX self-certification and stay], [91 Fed. Reg. 47158 (July 28, 2026); GPO full text retrieved August 18, 2026; source note 2],
   [An observation accumulator with a frozen grid, sealing windows, a monotone accepted-observation path, and refusal of unsupportable questions has been implemented offline with passing deterministic tests], [Pure-Rust research prototype reviewed by the submitter; tested, not formally verified; not deployed; source authentication an assumed input contract],
   [The batch verifier accepts a submitted clearing only if recomputation from the frozen book reproduces it exactly], [Same prototype family; offline research code; tested, not formally verified; not deployed],
-  [No energy market data, no manipulation-cost measurement, no analysis of any real venue], [The submitter's repository status records; a statement about the submitter's own artifacts, not about any third party],
+  [No energy market data, no measurement of any real venue, no market data study], [The submitter's repository status records; a statement about the submitter's own artifacts, not about any third party],
 )

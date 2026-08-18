@@ -1,0 +1,17 @@
+[package]
+name = "degg-bundling-invariance"
+version = "0.0.0"
+edition = "2024"
+publish = false
+license = "AGPL-3.0-or-later"
+description = "Exhaustive paired-payoff corpus exhibiting classification arbitrage under costless bundling and unbundling"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "degg-bundling-vectors"
+path = "src/bin/vectors.rs"
+
+[lints.rust]
+unsafe_code = "forbid"

@@ -1,0 +1,238 @@
+model degg-bundling-invariance/v0
+memo docs/regulatory/research-memos/definitions-q8-event-contracts-and-options-on-securities.md
+corpus cells=2..5 ceiling=3 vectors=1360 fact_profiles=12 objects=16320 decompositions_per_criterion=56936
+
+[operations]
+claims are minted only as complete sets against collateral and burned only as complete sets
+open cells=3 holders=2 outstanding=[0,0,0] locked=0 conserved=true
+deposit holder=0 units=2 -> positions [2,2,2] [0,0,0] outstanding=[2,2,2] locked=2 moves_collateral=true conserved=true
+split holder=0 take=[1,0,0] -> positions [1,2,2] [0,0,0] [1,0,0] outstanding=[2,2,2] locked=2 moves_collateral=false conserved=true
+transfer from=0 to=1 cell=1 units=1 -> positions [1,1,2] [0,1,0] [1,0,0] outstanding=[2,2,2] locked=2 moves_collateral=false conserved=true
+bundle to=1 from=2 -> positions [1,1,2] [1,1,0] [0,0,0] outstanding=[2,2,2] locked=2 moves_collateral=false conserved=true
+recombine holder=0 units=1 -> positions [0,0,1] [1,1,0] [0,0,0] outstanding=[1,1,1] locked=1 moves_collateral=true conserved=true
+
+[paired_payoffs]
+each shape expressed twice: as one bespoke instrument, and as a portfolio over the basis of one-cell claims
+shape digital bespoke=[0,1,0,0,0] portfolio=1x[0,1,0,0,0] cashflows=[0,1,0,0,0] equal_in_every_state=true
+  binary-payout bespoke=event_contract parts=event_contract same_answer=true
+  bounded-payout bespoke=excluded_small_payout parts=excluded_small_payout same_answer=true
+  distinct-values bespoke=simple_claim parts=simple_claim same_answer=true
+  complete-set bespoke=option_on_security_or_index parts=option_on_security_or_index same_answer=true
+  support-nonempty bespoke=claim parts=claim same_answer=true
+  prefunding-exclusion bespoke=excluded_prefunded parts=excluded_prefunded same_answer=true
+  reference-and-settlement bespoke=option_on_security_or_index parts=option_on_security_or_index same_answer=true
+  constant-label bespoke=unclassified parts=unclassified same_answer=true
+shape range bespoke=[0,1,1,0,0] portfolio=1x[0,1,0,0,0]+1x[0,0,1,0,0] cashflows=[0,1,1,0,0] equal_in_every_state=true
+  binary-payout bespoke=event_contract parts=event_contract same_answer=true
+  bounded-payout bespoke=excluded_small_payout parts=excluded_small_payout same_answer=true
+  distinct-values bespoke=simple_claim parts=simple_claim same_answer=true
+  complete-set bespoke=portfolio_instrument parts=option_on_security_or_index same_answer=false
+  support-nonempty bespoke=claim parts=claim same_answer=true
+  prefunding-exclusion bespoke=excluded_prefunded parts=excluded_prefunded same_answer=true
+  reference-and-settlement bespoke=option_on_security_or_index parts=option_on_security_or_index same_answer=true
+  constant-label bespoke=unclassified parts=unclassified same_answer=true
+shape capped_directional bespoke=[0,1,2,3,3] portfolio=1x[0,1,0,0,0]+2x[0,0,1,0,0]+3x[0,0,0,1,0]+3x[0,0,0,0,1] cashflows=[0,1,2,3,3] equal_in_every_state=true
+  binary-payout bespoke=swap_like parts=event_contract same_answer=false
+  bounded-payout bespoke=included_large_payout parts=excluded_small_payout same_answer=false
+  distinct-values bespoke=portfolio_instrument parts=simple_claim same_answer=false
+  complete-set bespoke=portfolio_instrument parts=option_on_security_or_index same_answer=false
+  support-nonempty bespoke=claim parts=claim same_answer=true
+  prefunding-exclusion bespoke=excluded_prefunded parts=excluded_prefunded same_answer=true
+  reference-and-settlement bespoke=option_on_security_or_index parts=option_on_security_or_index same_answer=true
+  constant-label bespoke=unclassified parts=unclassified same_answer=true
+shape tail bespoke=[0,0,0,0,3] portfolio=3x[0,0,0,0,1] cashflows=[0,0,0,0,3] equal_in_every_state=true
+  binary-payout bespoke=event_contract parts=event_contract same_answer=true
+  bounded-payout bespoke=included_large_payout parts=excluded_small_payout same_answer=false
+  distinct-values bespoke=simple_claim parts=simple_claim same_answer=true
+  complete-set bespoke=option_on_security_or_index parts=option_on_security_or_index same_answer=true
+  support-nonempty bespoke=claim parts=claim same_answer=true
+  prefunding-exclusion bespoke=excluded_prefunded parts=excluded_prefunded same_answer=true
+  reference-and-settlement bespoke=option_on_security_or_index parts=option_on_security_or_index same_answer=true
+  constant-label bespoke=unclassified parts=unclassified same_answer=true
+shape complete_set bespoke=[1,1,1,1,1] portfolio=1x[1,0,0,0,0]+1x[0,1,0,0,0]+1x[0,0,1,0,0]+1x[0,0,0,1,0]+1x[0,0,0,0,1] cashflows=[1,1,1,1,1] equal_in_every_state=true
+  binary-payout bespoke=swap_like parts=event_contract same_answer=false
+  bounded-payout bespoke=excluded_small_payout parts=excluded_small_payout same_answer=true
+  distinct-values bespoke=simple_claim parts=simple_claim same_answer=true
+  complete-set bespoke=collateral_equivalent parts=option_on_security_or_index same_answer=false
+  support-nonempty bespoke=claim parts=claim same_answer=true
+  prefunding-exclusion bespoke=excluded_prefunded parts=excluded_prefunded same_answer=true
+  reference-and-settlement bespoke=option_on_security_or_index parts=option_on_security_or_index same_answer=true
+  constant-label bespoke=unclassified parts=unclassified same_answer=true
+
+[criterion binary-payout]
+parameters none
+statement a payoff taking exactly two values, one of them zero, is an event contract; anything else is swap-like
+story parts that are all event contracts make an event contract, or a portfolio of them if the vocabulary had such a label; parts that are all swap-like make a swap-like object
+labels event_contract swap_like
+reads payoff=true facts=false
+story_permits_alternatives true
+classified 16320
+decompositions checked=683232 unanimous=401856
+violations strict=49032 declared_story=49032
+violating_objects strict=15084
+verdict strict=arbitrage declared_story=arbitrage
+minimal_witness strict family=binary_split cells=2 reference=security_price funded=true transferable=true
+  whole [1,1] label=swap_like
+  part [0,1] label=event_contract
+  part [1,0] label=event_contract
+  permitted event_contract event_contract_portfolio
+  conserved claims_before=[1,1] claims_after=[1,1] equal=true collateral_delta=0 complete_sets=1
+  path split the position in two, then bundle it back; no claim is minted or burned and no collateral moves; the bundle also contains 1 complete set, recombinable into its collateral before resolution
+minimal_witness declared_story family=binary_split cells=2 reference=security_price funded=true transferable=true
+  whole [1,1] label=swap_like
+  part [0,1] label=event_contract
+  part [1,0] label=event_contract
+  permitted event_contract event_contract_portfolio
+  conserved claims_before=[1,1] claims_after=[1,1] equal=true collateral_delta=0 complete_sets=1
+  path split the position in two, then bundle it back; no claim is minted or burned and no collateral moves; the bundle also contains 1 complete set, recombinable into its collateral before resolution
+
+[criterion bounded-payout]
+parameters ceiling=2
+statement a payoff whose largest payout is at most the ceiling is excluded; anything larger is included
+story parts that are all excluded make an excluded object; parts that are all included make an included object
+labels excluded_small_payout included_large_payout
+reads payoff=true facts=false
+story_permits_alternatives false
+classified 16320
+decompositions checked=683232 unanimous=335472
+violations strict=180696 declared_story=180696
+violating_objects strict=12000
+verdict strict=arbitrage declared_story=arbitrage
+minimal_witness strict family=binary_split cells=2 reference=security_price funded=true transferable=true
+  whole [0,3] label=included_large_payout
+  part [0,1] label=excluded_small_payout
+  part [0,2] label=excluded_small_payout
+  permitted excluded_small_payout
+  conserved claims_before=[0,3] claims_after=[0,3] equal=true collateral_delta=0 complete_sets=0
+  path split the position in two, then bundle it back; no claim is minted or burned and no collateral moves
+minimal_witness declared_story family=binary_split cells=2 reference=security_price funded=true transferable=true
+  whole [0,3] label=included_large_payout
+  part [0,1] label=excluded_small_payout
+  part [0,2] label=excluded_small_payout
+  permitted excluded_small_payout
+  conserved claims_before=[0,3] claims_after=[0,3] equal=true collateral_delta=0 complete_sets=0
+  path split the position in two, then bundle it back; no claim is minted or burned and no collateral moves
+
+[criterion distinct-values]
+parameters none
+statement a payoff vector with more than two distinct amounts is a portfolio instrument; anything else is a simple claim
+story parts that are all simple claims make a simple claim or a portfolio instrument, the criterion's own name for a bundle of them; parts that are all portfolio instruments make a portfolio instrument
+labels simple_claim portfolio_instrument
+reads payoff=true facts=false
+story_permits_alternatives true
+classified 16320
+decompositions checked=683232 unanimous=389760
+violations strict=159120 declared_story=113472
+violating_objects strict=14616
+verdict strict=arbitrage declared_story=arbitrage
+minimal_witness strict family=binary_split cells=3 reference=security_price funded=true transferable=true
+  whole [0,1,2] label=portfolio_instrument
+  part [0,0,1] label=simple_claim
+  part [0,1,1] label=simple_claim
+  permitted simple_claim portfolio_instrument
+  conserved claims_before=[0,1,2] claims_after=[0,1,2] equal=true collateral_delta=0 complete_sets=0
+  path split the position in two, then bundle it back; no claim is minted or burned and no collateral moves
+minimal_witness declared_story family=binary_split cells=3 reference=security_price funded=true transferable=true
+  whole [0,3,3] label=simple_claim
+  part [0,1,2] label=portfolio_instrument
+  part [0,2,1] label=portfolio_instrument
+  permitted portfolio_instrument
+  conserved claims_before=[0,3,3] claims_after=[0,3,3] equal=true collateral_delta=0 complete_sets=0
+  path split the position in two, then bundle it back; no claim is minted or burned and no collateral moves
+
+[criterion complete-set]
+parameters none
+statement a payoff on one outcome is an option; a level payoff across every outcome is collateral-equivalent; a payoff on some but not all outcomes is a portfolio; a payoff on none is not an instrument
+story parts that are all options make an option, a portfolio, or collateral; parts that are all portfolios make a portfolio or collateral; parts that are all collateral make collateral
+labels portfolio_instrument option_on_security_or_index collateral_equivalent not_an_instrument
+reads payoff=true facts=false
+story_permits_alternatives true
+classified 16320
+decompositions checked=683232 unanimous=553368
+violations strict=27420 declared_story=0
+violating_objects strict=15768
+verdict strict=arbitrage declared_story=invariant
+minimal_witness strict family=binary_split cells=2 reference=security_price funded=true transferable=true
+  whole [1,1] label=collateral_equivalent
+  part [0,1] label=option_on_security_or_index
+  part [1,0] label=option_on_security_or_index
+  permitted option_on_security_or_index portfolio_instrument collateral_equivalent
+  conserved claims_before=[1,1] claims_after=[1,1] equal=true collateral_delta=0 complete_sets=1
+  path split the position in two, then bundle it back; no claim is minted or burned and no collateral moves; the bundle also contains 1 complete set, recombinable into its collateral before resolution
+minimal_witness declared_story none
+
+[criterion support-nonempty]
+parameters none
+statement a payoff that pays something in some state is a claim; a payoff that never pays is not an instrument
+story parts that are all claims make a claim; parts that all never pay make an object that never pays
+labels not_an_instrument claim
+reads payoff=true facts=false
+story_permits_alternatives false
+classified 16320
+decompositions checked=683232 unanimous=666960
+violations strict=0 declared_story=0
+violating_objects strict=0
+verdict strict=invariant declared_story=invariant
+minimal_witness strict none
+minimal_witness declared_story none
+
+[criterion prefunding-exclusion]
+parameters none
+statement a claim whose maximum payout is locked against collateral before it exists is excluded; anything else is not
+story parts that are all excluded make an excluded object; parts that are all not excluded make an object that is not excluded
+labels excluded_prefunded not_excluded_prefunded
+reads payoff=false facts=true
+story_permits_alternatives false
+classified 16320
+decompositions checked=683232 unanimous=683232
+violations strict=0 declared_story=0
+violating_objects strict=0
+verdict strict=invariant declared_story=invariant
+minimal_witness strict none
+minimal_witness declared_story none
+
+[criterion reference-and-settlement]
+parameters none
+statement an object whose settlement amount is a function of the price or value of a security or index is an option on that reference; an object whose settlement amount is a function of an issuer fact is a security-based swap
+story parts of a bundle share a reference variable and a settlement function, so the whole carries the label the parts carry
+labels option_on_security_or_index security_based_swap
+reads payoff=false facts=true
+story_permits_alternatives false
+classified 16320
+decompositions checked=683232 unanimous=683232
+violations strict=0 declared_story=0
+violating_objects strict=0
+verdict strict=invariant declared_story=invariant
+minimal_witness strict none
+minimal_witness declared_story none
+
+[criterion constant-label]
+parameters none
+statement everything receives the same label
+story the whole carries the label the parts carry, there being only one
+labels unclassified
+reads payoff=false facts=false
+story_permits_alternatives false
+classified 16320
+decompositions checked=683232 unanimous=683232
+violations strict=0 declared_story=0
+violating_objects strict=0
+verdict strict=invariant declared_story=invariant
+minimal_witness strict none
+minimal_witness declared_story none
+
+[census]
+every two-label criterion that reads only which outcomes an object pays in
+cells=2 criteria=16 invariant=12 invariant_discriminating=10
+cells=3 criteria=256 invariant=52 invariant_discriminating=50
+cells=4 criteria=65536 invariant=300 invariant_discriminating=298
+
+[summary]
+binary-payout reads_payoff=true reads_facts=false labels=2 strict=49032 declared_story=49032 verdict=arbitrage
+bounded-payout reads_payoff=true reads_facts=false labels=2 strict=180696 declared_story=180696 verdict=arbitrage
+distinct-values reads_payoff=true reads_facts=false labels=2 strict=159120 declared_story=113472 verdict=arbitrage
+complete-set reads_payoff=true reads_facts=false labels=4 strict=27420 declared_story=0 verdict=arbitrage
+support-nonempty reads_payoff=true reads_facts=false labels=2 strict=0 declared_story=0 verdict=invariant
+prefunding-exclusion reads_payoff=false reads_facts=true labels=2 strict=0 declared_story=0 verdict=invariant
+reference-and-settlement reads_payoff=false reads_facts=true labels=2 strict=0 declared_story=0 verdict=invariant
+constant-label reads_payoff=false reads_facts=false labels=1 strict=0 declared_story=0 verdict=invariant

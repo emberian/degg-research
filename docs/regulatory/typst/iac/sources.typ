@@ -86,12 +86,16 @@
 
 The guarded-commitment and candidate-result descriptions derive from research
 models reviewed by the submitter, including a frozen Breadstuffs prototype and
-current Minidregg and Leanuweave formal research. A final public edition should
-cite frozen public repository commits and exact paths if those materials are
-public by filing time. Otherwise it should retain this limited description and
-avoid claims of independent public reproducibility. No source code is included
-in this statement. The descriptions do not claim production readiness,
-cryptographic security of a composed system, or a legal classification.
+current Minidregg and Leanuweave formal research. The worked market's
+accounting derives from the Dragon's Clutch offline conditional-asset
+prototype (a pure-Rust research kernel with passing deterministic tests;
+tested, not formally verified; not a deployed system, product, or offer). A
+final public edition should cite frozen public repository commits and exact
+paths if those materials are public by filing time. Otherwise it should retain
+this limited description and avoid claims of independent public
+reproducibility. No source code is included in this statement. The
+descriptions do not claim production readiness, cryptographic security of a
+composed system, or a legal classification.
 
 #review_note[
   *Final-source gate.* The notice requires receipt by August 27, 2026, a reference

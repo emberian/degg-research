@@ -1,6 +1,6 @@
 #let meta = (
-  document_kind: "CFTC IAC COVER STATEMENT - DRAFT 3",
-  review_label: "DRAFT 3 FOR REVIEW - NOT FILED",
+  document_kind: "CFTC IAC COVER STATEMENT - DRAFT 4",
+  review_label: "DRAFT 4 FOR REVIEW - NOT FILED",
   short_title: "IAC Cover Statement",
   title: "Seven Questions About Programmable Contingent Transactions",
   proceeding: "Innovation Advisory Committee meeting, August 20, 2026",

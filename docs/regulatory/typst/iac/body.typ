@@ -8,14 +8,14 @@ the meeting notice provides for written statements received by August 27,
 2026.#note_ref(9)
 
 I study staged programmable commitments: systems in which the complete shape
-of a future state change — who may act, on which state, under what condition,
-by what deadline, how many times — is fixed and published at one moment, while
-the fact that completes the change arrives at another moment, possibly much
-later. I also study deterministic computation over sets of candidate answers,
-and I classify privacy designs by exactly who may learn which private inputs.
-This statement presents the time-structure that research gives to programmable
-markets, and asks the Committee to recommend policy work that attaches
-analysis to that structure.
+of a future state change --- who may act, on which state, under what condition,
+by what deadline, how many times --- is fixed and published at one moment, while
+the fact that completes the change arrives at a later moment. I also study
+deterministic computation over sets of candidate answers, and I classify
+privacy designs by exactly who may learn which private inputs. This statement
+presents the time-structure that research gives to programmable markets, and
+asks the Committee to recommend policy work that attaches analysis to that
+structure.
 
 The Commission explains that "event contract" is not itself a defined term in
 the CEA or CFTC regulations. It states that a prediction market offering event
@@ -24,12 +24,11 @@ designated contract market, while a swap execution facility may make swaps
 available for trading only to eligible contract
 participants.#note_ref(1)#note_ref(11) Innovation will press on those lines,
 and it will press hardest where software distributes over time the events that
-traditional vocabulary fuses into "the trade." My central message is that the
-stages are not a blur. They can be made mechanically exact, and analysis,
-audit, and policy can attach to them. The analysis should begin with the
-instrument, the participants, and the functions performed at each stage — not
-with labels such as "prediction," "policy," "token," "smart contract," "Dark,"
-or "decentralized."
+traditional vocabulary fuses into "the trade." The stages are not a blur: they
+can be made mechanically exact, and analysis, audit, and policy can attach to
+them. The analysis should begin with the instrument, the participants, and the
+functions performed at each stage --- not with labels such as "prediction,"
+"policy," "token," "smart contract," "Dark," or "decentralized."
 
 None of the technical properties described below is a jurisdictional shortcut.
 They do not remove an instrument from the Commodity Exchange Act, make venue
@@ -43,7 +42,7 @@ persistence, authorization, collateral, and system evidence that my research
 does not supply.
 
 #key_point("Five requested work products", [
-  1. A milestone taxonomy for staged programmable transactions — publication,
+  1. A milestone taxonomy for staged programmable transactions --- publication,
      funding, close, finality, settlement, and the events between them.
      Classification, audit, and enforcement all need a shared factual clock,
      and today every product description invents its own.
@@ -60,8 +59,7 @@ does not supply.
      that line.
   5. A structured path for researchers to present bounded factual matrices
      before a live product or deployment exists. Predeployment dialogue is
-     cheapest for everyone at exactly the moment when nothing is yet at
-     stake.
+     cheapest exactly when nothing is yet at stake.
 ])
 
 *Scope.* Current Regulation 40.11 addresses registered-entity listing or
@@ -69,22 +67,21 @@ clearing of contracts involving specified enumerated activities. A June 2026
 proposal would revise that framework, define additional terms, and establish a
 structured public-interest review; it remains proposed, not current
 law.#note_ref(10)#note_ref(11) Every example in this statement references
-objectively verifiable crypto-native facts — ledger states, program events,
-prices, ranges, path statistics — and none targets an enumerated activity
+objectively verifiable crypto-native facts --- ledger states, program events,
+prices, ranges, path statistics --- and none targets an enumerated activity
 under CEA section 5c(c)(5)(C) or Regulation 40.11. This scope choice is not a
 claim that any example falls outside the CEA or any other law.
 
 = Five milestones in one worked market
 
-Rather than define the milestones abstractly, I will walk one concrete design
-through its life and point at each milestone as it happens.
+I define the milestones by walking one concrete design through its life.
 
 The design is a fully collateralized conditional-asset market over an
 objectively verifiable onchain price band. It asks one question: on a stated
 future date, in which of five stated price bands will the time-weighted price
 of a specific digital asset in a specific onchain liquidity pool fall? The
 bands cover every possible price and do not overlap, and the terms include a
-deterministic rule for every edge case — a missing observation, a malformed
+deterministic rule for every edge case --- a missing observation, a malformed
 data page, a price exactly on a boundary. Exactly one band must realize. A
 depositor locks one unit of collateral into a pool that belongs to this market
 alone and receives one claim for each band; a complete set of five claims can
@@ -97,11 +94,11 @@ liquidation anywhere in the design, and every participant's maximum loss is
 fixed when their collateral or premium is paid.
 
 I have built the core accounting of this design as an offline research
-prototype — pure Rust, integer-exact, with passing deterministic tests. It is
+prototype --- pure Rust, integer-exact, with passing deterministic tests. It is
 tested, not formally verified. It is not a deployed system, a product, or an
-offer, and I do not ask the Commission to approve it. I use it, together with
-Lean models of the commitment and coordination structure, to make each
-milestone concrete rather than hypothetical.
+offer, and I do not ask the Commission to approve it. I use it, with Lean
+models of the commitment and coordination structure, to make each milestone
+concrete.
 
 == Publication fixes the shape
 
@@ -109,23 +106,23 @@ The market template is published. The partition, the observation program, the
 batch rule, the payout terms, and the edge-case rules are all inspectable.
 Nobody has signed, deposited, or promised anything, and no value can move.
 
-The research treats this earliness as a first-class property rather than a
-habit. I call the underlying pattern a guarded commitment: the actor, the
-affected state, the guard conditions, and the exact permitted transition shape
-are fixed before the value that completes the transition exists. In my
-earliest Lean prototype of the pattern, a weak guarded hole fixes a field, an
-actor, a target cell, and a list of guard predicates, and only an integer
-arrives later; theorems state that an accepted fill is exactly the committed
-transition and that a guard-violating value fails closed, changing nothing. In
-a current, more general model, the committed shape also includes the late
-value's type and codec, the pre-state root, an abstract authority demand, a
-finite write footprint, guard and effect commitments, a deadline, and a replay
-domain — and the late contribution is typed by that exact shape, so a
-contribution for a different shape is not rejected at run time; it cannot be
-expressed at all. A deliberately excluded stronger variant — a hole in a value
-or authority position, "I will owe an amount fixed later" — is given no
-primitive and is refuted in the model as an explicit anti-model. These are
-theorems about modeled state machines, not deployed controls.
+The research treats this earliness as a first-class property. I call the
+underlying pattern a guarded commitment: the actor, the affected state, the
+guard conditions, and the exact permitted transition shape are fixed before
+the value that completes the transition exists. In my earliest Lean prototype
+of the pattern, a weak guarded hole fixes a field, an actor, a target cell,
+and a list of guard predicates, and only an integer arrives later; theorems
+state that an accepted fill is exactly the committed transition and that a
+guard-violating value fails closed, changing nothing. In a current, more
+general model, the committed shape also includes the late value's type and
+codec, the pre-state root, an abstract authority demand, a finite write
+footprint, guard and effect commitments, a deadline, and a replay domain --- and
+the late contribution is typed by that exact shape, so a contribution for a
+different shape is not rejected at run time; it cannot be expressed at all. A
+deliberately excluded stronger variant --- a hole in a value or authority
+position, "I will owe an amount fixed later" --- is given no primitive and is
+refuted in the model as an explicit anti-model. These are theorems about
+modeled state machines, not deployed controls.
 
 For classification, the milestone offers one clean fact: at publication there
 is a complete, inspectable commitment structure and no exposure. Nothing has
@@ -134,7 +131,7 @@ been funded, and there is nothing to perform.
 == Funding creates the exposure and fixes its ceiling
 
 A depositor locks collateral and receives the complete set of five claims.
-Exposure now exists — and the same act that creates it fixes its ceiling,
+Exposure now exists --- and the same act that creates it fixes its ceiling,
 because the pool holds the full deposit and covers every payout the frozen
 terms allow, by construction of the terms. The commitment calculus
 deliberately carries no value inside its commitments; bounding loss is the job
@@ -142,8 +139,8 @@ of this separate economic design, which makes every claim fully funded before
 it exists. In my prototype the check is structural: required collateral is
 computed as the largest liability any payout vector in the market's immutable
 set implies at the current claim supply, rounding against the protocol, and
-any state whose collateral falls below that maximum is refused as an
-invariant violation — at market construction and around every transition.
+any state whose collateral falls below that maximum is refused as an invariant
+violation --- at market construction and around every transition.
 
 One refinement matters for classification. A complete set plus the
 recombination right is a fully hedged position, interchangeable with its own
@@ -159,7 +156,7 @@ description of "the clearing price" is a set of candidates: different gateways
 or replicas may have seen different orders, and several complete possible
 clearings are live at once. My research models this state explicitly. In the
 model, a partial result is a grow-only set of candidate worlds, and
-deterministic evaluation commutes with merging such sets by union —
+deterministic evaluation commutes with merging such sets by union ---
 participants may share inputs or share computed results, in any order and any
 batching, and arrive at the same candidate set. A single answer, though, is
 not free: in the model, two replicas can each hold a perfectly determinate
@@ -180,12 +177,12 @@ recomputed from scratch. The submitter's claimed quantities are never trusted.
 
 The observation window and its repair period close, and the frozen observation
 program's accepted evidence identifies the realized band. Until this moment
-the system genuinely held five possible settlements; now one is authorized. My
-models make the authorization itself explicit. In the model, sealing an answer
-is licensed by a stability premise — nothing that can still arrive can move
-the result — and under that premise the sealed claim survives everything that
-can still arrive. Without the premise, the model exhibits the failure
-concretely: a sealed answer that a later merge falsifies. Not stale — false.
+the system held five possible settlements; now one is authorized. My models
+make the authorization itself explicit. In the model, sealing an answer is
+licensed by a stability premise --- nothing that can still arrive can move the
+result --- and under that premise the sealed claim survives everything that can
+still arrive. Without the premise, the model exhibits the failure concretely:
+a sealed answer that a later merge falsifies. Not stale --- false.
 
 The model is deliberately agnostic about what real-world evidence discharges
 the license, and it does not implement or validate an oracle, a legal finality
@@ -208,8 +205,8 @@ occurs is precisely the pre-committed one, with writes framed inside the
 declared footprint.
 
 Settlement is also deliberately serialized, and the mathematics says why it
-must be. In the model, balance-type conditions — anything that behaves like a
-balance, a quota, or a conservation constraint — are exactly the guards that
+must be. In the model, balance-type conditions --- anything that behaves like a
+balance, a quota, or a conservation constraint --- are exactly the guards that
 provably do not merge coordination-free: two independently legal spending
 states can merge into an over-budget one. The design accordingly treats
 settlement as one guarded fill against one ledger, never as a merge of
@@ -248,7 +245,7 @@ exactly which one it is describing.
   neither at publication nor at funding but at finality, and finality is an
   explicit collapse whose legitimacy is exactly the strength of its license.
   Between close and finality, the honest description of the system is a
-  candidate set — a value, not a failure.
+  candidate set --- a value, not a failure.
 ])
 
 = Four questions to keep separate
@@ -273,9 +270,9 @@ analysis of any staged design should keep four questions distinct:
 
 I respectfully offer seven questions on which general guidance would help:
 
-1. At which milestone — publication, signature, funding, irrevocability,
+1. At which milestone --- publication, signature, funding, irrevocability,
    witness admission, participant interaction, match, claim creation, or
-   settlement — does a staged program create an agreement, contract,
+   settlement --- does a staged program create an agreement, contract,
    transaction, or contingent exposure?
 2. Which combinations of upgrade control, interface operation, solicitation,
    order receipt or routing, matching, oracle control, custody, emergency
@@ -334,7 +331,7 @@ position data, order-lifecycle tracking, reconstruction, source records, and
 retention requirements.#note_ref(5) A public transaction hash does not by
 itself perform any of those functions. Regulation 38.7 also shows that
 regulatory data and public commercial data need not be
-identical#note_ref(6) — which is precisely the separation a privacy-compatible
+identical#note_ref(6) --- which is precisely the separation a privacy-compatible
 audit trail would formalize.
 
 == A regulator-observable Shielded reference architecture
@@ -377,8 +374,8 @@ satisfy every applicable reporting, examination, correction, surveillance, and
 enforcement objective is not answered by the existence of encryption or zero
 knowledge, and I do not claim that it can. This statement treats
 regulator-observable Shielded as the practical reference architecture. Dark is
-retained solely as a long-horizon research boundary — not a venue label, a
-compliance conclusion, or a deployment recommendation — and the Commission
+retained solely as a long-horizon research boundary --- not a venue label, a
+compliance conclusion, or a deployment recommendation --- and the Commission
 should keep that research question separate from regulator-observable Shielded
 pilots, which have materially different access and failure properties.
 
@@ -447,7 +444,7 @@ authorization, execution, finality, and settlement. Privacy systems can
 separate public transparency, commercial confidentiality, and regulatory
 access. Proof systems can make selected controls independently testable. None
 of this eliminates the institutional questions of responsibility,
-surveillance, governance, and access — but it can make them precise. A
+surveillance, governance, and access --- but it can make them precise. A
 milestone taxonomy, privacy-compatible audit criteria, exact proof objectives,
 functional developer guidance, and a structured predeployment path would let
 technical systems be designed toward identifiable standards from their first
@@ -464,12 +461,12 @@ line of code. I ask the Committee to recommend that work.
 
 = Appendix: basis of material technical claims
 
-The body of this statement states its technical claims plainly. This appendix
-records the evidentiary basis for each material claim in one line. "Model
-theorem" means a machine-checked statement about a simplified formal model
-reviewed by the submitter. "Prototype" means a deterministic offline research
-prototype reviewed by the submitter. No artifact behind these claims is
-deployed market infrastructure, and none has been independently audited.
+This appendix records the evidentiary basis for each material technical claim
+in one line. "Model theorem" means a machine-checked statement about a
+simplified formal model reviewed by the submitter. "Prototype" means a
+deterministic offline research prototype reviewed by the submitter. No
+artifact behind these claims is deployed market infrastructure, and none has
+been independently audited.
 
 #table(
   columns: (1fr, 2.1in),

@@ -6,14 +6,14 @@ The Commissions ask how swap and security-based swap reporting should treat
 blockchain-native execution, what public dissemination should reveal when the
 underlying ledger is already public, and whether reporting logic should be
 published in machine-readable form.#note_ref(1) I write in response to
-Questions 3, 8, and 19, and I take no position on the other questions.
+Questions 3, 8, and 19, and take no position on the other questions.
 
 I am a software and formal-methods researcher. I study staged programmable
 commitments: programs whose records come into existence at different moments,
-in different places, for different audiences. Rather than argue in the
-abstract, this comment places one concrete design on a public ledger and asks,
-at each milestone of its life, three reporting questions: which records exist,
-who can already read them, and what a machine could check about them.
+in different places, for different audiences. This comment places one concrete
+design on a public ledger and asks, at each milestone of its life, three
+reporting questions: which records exist, who can already read them, and what
+a machine could check about them.
 
 The design is a fully collateralized conditional-asset market over an
 objectively verifiable onchain price band. A depositor locks collateral into a
@@ -24,14 +24,14 @@ observation program, frozen when the market is created, later identifies the
 realized cell, and settlement pays that cell's claims from the pool. I have
 built an offline research prototype of the core accounting for this design. It
 is not a deployed system, a product, or an offer, and nothing in this comment
-asks either Commission to approve it. I use it here only as a lens, because it
-makes the reporting questions unusually concrete.
+asks either Commission to approve it. I use it here only as a lens: it makes
+the reporting questions concrete.
 
 Walking that market from creation to settlement shows the same fact at every
 milestone: three different consumers need three different records, and no
-single ledger event serves all of them. My central recommendation follows.
-For Clear and regulator-observable systems, define three records rather than
-forcing one public ledger event to serve every purpose:
+single ledger event serves all of them. For Clear and regulator-observable
+systems, define three records rather than forcing one public ledger event to
+serve every purpose:
 
 1. a *public transparency record* containing the fields justified by price
    discovery and public market integrity;
@@ -64,9 +64,8 @@ every record at once.
 
 = The worked example, viewed as records
 
-Walk the market from birth to settlement and watch which records exist at each
-milestone, which of them are public bytes, and which exist only if somebody is
-required to keep them.
+At each milestone, ask which records exist, which are public bytes, and which
+exist only if somebody is required to keep them.
 
 *Publication.* The market template is created on the ledger: the partition
 rule, the version of the frozen observation program, the batch policy, the
@@ -74,77 +73,74 @@ settlement terms. The public bytes are a creation transaction, a program
 address, an executable hash, and a digest of the terms. Everything about this
 milestone is public, and none of it is reportable as a transaction: there are
 no parties, no funding, and no exposure. A machine-readable rule can already
-validate something real — that the terms digest matches the published terms,
-that the schema version is one it recognizes — but a reporting adapter that
-mapped this ledger write to "trade" would be inventing a trade with no
-participants. The first lesson: ledger writes precede reportable events.
+validate something real --- that the terms digest matches the published terms,
+that the schema version is one it recognizes --- but a reporting adapter that
+mapped this ledger write to "trade" would invent a trade with no participants.
+Ledger writes precede reportable events.
 
 *Funding.* A wallet deposits one unit of collateral into the market's
 segregated pool and receives a complete set: one claim for each of the five
-bands. The public bytes are precise — pool address, wallet address, amount,
-time — and they are two things a report needs them not to be confused with.
-They are not an identification: nothing on the ledger says who controls the
-wallet. And they are not a contingent position: a complete set plus the right
-to recombine it into its collateral is fully hedged, interchangeable with the
-deposit itself. Contingent exposure arises only later, when the depositor
-sells some claims and keeps others — and that sale may occur in a venue whose
-individual orders never touch this ledger. A hash-to-trade mapping records
-exposure here that does not exist and misses the transaction where exposure
-actually arises. What supervision needs at this milestone is a confidential
-linkage from account to party, so that the deposit, the later orders, and the
-eventual redemption can be read as one owner's lifecycle. What a machine can
-check is conservation: collateral in equals complete sets out.
+bands. The public bytes are precise --- pool address, wallet address, amount,
+time. They are not an identification: nothing on the ledger says who controls
+the wallet. And they are not a contingent position: a complete set plus the
+right to recombine it into its collateral is fully hedged, interchangeable
+with the deposit itself. Contingent exposure arises only later, when the
+depositor sells some claims and keeps others --- and that sale may occur in a
+venue whose individual orders never touch this ledger. A hash-to-trade mapping
+records exposure here that does not exist and misses the transaction where
+exposure actually arises. Supervision needs a confidential account-to-party
+linkage, so the deposit, the later orders, and the eventual redemption read as
+one owner's lifecycle. A machine can check conservation: collateral in equals
+complete sets out.
 
 *Close and match.* Orders accumulate until the stated close; at close the
 submitted book freezes and a deterministic rule clears it at one consistent
-set of prices. The ledger can carry surprisingly little of this: perhaps a
-root committing to the accepted orders, the clearing prices, and aggregate
-fills. The records that market-conduct examination cares most about —
-instructions rejected before admission, modifications, cancellations, the
-sequence in which orders arrived — may never become ledger bytes at all,
-because they never changed the ledger's state. They are reported from the
-venue's own records or they are not reported. In the other direction, this
-milestone is where machine verification is strongest. Because the clearing
-rule is deterministic over a frozen book, anyone holding the book can
-recompute the result. In my research prototype, the batch verifier accepts a
-submitted clearing only if recomputation from the frozen book reproduces it
-exactly; it never trusts the submitter's claimed quantities. A reporting rule
-with that shape is more than a format check: the rule is the check.
+set of prices. The ledger can carry little of this: perhaps a root committing
+to the accepted orders, the clearing prices, and aggregate fills. The records
+market-conduct examination cares most about --- instructions rejected before
+admission, modifications, cancellations, the sequence in which orders
+arrived --- may never become ledger bytes at all, because they never changed the
+ledger's state. They are reported from the venue's own records or they are not
+reported. In the other direction, this milestone is where machine verification
+is strongest. Because the clearing rule is deterministic over a frozen book,
+anyone holding the book can recompute the result. In my research prototype,
+the batch verifier accepts a submitted clearing only if recomputation from the
+frozen book reproduces it exactly; it never trusts the submitter's claimed
+quantities. A reporting rule with that shape is more than a format check: the
+rule is the check.
 
 *Finality.* Between the close of trading and the close of the observation
 window, the honest description of the market is a set of candidates: five
 possible settlements, each fully specified, exactly one of which will be
 authorized. Reporting vocabulary should be able to say this without
-pretending. Pending, disputed, unsupported, and expired are distinct states,
-none of them is "resolved," and none of them is an error. When the frozen
-observation program accepts qualifying evidence and the repair period lapses,
-one candidate becomes the certified outcome. Even then, a ledger
-reorganization or an application-level dispute can supersede what was
-observed. The record needs a correction linkage that preserves the superseded
-event, not a silent overwrite.
+pretending. Pending, disputed, unsupported, and expired are distinct states;
+none of them is "resolved," and none is an error. When the frozen observation
+program accepts qualifying evidence and the repair period lapses, one
+candidate becomes the certified outcome. Even then, a ledger reorganization or
+an application-level dispute can supersede what was observed. The record needs
+a correction linkage that preserves the superseded event, not a silent
+overwrite.
 
 *Settlement.* The realized cell's claims redeem from the pool; the other four
 expire worthless. The public bytes show outflows from the pool. They do not
-show which redemption closes which position of which owner at what gain — the
-fact an examiner reconstructing a lifecycle actually needs — and no
+show which redemption closes which position of which owner at what gain --- the
+fact an examiner reconstructing a lifecycle actually needs --- and no
 transparency purpose requires that they show it. The confidential record links
 them; the public record need not.
 
-At every milestone the same three consumers appeared. The public needs enough
-to trust prices. The regulator needs the exact owner-linked lifecycle,
-including the events the ledger never saw. A machine needs a deterministic
-rule against which the report can be validated. Those are the three records of
-the executive summary, and the rest of this comment takes them in the order of
-the Commissions' questions.
+The walk yields the executive summary's three records: enough public fields to
+trust prices; the exact owner-linked lifecycle, including events the ledger
+never saw, for the regulator; and a deterministic validation rule for the
+machine. The Commissions' three questions take them in turn.
 
 = Question 3: report economic events, not ledger writes
 
 == A normalized lifecycle
 
-The walk above shows why the reporting unit must be a normalized economic
-event with an exact link to its source, not a transaction hash. A reporting
-framework for onchain markets should distinguish at least the following states
-when they are economically relevant under the applicable reporting rules:
+The walk shows why the reporting unit must be a normalized economic event with
+an exact link to its source, not a transaction hash. A reporting framework for
+onchain markets should distinguish at least the following states when they are
+economically relevant under the applicable reporting rules:
 
 - policy or order creation;
 - signature and authorization;
@@ -240,8 +236,8 @@ an algorithm's response to market conditions. Sparse or bespoke markets
 heighten the risk, because an otherwise anonymous event can be unique. In the
 worked example, the batch conceals individual orders, but a settlement graph
 that pays redemptions directly to the original wallets can undo that
-concealment after the fact. I offer these as risk analysis — reasoning about
-what public fields make inferable — not as measurements of any real market;
+concealment after the fact. I offer these as risk analysis --- reasoning about
+what public fields make inferable --- not as measurements of any real market;
 the basis I do have is described below.
 
 Public dissemination should therefore be defined as a frozen, purpose-limited
@@ -262,15 +258,15 @@ The questions to ask include:
 - how activity level, participant count, product bespoke-ness, and observable
   settlement graphs change the analysis.
 
-Purpose-limited publication is not a novelty in this framework: the real-time
-public reporting rules already delay the public print of certain large trades
-and cap the disseminated notional.#note_ref(2) What is new for onchain markets
-is the number of leakage surfaces outside the regulated tape. A public
-mempool, a fee payer, a funding graph, a failed instruction, a relayer path, a
-transaction trace, a public token account, or a settlement graph can reveal
-information before and beyond official dissemination. Evaluation should
-measure both the dissemination policy and the independently observable
-base-chain and application-layer leakage.
+Purpose-limited publication is not a novelty: the real-time public reporting
+rules already delay the public print of certain large trades and cap the
+disseminated notional.#note_ref(2) What is new for onchain markets is the
+number of leakage surfaces outside the regulated tape. A public mempool, a fee
+payer, a funding graph, a failed instruction, a relayer path, a transaction
+trace, a public token account, or a settlement graph can reveal information
+before and beyond official dissemination. Evaluation should measure both the
+dissemination policy and the independently observable base-chain and
+application-layer leakage.
 
 None of this loosens the confidential record. The lifecycle reporting
 framework already expects exact creation and continuation data with
@@ -284,9 +280,9 @@ remain timely and complete however conservative the public record becomes.
 
 The empirical basis behind my leakage statements is deliberately modest. I
 have built a small deterministic laboratory that replays four synthetic
-trading traces and records, for each of three transcript designs — a fully
+trading traces and records, for each of three transcript designs --- a fully
 public one, one with a named executor who sees private inputs, and one
-hypothetical design with a fixed disclosure budget — which fields the design
+hypothetical design with a fixed disclosure budget --- which fields the design
 mechanically reveals and which deductions those fields enable, keeping the two
 categories separate. It is transcript bookkeeping over synthetic data. It
 measures no anonymity, no cryptographic leakage, no timing behavior, no
@@ -311,8 +307,8 @@ dissemination policy: enumerate the fields, then defend each one.
 
 = Privacy architectures must not be conflated
 
-My research uses three terms precisely, and I offer them here because
-conflating them produces bad reporting policy in both directions:
+My research uses three terms exactly; conflating them produces bad reporting
+policy in both directions:
 
 - *Clear*: the specified state and computation are public.
 - *Shielded*: a named executor, committee, or auditor may learn private
@@ -330,8 +326,8 @@ can each make a purportedly Dark design Shielded in fact. The distinction
 matters for reporting because each architecture provides different evidence,
 incident-response, availability, and lawful-access properties.
 
-Clear systems and regulator-observable Shielded systems — whether
-operator-readable or threshold-disclosure — can be evaluated against
+Clear systems and regulator-observable Shielded systems --- whether
+operator-readable or threshold-disclosure --- can be evaluated against
 confidential reporting obligations by inspecting their data and governance
 paths. A true Dark architecture presents a narrower research question: whether
 fixed encrypted compliance queries and bounded leakage can satisfy each
@@ -382,10 +378,10 @@ regulator wants it.
 
 == Guarded updates and candidate states
 
-Two structures from my research bear directly on machine-readable reporting,
-and I state exactly what stands behind them. In my Lean models of guarded
-commitments, an update's shape — the record it modifies, the actor authorized
-to modify it, the fields it may touch, the predicate version it must satisfy —
+Two structures from my research bear directly on machine-readable reporting.
+In my Lean models of guarded
+commitments, an update's shape --- the record it modifies, the actor authorized
+to modify it, the fields it may touch, the predicate version it must satisfy ---
 is fixed before the late value arrives; an accepted update is exactly the
 committed transition, and a violating one fails closed, changing nothing. In
 the same research, a computation's pending state is represented as the set of
@@ -396,16 +392,16 @@ compliance implementation, or a proposal that the Commissions adopt any
 research calculus.
 
 Their value here is narrower: they show that transition authority, failure,
-and ambiguity can be made explicit and machine-checkable — that "who may
+and ambiguity can be made explicit and machine-checkable --- that "who may
 correct this report, to what, under which rule version" can be a typed object
 rather than a convention. A finality or correction certificate should be
 required before one candidate becomes the final regulatory state, and rejected
 or superseded transitions should remain auditable without being counted as
-trades. One further small lesson from my prototypes: my observation
-accumulator refuses to answer a question its retained information cannot
-support, rather than approximating it. "The rule rejects this" and "the
-backend cannot answer this" are different states, and the failure taxonomy of
-item 9 should keep them apart.
+trades. One further lesson from my prototypes: my observation accumulator
+refuses to answer a question its retained information cannot support, rather
+than approximating it. "The rule rejects this" and "the backend cannot answer
+this" are different states, and the failure taxonomy of item 9 should keep
+them apart.
 
 = Governance and pilot design
 
@@ -455,7 +451,7 @@ transaction is onchain. It does not claim that a transaction hash is a
 complete report, that a proof establishes the report behind it, that
 zero-knowledge techniques eliminate recordkeeping, or that encryption places
 any record beyond lawful process. It does not claim that any presently
-available Dark architecture satisfies existing reporting obligations — my own
+available Dark architecture satisfies existing reporting obligations --- my own
 research included: the artifacts behind this comment are Lean models and
 offline research prototypes, not a reporting system, and none of them is
 deployed, funded, offered, or operating. It takes no position on the
@@ -494,13 +490,12 @@ does not expose.
 
 = Appendix: basis of material technical claims
 
-The body of this comment states its technical claims plainly. This appendix
-records the evidentiary basis for each material claim in one line. "Model
-theorem" means a machine-checked statement about a simplified formal model
-reviewed by the submitter. "Prototype test" means a deterministic offline test
-in a research prototype reviewed by the submitter. No artifact behind these
-claims is deployed market infrastructure, and none has been independently
-audited.
+This appendix records the evidentiary basis for each material technical claim
+in one line. "Model theorem" means a machine-checked statement about a
+simplified formal model reviewed by the submitter. "Prototype test" means a
+deterministic offline test in a research prototype reviewed by the submitter.
+No artifact behind these claims is deployed market infrastructure, and none
+has been independently audited.
 
 #table(
   columns: (1fr, 2.1in),
@@ -511,7 +506,7 @@ audited.
   [Repository confidentiality and access rules govern reported swap data], [17 C.F.R. part 49; source note 4],
   [A guarded update's shape is fixed before the late value; an accepted update equals the committed transition; a violating update fails closed], [Model theorems in the submitter's guarded-commitment research; not deployed controls or a reporting adapter],
   [A pending computation can be represented as the set of results it could still be; collapse to one answer is an explicit act with a stated precondition], [Model theorem in the submitter's candidate-result formalism; no oracle, finality process, or enforceable selection is implemented or validated],
-  [The worked example's core accounting — deposit, recombination, claim materialization, resolution, redemption, with conservation and pool-coverage checks — runs offline with passing deterministic tests], [Pure-Rust research prototype reviewed by the submitter; tested, not formally verified; not deployed],
+  [The worked example's core accounting --- deposit, recombination, claim materialization, resolution, redemption, with conservation and pool-coverage checks --- runs offline with passing deterministic tests], [Pure-Rust research prototype reviewed by the submitter; tested, not formally verified; not deployed],
   [The prototype's batch verifier accepts a submitted clearing only if full recomputation from the frozen book reproduces it], [Prototype source and deterministic tests reviewed by the submitter; offline research code, not a deployed venue],
   [The prototype's observation accumulator refuses questions its retained information cannot support], [Prototype source and deterministic tests reviewed by the submitter; offline research code],
   [The leakage laboratory replays four synthetic traces against three transcript designs and separates mechanically revealed fields from enabled deductions], [Deterministic synthetic-transcript accounting reviewed by the submitter; not an anonymity, cryptographic-leakage, timing, or real-market measurement],

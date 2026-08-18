@@ -163,8 +163,7 @@
     radius: 2pt,
   )[
     *Review draft - not filed.* Identity, privacy, legal, source, and live-docket
-    review remain required. Public submission would permanently link the named
-    submitter to the research described here.
+    review remain required before filing.
   ]
 
   v(7pt)

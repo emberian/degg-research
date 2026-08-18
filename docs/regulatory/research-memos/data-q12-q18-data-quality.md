@@ -92,7 +92,8 @@ firm is answering its own question correctly.
 
 Position 2 is the one this program has direct experience with. The design's
 observation component is an interval-summary structure that combines
-authenticated observations and refuses to answer a question its retained
+observations — source authentication is the design's input contract, not
+implemented in the prototype — and refuses to answer a question its retained
 information cannot support, rather than approximating it. That refusal is a
 feature: "the rule rejects this" and "the backend cannot answer this" are
 different facts, and a system that conflates them misreports both. Applied to

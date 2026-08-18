@@ -78,9 +78,11 @@ Domains A and B: complete agreement on all 299,884,385 batches.
 Domain C: 474,948 batches, identical accept/refuse verdict on every one. Of the
 386,125 batches both oracles refused, 374,538 carried corresponding refusal
 classes and 11,587 did not, falling into 16 class pairs. All 11,587 come from two check-priority choices
-that the specification does not fix, and in every one of them a third
-independent rule enumerator confirms that both reported rules really are
-violated by the witness. Details and minimal witnesses are in the dated
+that the specification does not fix, and in every one of them a third,
+deliberately naive rule enumerator (it shares parameter constants and
+`required_reservation` with this oracle, so it is independent of the toy but
+not of this crate) confirms that both reported rules really are violated by
+the witness. Details and minimal witnesses are in the dated
 addendum to `docs/research/DARK_FBA_RELATION.md`.
 
 Vector reproduction: the published `../dark-fba/vectors/v1.txt` is regenerated

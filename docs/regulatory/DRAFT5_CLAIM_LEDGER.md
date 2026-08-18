@@ -239,7 +239,7 @@ Verified against the Draft 6 sources on 2026-08-18:
 | N-4 | "In my formal models I have machine-checked that a correction's authorized actor, target record, permitted fields, and governing rule version can be fixed in advance and enforced mechanically" (data) | Narrowed V-15/V-04 restatement; never a reporting adapter, compliance implementation, or accepted schema |
 | N-5 | "A small deterministic laboratory that replays four synthetic trading traces against three transcript designs and records which fields each design mechanically reveals and which deductions those fields enable" (data) | Compressed V-25/V-11; the hedge set ("measures no anonymity, cryptographic leakage, timing behavior, or real market") must travel with any use |
 
-## Draft 6 artifacts (built 2026-08-18; Typst embeds a creation timestamp, so a rebuild changes the hash --- these identify the artifacts currently in `output/pdf/`)
+## Draft 6 artifacts (built 2026-08-18; Typst embeds a creation timestamp, so a rebuild changes the hash --- these identify the pre-typography build; see the dated status note below)
 
 - `joint-definitions-comment-draft-6.pdf` --- 6 pages, SHA-256
   `dfdd8784db2559008586ceb85ddbbde926ad8633387d9e9a9245617b85dc0f00`
@@ -249,6 +249,14 @@ Verified against the Draft 6 sources on 2026-08-18:
   `c6918fa545066d5c0aabe7c1ccc097a9491465f3d57a1d938b6ada9b9bc8edb0`
 - `cftc-iac-cover-statement-draft-6.pdf` --- 1 page, SHA-256
   `63315caa69a6910af8abf081c2766d448b6ec04e8ee6cdfbbaa1043c66c7069f`
+
+> Status 2026-08-19 (drift review): the typography commit 0c22ae7 rebuilt all
+> four PDFs (STIX Two Text; the three long documents gained one page each), so
+> the hashes and page counts above no longer identify the files at `output/pdf/`
+> --- they identify the pre-typography build. Content was verified preserved as
+> character multisets in that commit. The row is deliberately not re-pinned
+> here while the typst lane is live; the filing-day freeze (gate 4) re-pins
+> hashes once, at the frozen commit.
 
 Body word counts (Typst source, `wc -w`), Draft 5 to Draft 6: definitions
 3753 to 2695; data-reporting 4377 to 2968; IAC 4251 to 2708; cover 386 to

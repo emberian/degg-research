@@ -85,7 +85,8 @@ not measuring value at all.
 *Basis for statements about the submitter's artifacts in this memo:* the
 "frozen observation rule with a stated failure behavior" discipline described
 above is implemented, for price observations only, in an offline research
-prototype — an observation accumulator that combines authenticated observations
+prototype — an observation accumulator that combines supplied observations — source
+authentication is an assumed input contract the prototype does not implement —
 and refuses to answer questions its retained information cannot support. Its
 deterministic tests pass; it is tested, not formally verified, and it is not
 deployed. Nothing in it observes securities index status, and no artifact in

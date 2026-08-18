@@ -78,7 +78,8 @@ allocating attention; the inputs are facts.
 
 *Basis for statements about the submitter's artifacts in this memo:* the
 program has an offline research prototype implementing an observation
-accumulator over authenticated observations with a stated refusal behavior, and
+accumulator over supplied observations (source authentication is an assumed
+input contract, not implemented) with a stated refusal behavior, and
 its architecture documents describe frozen source specifications with sampling
 grids, coverage and dispersion bounds, and deterministic failure rules. The
 prototype's deterministic tests pass; it is tested, not formally verified, and

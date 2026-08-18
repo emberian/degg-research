@@ -59,6 +59,7 @@ fn place(
         authorized: true,
         eligible: true,
         included: true,
+        custody_bound: true,
     });
 }
 

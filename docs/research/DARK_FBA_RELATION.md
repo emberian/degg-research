@@ -89,19 +89,115 @@ Each occupied slot contains:
 - nonzero batch-scoped nullifier;
 - arrival time at or before cutoff;
 - authorization statement;
-- eligibility statement; and
-- exact inclusion statement for `R`.
+- eligibility statement;
+- exact inclusion statement for `R`; and
+- custody-binding statement for the reserved amount.
 
 An empty slot contributes zero to every curve and has no hidden order fields.
 Every occupied slot must pass every admission rule or the batch relation
 refuses. Buy reservation must cover `quantity * price[limit]`; sell reservation
 must cover `quantity`. The external admission relation must additionally prove
-that reservations refer to distinct or otherwise non-double-counted custody.
-The toy checks the numeric lower bound but cannot bind it to a ledger.
+that reservations refer to distinct or otherwise non-double-counted custody;
+that obligation enters the witness as the custody-binding statement, rule 17
+of the frozen order below. Both offline oracles carry it as a boolean and check
+the numeric lower bound separately; neither can bind either one to a ledger.
 
 Nullifiers must be nonzero and pairwise distinct within the batch. A malformed,
 late, unauthorized, ineligible, unavailable, unbound, or duplicate-nullifier
 batch is not reinterpreted as no trade.
+
+### 4.1 Frozen admission-check order
+
+Status: PROPOSED-now-frozen-for-v0. Changing this order, or the tier boundaries
+below, creates a new relation version exactly as a changed row of section 2
+does.
+
+Section 8 makes the refusal class a public typed output. A witness that
+violates several admission rules therefore publishes a choice, and nothing
+above fixed that choice: two implementations conforming to sections 1 through
+11 could refuse the same batch and name different classes. Section 13 records
+that happening 11,587 times across sixteen class pairs. This subsection closes
+the gap by fixing which rule is reported.
+
+The order frozen here is the order `experiments/dark-fba` already implements.
+That oracle is the anchor artifact: the published corpus
+`experiments/dark-fba/vectors/v1.txt` is rendered from it, section 11's
+validation record is a record of it, and its outputs are the only checked-in
+expected outputs for the relation. The corpus pins the class of each of its
+five single-fault refusal witnesses, and so the rule identities; adopting the
+same artifact's priority supplies the one missing coordinate without editing an
+anchor byte, and the corpus is byte-identical after this freeze. Adopting any
+other total order would have been equally sound as semantics and would have
+required rewriting the anchor implementation instead. The choice is one of
+stability, not of merit: no admissible batch's verdict, tick, volume,
+allocation, or owner output depends on it. It exists so that the public failure
+output is a function of the witness rather than of the implementation.
+
+Tier 1, batch-level, evaluated first and in this order:
+
+| # | Rule | Class |
+|---:|---|---|
+| 1 | Requested execution mode is executable; `DarkTarget` is refused before any witness is inspected | `dark-target-unavailable` |
+| 2 | The admission log is final | `admission-log-not-final` |
+| 3 | The witness slots open exactly to `R` | `root-binding-absent` |
+| 4 | No conflicting finalized root exists | `root-equivocation` |
+| 5 | Every admitted payload is available by the declared threshold | `payload-unavailable` |
+
+Tier 2, per occupied slot. Slots are visited in ascending slot index, and the
+first failing rule of the first failing slot decides the class. An empty slot
+is skipped and can fail nothing.
+
+| # | Rule | Class |
+|---:|---|---|
+| 6 | Slot binds the batch identifier | `batch-binding-mismatch` |
+| 7 | Slot binds the market identifier | `market-binding-mismatch` |
+| 8 | Owner is in `0..4` | `owner-out-of-domain` |
+| 9 | Quantity is in `1..=15` | `quantity-out-of-domain` |
+| 10 | Limit tick is in `0..4` | `limit-out-of-domain` |
+| 11 | Nullifier is nonzero | `nullifier-zero` |
+| 12 | Nullifier differs from every strictly earlier occupied slot's | `nullifier-repeated` |
+| 13 | Arrival is at or before cutoff | `late-arrival` |
+| 14 | Authorization statement is present | `unauthorized` |
+| 15 | Eligibility statement is present | `ineligible` |
+| 16 | Exact-inclusion statement for `R` is present | `inclusion-absent` |
+| 17 | Custody-binding statement is present: the reservation refers to distinct, non-double-counted custody | `custody-binding-absent` |
+| 18 | Reservation covers the worst-case obligation: `quantity * price[limit]` for a buy, `quantity` for a sell | `reservation-insufficient` |
+
+Tier 3, after every tier-1 and tier-2 rule has passed: clearing, allocation,
+and settlement may still refuse for accumulator overflow or a failed internal
+invariant. No tier-3 class can preempt an admission class.
+
+Consequences a conforming implementation must respect:
+
+- Slot order dominates rule order. A violation at slot `i` is reported in
+  preference to any violation at slot `j > i`, whatever the two rule numbers
+  are. In particular, batch-scoped nullifier uniqueness is rule 12 inside the
+  per-slot sequence, not a separate later phase.
+- Rule 12 looks only at strictly earlier occupied slots, so the slot it names
+  is the later repeat and the first-use index it carries is the earliest prior
+  use.
+- Rules 9 and 10 precede rule 18, which indexes the tick grid and multiplies by
+  quantity. A conforming implementation must not evaluate rule 18 on an
+  out-of-domain limit or quantity.
+- The order is total: exactly one class is reachable for any witness, and a
+  conforming backend publishes that class and no other.
+- Only the class is public. The slot index, the first-use index, and the
+  required/supplied amounts that an implementation may carry alongside a class
+  are diagnostics, and section 8 forbids publishing secret-bearing diagnostics
+  in the Dark target.
+- The class spelling is not frozen. The two implementations of section 13 use
+  different spellings that map one to one; what is frozen is each rule's
+  identity and its position. The tags above are that shared vocabulary. The
+  anchor implementation spells rule 17 `ReservationNotBound`.
+
+VERIFIED on 2026-08-18 that both implementations of section 13 realize this
+order: the independent oracle's own suite asserts that a slot violating any two
+per-slot rules is refused with the lower-numbered one, over all 78 pairs, and
+that an earlier slot's violation preempts a later slot's; the differential's
+domain C compares the two implementations over 551,784 batches carrying up to
+three simultaneous admission faults and finds no class disagreement. Neither
+fact is a proof that the order is realizable inside a Dark backend, which does
+not exist.
 
 ## 5. Inclusion and availability
 
@@ -367,8 +463,9 @@ reinterpreted as no trade, but it does not say which class a batch violating
 several rules must report. A backend that publishes a typed refusal class makes
 that class an observable, and section 8 already requires failure to be a public
 typed class; two conforming implementations can therefore disagree publicly.
-Freezing a check order, or declaring the reported class underdetermined, is
-open work for v0.
+Freezing a check order, or declaring the reported class underdetermined, was
+open work for v0 when this run was recorded. It is now closed: section 4.1
+freezes the order, and section 13.6 records the conformance and the re-run.
 
 The sixteen pairs, with counts, are:
 
@@ -418,7 +515,74 @@ reproduction is checked in at
   `reservation_bound` witness, which stands for the custody-binding obligation
   of section 4. The independent oracle does not model it and the harness always
   supplies it as present. That the independent oracle omits a statement this
-  document requires is itself a finding about the independent oracle.
+  document requires is itself a finding about the independent oracle. Closed
+  after this run; see section 13.6.
 - The vector layout was transcribed from the published corpus file, since a
   serialization shape is a rendering convention rather than a semantic property
   of the relation.
+
+### 13.6 Addendum, later on 2026-08-18: the refusal-class gap is closed
+
+Sections 13.1 through 13.5 record the state before this subsection and are not
+restated, weakened, or corrected by it. This subsection records what was done
+about the gap they found.
+
+**Spec.** Section 4.1 freezes the admission-check order for v0, adopting the
+order the anchor implementation already realizes, for the reasons stated there.
+`experiments/dark-fba` is unmodified and its golden corpus is byte-identical,
+still SHA-256
+`9a00d7393d00b5cca1e1b980a468a48cb7c21053fac8ae9e15abe2ba7fc9a767`. A backend
+that publishes a different class for a multiply-invalid book is now
+non-conforming rather than merely different.
+
+**Conformance.** The independent oracle was edited to the frozen order: the
+quantity domain now precedes the limit domain (rules 9 and 10), and the two
+nullifier rules moved out of a separate batch-scoped pass into the per-slot
+sequence at rules 11 and 12, so slot order dominates rule order. The edit is
+confined to that oracle's admission module and witness struct; no line of its
+curve construction, tick selection, apportionment, or settlement changed.
+
+**Custody-binding statement.** The statement 13.5 recorded as untested is now
+modelled by both oracles and covered by the differential. The independent
+oracle carries it as rule 17, the adapter maps it to the anchor's
+`ToyAdmissionWitness::reservation_bound` instead of always supplying `true`,
+and domain C's per-slot perturbation catalogue gained a `custody-unbound`
+perturbation, applied at each of the four slots. The action catalogue therefore
+grows from 78 to 82 and domain C from 474,948 batches to 551,784. No admission statement of section 4 is now outside
+the comparison.
+
+**Re-run.** VERIFIED on 2026-08-18, at exactly these bounds:
+
+| Domain | Cases | Divergences |
+|---|---:|---:|
+| A | 214,358,881 | 0 |
+| B | 85,525,504 | 0 |
+| C | 551,784 | 0 |
+| Total | 300,436,169 | 0 |
+
+Refusal class included: of domain C's 551,784 batches the two oracles settled
+the same 103,743 and refused the same 448,041, naming corresponding classes on
+every one. The published corpus still reproduces byte-for-byte through the
+declared vocabulary map, at the digest above.
+
+**What the zero is worth.** The 11,587 divergences of 13.3 were found between
+implementations written independently, and that finding stands exactly as
+recorded. The zero above is weaker in kind: the independent oracle now
+implements a section derived from the anchor's own behavior, so agreement on
+refusal class is a conformance check, not independent corroboration. Domains A
+and B are not affected by that caveat, because the clearing, selection,
+allocation, and settlement code on both sides is unchanged from the artifacts
+those runs compared. The independence claim of 13.1 continues to describe only
+the pre-conformance oracle; the post-conformance digests are recorded
+separately in
+[`INDEPENDENCE.md`](../../experiments/dark-fba-independent/INDEPENDENCE.md).
+
+**Tests.** The two harness tests that asserted the divergence still existed now
+assert its absence and cite section 4.1, and domain C's assertion is zero
+divergences in every class rather than a nonzero refusal-class count. The
+independent oracle's own suite gained order tests: each per-slot edit violates
+exactly its own rule, a slot violating any two of the thirteen per-slot rules
+is refused with the lower-numbered one over all 78 pairs, an earlier slot's
+violation preempts a later slot's, mode and boundary rules preempt every
+per-slot rule, and the eighteen admission classes carry the rule numbers 1
+through 18 exactly once each.

@@ -27,6 +27,7 @@ The ledger records the strongest currently permitted wording.
 | C021 | Two joint CFTC/SEC requests relevant to guarded and dark systems remain open through Aug. 24, 2026. | VERIFIED CURRENT | FR Docs 2026-12743 and 2026-12742. | Official amendment or deadline passage. |
 | C022 | The joint definitions request expressly seeks criteria for innovative products and event contracts amid onchain automated systems. | VERIFIED CURRENT | 91 Fed. Reg. 37873–77. | Official correction. |
 | C023 | The joint data request expressly asks about blockchain reporting, strategy/identity leakage, and machine-readable logic. | VERIFIED CURRENT | 91 Fed. Reg. 37877–81, Questions 3, 8, 19. | Official correction. |
+| C024 | Two implementations of dark-fba/n4-k4-q15/v0 agree on 300,436,169 enumerated batches including refusal class, after a spec-level freeze of check order; allocation/clearing agreement is independent, refusal-class agreement is conformance to the frozen §4.1 order. | VERIFIED | experiments/dark-fba-independent differ run 2026-08-19; DARK_FBA_RELATION.md §4.1, §13.6; INDEPENDENCE.md per-file digests. | Re-run after any oracle or spec change. |
 
 ## Rule
 

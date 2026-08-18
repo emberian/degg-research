@@ -59,6 +59,15 @@ For every nonempty slot:
 
 Empty slots have a canonical zero contribution and cannot carry value.
 
+This list is a set of requirements, not a sequence: it fixes which slots are
+admissible, not which class a slot violating several rules is refused with. A
+specialization that publishes the refusal class as an output makes that choice
+a public observable and owes a frozen check priority, or an explicit
+declaration that the reported class is underdetermined. The specialization
+`dark-fba/n4-k4-q15/v0` freezes one, as a numbered order over these rules plus
+its own boundary statements, in section 4.1 of
+[`DARK_FBA_RELATION.md`](../docs/research/DARK_FBA_RELATION.md).
+
 ## Aggregate curves
 
 For tick k:
@@ -172,6 +181,7 @@ mechanism and regulatory question, not an automatic cryptographic choice.
 - limit satisfaction;
 - conservation;
 - nullifier uniqueness;
+- frozen refusal-class priority wherever the class is a public output;
 - commitment binding;
 - inclusion completeness;
 - leakage noninterference;

@@ -31,6 +31,7 @@ pub fn order(index: usize, spec: SlotSpec) -> Order {
         authorized: true,
         eligible: true,
         included: true,
+        custody_bound: true,
     }
 }
 

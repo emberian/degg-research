@@ -233,6 +233,7 @@ fn base_books() -> Vec<Batch> {
                 authorized: true,
                 eligible: true,
                 included: true,
+                custody_bound: true,
             });
         }
         batch
@@ -262,13 +263,16 @@ fn base_books() -> Vec<Batch> {
 ///
 /// The action catalogue is every batch-level perturbation (six: four boundary
 /// statements plus the two non-default modes) together with every per-slot
-/// perturbation (eighteen) at each of the four slots: `6 + 18 * 4 = 78`
+/// perturbation (nineteen) at each of the four slots: `6 + 19 * 4 = 82`
 /// actions. For each of six base books the harness applies every subset of size
 /// zero, one, two, and three in ascending action order:
-/// `1 + 78 + 3003 + 76_076 = 79_158` batches per base book, `474_948` in total.
+/// `1 + 82 + 3321 + 88_560 = 91_964` batches per base book, `551_784` in total.
 ///
-/// Multi-action subsets are the point: they are what expose a disagreement in
-/// which rule wins when a witness violates several at once.
+/// Multi-action subsets are the point: they are what decide which rule wins
+/// when a witness violates several at once, so this domain is the check that
+/// both oracles implement the frozen order of `DARK_FBA_RELATION.md` section
+/// 4.1. Before that order was frozen it produced 11,587 refusal-class
+/// divergences over a catalogue of 78 actions and 474,948 batches.
 fn domain_c() -> Report {
     let actions: Vec<(Perturbation, usize)> = BATCH_PERTURBATIONS
         .iter()
@@ -324,7 +328,6 @@ fn domain_c() -> Report {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use adapter::Divergence;
     use degg_batch_oracle::book::{Boundary, Order};
     use report::signature;
 
@@ -390,50 +393,79 @@ mod tests {
             authorized: true,
             eligible: true,
             included: true,
+            custody_bound: true,
         })
     }
 
-    /// Finding 1: when a witness is out of domain in both quantity and limit,
-    /// the two oracles name different rules. This test asserts the divergence
-    /// still exists; it is recorded, not reconciled.
+    /// Closed finding 1: a witness out of domain in both quantity and limit
+    /// once split the two oracles (`limit-out-of-domain` against
+    /// `quantity-out-of-domain`). Rule 9 precedes rule 10 in the frozen order
+    /// of `DARK_FBA_RELATION.md` section 4.1, so both now report the quantity.
     #[test]
-    fn finding_quantity_and_limit_priority_disagree() {
+    fn closed_quantity_and_limit_priority_agree() {
         let mut batch = empty_batch();
         batch.slots[0] = slot(0, Direction::Buy, 4, 16, 64, 1);
-        assert_eq!(
-            signature(&batch).as_deref(),
-            Some("limit-out-of-domain vs quantity-out-of-domain")
-        );
         assert_eq!(adapter::violations(&batch).len(), 2);
+        assert_eq!(signature(&batch), None);
+        assert!(matches!(
+            degg_batch_oracle::evaluate(&batch),
+            degg_batch_oracle::Outcome::Refused(
+                degg_batch_oracle::admit::Refusal::QuantityOutOfDomain { slot: 0 }
+            )
+        ));
     }
 
-    /// Finding 2: when one slot both repeats a nullifier and under-reserves,
-    /// the two oracles name different rules.
+    /// Closed finding 2: one slot that both repeats a nullifier and
+    /// under-reserves once split the two oracles (`reservation-insufficient`
+    /// against `nullifier-repeated`). Rule 12 precedes rule 18 in the frozen
+    /// order, so both now report the repeated nullifier.
     #[test]
-    fn finding_nullifier_and_per_slot_priority_disagree() {
+    fn closed_nullifier_and_per_slot_priority_agree() {
         let mut batch = empty_batch();
         batch.slots[0] = slot(0, Direction::Buy, 0, 1, 1, 1);
         batch.slots[1] = slot(0, Direction::Buy, 0, 1, 0, 1);
-        assert_eq!(
-            signature(&batch).as_deref(),
-            Some("reservation-insufficient vs nullifier-repeated")
-        );
+        assert_eq!(adapter::violations(&batch).len(), 2);
+        assert_eq!(signature(&batch), None);
+        assert!(matches!(
+            degg_batch_oracle::evaluate(&batch),
+            degg_batch_oracle::Outcome::Refused(
+                degg_batch_oracle::admit::Refusal::NullifierRepeated { slot: 1, first: 0 }
+            )
+        ));
     }
 
-    /// Both oracles refuse the same set of batches across the whole
-    /// perturbation catalogue: divergence never crosses accept and refuse.
+    /// The custody-binding statement, once modelled by only one oracle, now
+    /// maps across and refuses identically.
     #[test]
-    fn refusal_disagreements_are_never_about_whether_to_refuse() {
+    fn custody_binding_statement_agrees() {
+        let mut batch = empty_batch();
+        batch.slots[0] = slot(0, Direction::Buy, 0, 1, 1, 1);
+        if let Slot::Taken(ref mut order) = batch.slots[0] {
+            order.custody_bound = false;
+        }
+        assert_eq!(adapter::violations(&batch).len(), 1);
+        assert_eq!(signature(&batch), None);
+        assert!(matches!(
+            degg_batch_oracle::evaluate(&batch),
+            degg_batch_oracle::Outcome::Refused(
+                degg_batch_oracle::admit::Refusal::CustodyBindingAbsent { slot: 0 }
+            )
+        ));
+    }
+
+    /// The whole admission surface agrees, refusal class included: both
+    /// oracles now implement the frozen check order of section 4.1, so domain
+    /// C is divergence-free rather than divergence-bearing.
+    #[test]
+    fn admission_perturbations_agree_in_every_class() {
         let report = domain_c();
-        assert_eq!(report.cases, 474_948);
+        assert_eq!(report.cases, 551_784);
         for (index, class) in CLASSES.iter().enumerate() {
-            if *class == Divergence::RefusalClass {
-                continue;
-            }
             assert_eq!(report.by_class[index], 0, "{class:?} appeared");
         }
+        assert!(report.pairs.is_empty());
         assert_eq!(report.unjustified, 0);
-        assert!(report.by_class[CLASSES.len() - 1] > 0);
+        assert!(report.refused > 0);
     }
 
     /// The boundary statements and the mode gate behave identically.

@@ -43,6 +43,12 @@ pub struct Order {
     pub eligible: bool,
     /// Exact-inclusion statement for the accepted-input root.
     pub included: bool,
+    /// Custody-binding statement: the reserved amount refers to distinct,
+    /// non-double-counted custody. `DARK_FBA_RELATION.md` section 4 places this
+    /// obligation on the external admission relation; like the three statements
+    /// above it is a boolean witness here, not a proof, and this oracle cannot
+    /// bind it to a ledger.
+    pub custody_bound: bool,
 }
 
 /// A padded slot: either canonical emptiness or one order.

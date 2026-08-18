@@ -46,6 +46,7 @@ fn our_slot(refusal: mine::admit::Refusal) -> Option<u8> {
         | Mine::Unauthorized { slot }
         | Mine::Ineligible { slot }
         | Mine::InclusionAbsent { slot }
+        | Mine::CustodyBindingAbsent { slot }
         | Mine::NullifierZero { slot }
         | Mine::ReservationInsufficient { slot }
         | Mine::NullifierRepeated { slot, .. } => Some(slot),
@@ -222,7 +223,12 @@ fn measure(batch: &Batch) -> u128 {
         size += u128::from(order.arrival.abs_diff(batch.cutoff));
         size += u128::from(order.batch.abs_diff(batch.batch));
         size += u128::from(order.market.abs_diff(batch.market));
-        for present in [order.authorized, order.eligible, order.included] {
+        for present in [
+            order.authorized,
+            order.eligible,
+            order.included,
+            order.custody_bound,
+        ] {
             if !present {
                 size += 1;
             }
@@ -363,6 +369,9 @@ pub fn describe(batch: &Batch) -> String {
                 }
                 if !order.included {
                     field.push_str(",not-included");
+                }
+                if !order.custody_bound {
+                    field.push_str(",custody-unbound");
                 }
                 if order.batch != batch.batch {
                     field.push_str(",wrong-batch");

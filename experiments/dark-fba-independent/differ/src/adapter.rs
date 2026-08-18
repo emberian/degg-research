@@ -13,11 +13,11 @@ use mine::book::{Batch, Direction, Mode, Slot};
 
 /// Restate one of my batches as the existing toy's batch.
 ///
-/// The toy carries one admission statement mine does not model,
-/// `ToyAdmissionWitness::reservation_bound`, which the relation document
-/// describes as the custody-binding obligation. The harness always supplies it
-/// as present, so the differential domain does not cover that boolean; that
-/// asymmetry is reported, not patched away.
+/// Every witness field maps across one to one, including the custody-binding
+/// statement (`Order::custody_bound` here, `ToyAdmissionWitness::
+/// reservation_bound` there). Until 2026-08-18 the independent oracle did not
+/// model that statement and the harness supplied it as present; it is now
+/// modelled, mapped, and perturbed, so no admission statement is out of scope.
 pub fn to_toy(batch: &Batch) -> toy::ToyBatch {
     let context = toy::PublicContext {
         batch_id: batch.batch,
@@ -46,7 +46,7 @@ pub fn to_toy(batch: &Batch) -> toy::ToyBatch {
                     authorized: order.authorized,
                     eligible: order.eligible,
                     included_under_root: order.included,
-                    reservation_bound: true,
+                    reservation_bound: order.custody_bound,
                 },
             }),
         };
@@ -92,6 +92,7 @@ pub fn expected_toy_refusal(refusal: mine::admit::Refusal, batch: &Batch) -> Opt
         Mine::Unauthorized { slot } => order(slot, Order::Unauthorized),
         Mine::Ineligible { slot } => order(slot, Order::Ineligible),
         Mine::InclusionAbsent { slot } => order(slot, Order::MissingInclusion),
+        Mine::CustodyBindingAbsent { slot } => order(slot, Order::ReservationNotBound),
         Mine::NullifierZero { slot } => order(slot, Order::ZeroNullifier),
         Mine::NullifierRepeated { slot, first } => {
             order(slot, Order::DuplicateNullifier { first_slot: first })
@@ -229,6 +230,9 @@ pub fn compare(
 }
 
 /// Short stable tag for one of the toy's refusal classes.
+///
+/// The tags are the shared vocabulary of `DARK_FBA_RELATION.md` section 4.1:
+/// each is the rule identity, not either implementation's own spelling.
 pub fn toy_class(refusal: &toy::Refusal) -> &'static str {
     use toy::BoundaryRefusal as Boundary;
     use toy::OrderRefusal as Order;
@@ -250,7 +254,7 @@ pub fn toy_class(refusal: &toy::Refusal) -> &'static str {
             Order::Unauthorized => "unauthorized",
             Order::Ineligible => "ineligible",
             Order::MissingInclusion => "inclusion-absent",
-            Order::ReservationNotBound => "reservation-not-bound",
+            Order::ReservationNotBound => "custody-binding-absent",
             Order::InsufficientReservation { .. } => "reservation-insufficient",
         },
         toy::Refusal::ArithmeticOverflow => "accumulator-overflow",
@@ -321,6 +325,9 @@ pub fn violations(batch: &Batch) -> Vec<(String, Option<u8>)> {
         }
         if !order.included {
             note("inclusion-absent");
+        }
+        if !order.custody_bound {
+            note("custody-binding-absent");
         }
         if order.nullifier == 0 {
             note("nullifier-zero");

@@ -61,6 +61,7 @@ pub fn decode_slot(letter: u32, index: usize, ceiling: u32, owner: u8, surplus: 
         authorized: true,
         eligible: true,
         included: true,
+        custody_bound: true,
     })
 }
 
@@ -118,7 +119,7 @@ pub const BATCH_PERTURBATIONS: [Perturbation; 6] = perturbations![
 ];
 
 /// Every per-slot perturbation. A perturbation of a vacant slot is a no-op.
-pub const SLOT_PERTURBATIONS: [Perturbation; 18] = perturbations![
+pub const SLOT_PERTURBATIONS: [Perturbation; 19] = perturbations![
     "wrong-batch" => |b: &mut Batch, i| edit(b, i, |o| o.batch += 1),
     "wrong-market" => |b: &mut Batch, i| edit(b, i, |o| o.market += 1),
     "owner-4" => |b: &mut Batch, i| edit(b, i, |o| o.owner = 4),
@@ -132,6 +133,7 @@ pub const SLOT_PERTURBATIONS: [Perturbation; 18] = perturbations![
     "unauthorized" => |b: &mut Batch, i| edit(b, i, |o| o.authorized = false),
     "ineligible" => |b: &mut Batch, i| edit(b, i, |o| o.eligible = false),
     "not-included" => |b: &mut Batch, i| edit(b, i, |o| o.included = false),
+    "custody-unbound" => |b: &mut Batch, i| edit(b, i, |o| o.custody_bound = false),
     "nullifier-zero" => |b: &mut Batch, i| edit(b, i, |o| o.nullifier = 0),
     "nullifier-dup-slot0" => |b: &mut Batch, i| edit(b, i, |o| o.nullifier = 1),
     "nullifier-dup-slot3" => |b: &mut Batch, i| edit(b, i, |o| o.nullifier = 4),

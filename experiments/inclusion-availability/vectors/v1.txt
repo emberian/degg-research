@@ -1,0 +1,62 @@
+model degg-inclusion-availability/v0
+relation dark-fba/n4-k4-q15/v0
+domain batch=7 market=11 cutoff=1000 capacity=4 payload_len=64 shares=4 threshold=3
+domain_digest 4f4110b678615d3262e2d8f5873287ff79cb93f6bd1e02a5808d090a41b9a844
+
+[admission]
+empty_root 50f7ae78fdbf19cc66a3cd92e4bd7c8c8b7511edeab3010b402e06978982ef13
+ack seq=0 leaves=1 leaf=5464c7b3168cd22faab82b73397846df4292ded8ec2a330565aa0b3d2dc2b0ab root=24be04fd2a8c51d0322899837ee5623de91bec7fef40060f547e1dbaea9cf73c
+ack seq=1 leaves=2 leaf=af55c47746d9f04b5511fdd72343a57be6734a80ca857bafceacc048d9ead95a root=2b4949107bbd8d5dff2be05dc539a7727b4c98bc6659a587f8d400f82197debf
+ack seq=2 leaves=3 leaf=d1e303b49e252563f32f898721e8ca5531cbce44150a42475bfd6eb4b10cb9bc root=e4862b9fa592a860555253d25c2f722f5c4a81563362196e37818ef8fadc382b
+ack seq=3 leaves=4 leaf=2138c508960b1e28e6d64b59ccfe98107d2244bf354631ad66a3d6bdc981aa66 root=9362932071e74ae3c38b2d2f6e40b10ea6c049194bb00e1248ad20d3233f61a9
+refusal CapacityExhausted { capacity: 4 }
+cutoff leaves=4 root=9362932071e74ae3c38b2d2f6e40b10ea6c049194bb00e1248ad20d3233f61a9
+
+[inclusion]
+receipt seq=0 path=2 left_peaks=0 right_peaks=0 accept
+receipt seq=1 path=2 left_peaks=0 right_peaks=0 accept
+receipt seq=2 path=2 left_peaks=0 right_peaks=0 accept
+receipt seq=3 path=2 left_peaks=0 right_peaks=0 accept
+padded real=0 leaves=4 occupied_from_bytes=0 root=288a8fedec75de8674a5b4e1b8b8df3d3968fdc9732ba927bd51e96eec9e02cd
+padded real=1 leaves=4 occupied_from_bytes=1 root=87f0b8659a19f227b4afafa55862ff690f486be4a2298886d5db40c24a35d063
+padded real=2 leaves=4 occupied_from_bytes=2 root=1b018530542eeb59895887cc79b48aa592dec9eca14ed5d66ecef5126d022e97
+padded real=3 leaves=4 occupied_from_bytes=3 root=8984283c860e9369a5a185c6eb12597b949541d4710182d57d6ad5a34e577465
+padded real=4 leaves=4 occupied_from_bytes=4 root=9362932071e74ae3c38b2d2f6e40b10ea6c049194bb00e1248ad20d3233f61a9
+receipt3 seq=0 path=1 left_peaks=0 right_peaks=1 accept
+receipt3 seq=1 path=1 left_peaks=0 right_peaks=1 accept
+receipt3 seq=2 path=0 left_peaks=1 right_peaks=0 accept
+tampered_sibling Proof(RootMismatch)
+moved_position Proof(RootMismatch)
+wrong_root Proof(RootMismatch)
+
+[consistency]
+prefix leaves=0 peaks=0 root=50f7ae78fdbf19cc66a3cd92e4bd7c8c8b7511edeab3010b402e06978982ef13 matches_running=true
+prefix leaves=1 peaks=1 root=24be04fd2a8c51d0322899837ee5623de91bec7fef40060f547e1dbaea9cf73c matches_running=true
+prefix leaves=2 peaks=1 root=2b4949107bbd8d5dff2be05dc539a7727b4c98bc6659a587f8d400f82197debf matches_running=true
+prefix leaves=3 peaks=2 root=e4862b9fa592a860555253d25c2f722f5c4a81563362196e37818ef8fadc382b matches_running=true
+prefix leaves=4 peaks=1 root=9362932071e74ae3c38b2d2f6e40b10ea6c049194bb00e1248ad20d3233f61a9 matches_running=true
+
+[equivocation]
+left_root e4862b9fa592a860555253d25c2f722f5c4a81563362196e37818ef8fadc382b
+right_root 477b048db796bb705bc22671126ad4fa283f794a8ceb4c911d28f5286364564e
+swapped_root caa00922249cb00e2edb71ae1091214cdd15e272b92df91495d94ff51bf1edcc
+verdict roots class=conflicting-sealed-roots digest=59f3eeabc063734818f209a8e4a025d9ee18d00975396ecaee7f4f50bbf39684
+verdict sequence class=conflicting-record-at-sequence digest=71ef606131a183a524acfb1b6210105569a3d09ec567cf7781eee2ae0c95c8c6
+verdict position class=nullifier-at-two-positions digest=3f828b8acce8d5bfbcad0ff8df926852fd85b46ef6e658eb41c386e717259689
+verdict prefix class=acknowledged-prefix-abandoned digest=2e73ff1764ffaebb2ef5e31bfc3353b7e3535f485de1867688ecf31cd2b21b71
+refused honest-roots RootsIdentical
+refused honest-prefix PrefixAgrees
+
+[lifecycle]
+timeouts seal=+1 availability=+2 compute=+4 retries=1
+abort cutoff-root-withheld retryable=false terminal=true consequence=RefundEveryEscrowedSubmission
+abort input-withheld retryable=false terminal=true consequence=RefundEveryAdmittedRecord
+abort compute-timeout retryable=true terminal=false consequence=RetryAgainstSameCutoffRoot
+abort compute-exhausted retryable=false terminal=true consequence=RefundEveryAdmittedRecord
+abort equivocation retryable=false terminal=true consequence=RefundUnderEitherRepudiatedRoot
+abort result-unbound retryable=false terminal=true consequence=RefundEveryAdmittedRecord
+run settled phase=settled escrowed=43210 refunded=0 settled=43210 outstanding=0 conserves=true
+run cutoff-root-withheld phase=cutoff-root-withheld escrowed=43210 refunded=43210 settled=0 outstanding=0 conserves=true
+run input-withheld phase=input-withheld escrowed=43210 refunded=43210 settled=0 outstanding=0 conserves=true
+run compute-exhausted phase=compute-exhausted escrowed=43210 refunded=43210 settled=0 outstanding=0 conserves=true
+run result-unbound phase=result-unbound escrowed=43210 refunded=43210 settled=0 outstanding=0 conserves=true

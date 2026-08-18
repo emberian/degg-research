@@ -1,0 +1,17 @@
+[package]
+name = "degg-inclusion-availability"
+version = "0.0.0"
+edition = "2024"
+publish = false
+license = "AGPL-3.0-or-later"
+description = "Offline model of append-only admission, cutoff commitment, inclusion receipts, equivocation, withholding, timeout, and refunds"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "degg-inclusion-vectors"
+path = "src/bin/vectors.rs"
+
+[lints.rust]
+unsafe_code = "forbid"

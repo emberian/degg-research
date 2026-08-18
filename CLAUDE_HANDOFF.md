@@ -7,8 +7,9 @@ unauthorized**.
 Read [`AGENTS.md`](AGENTS.md), [`docs/VERDICTS.md`](docs/VERDICTS.md), and this
 file before editing. `docs/VERDICTS.md` is the only operational truth page; this
 handoff routes work and must not become a competing verdict ledger. The
-repository is unborn and uncommitted, so local byte identities are not a release
-or provenance baseline.
+repository now has local baseline history on `main`; use `git rev-parse HEAD` to
+identify the exact working baseline. Local byte identities are still not a
+release manifest or public provenance attestation.
 
 ## 1. Epistemic and privacy vocabulary
 
@@ -238,14 +239,14 @@ visual-QA build are:
 - joint definitions comment, 6 pages:
   `4c3a65e23c33a9d160b6b4397fc61d9d9ce3b9f35cefb324d7d88e920c2d17a9`.
 
-These hashes identify unfiled review bytes only. The source repository is still
-uncommitted, Typst reports an unknown tool commit, and rendered PDFs embed build
+These hashes identify unfiled review bytes only. The source now has a local Git
+baseline, but Typst reports an unknown tool commit and rendered PDFs embed build
 timestamps, so an unchanged-source rebuild can produce different bytes. None is
-a deterministic source attestation or filing/release manifest.
+a deterministic filing/release manifest.
 
 Regenerate and record filing-edition PDF hashes, page counts, exact Typst/tool/
 font identity, source revision, and source-tree digest only after text and human
-identity are frozen. Do not treat the unborn worktree as that manifest.
+identity are frozen. Do not treat the local baseline alone as that manifest.
 
 ## 5. Regulatory calendar and human-only gates
 

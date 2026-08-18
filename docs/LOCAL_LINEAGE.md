@@ -15,8 +15,8 @@ Current state:
   now exist.
 - No program code, deployment, RPC, keys, or regulator contact was introduced by
   the scaffold work.
-- Repository is unborn and all files are currently untracked. There is no commit
-  anchor yet.
+- The repository now has local baseline history on `main`. The exact commit is
+  a review anchor, not a remote publication or release attestation.
 
 Relationship to this repository:
 

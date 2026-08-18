@@ -1,9 +1,14 @@
 # 24/7 and perpetuals RFC --- candidate comment: the reference price as an observation program
 
-Status: **candidate text, not filed, not part of any draft packet, not in
-the Typst tree.** Prepared 2026-08-18 by the candidate-draft lane as a
-POSSIBLE fourth filing, for the author's go/no-go only. Absent the author's
-express go it is filed nowhere, converted nowhere, and announced nowhere.
+Status: **candidate text, not filed.** Prepared 2026-08-18 by the
+candidate-draft lane as a POSSIBLE fourth filing, for the author's go/no-go
+only. *(Status note 2026-08-19: a Typst conversion has since landed —
+`docs/regulatory/typst/perpetuals/` and
+`output/pdf/cftc-perpetuals-comment-draft-1.pdf`, corrected by its own
+manipulation-cost experiment — so "not in the Typst tree, converted nowhere"
+no longer describes the tree. The go/no-go itself remains the author's and is
+recorded nowhere in-repo; nothing has been filed.)* Absent the author's
+express go it is filed nowhere and announced nowhere.
 Supporting analysis is in [OPEN_MATTERS_MAP.md](OPEN_MATTERS_MAP.md)
 (finding 2.1 and shortlist entry 2); the argument is ported from
 [definitions-q15-reference-integrity.md](definitions-q15-reference-integrity.md),

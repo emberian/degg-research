@@ -1,12 +1,18 @@
 # IAC written statement — addendum candidate: the operatorless agent
 
-Status: **candidate text, not filed, not part of any draft.** Prepared
+Status: **candidate text, not filed.** Prepared
 2026-08-19 by the operatorless-agents research lane as the possible
 artificial-intelligence content of the IAC written statement (Docket
 CFTC-2026-1717; the meeting notice's published topics expressly include
 artificial intelligence, and the current draft statement is silent on it).
-It enters the Draft 7 packet only on the author's express go; absent that
-word, it is filed nowhere. Supporting analysis and the go/no-go
+*(Status note 2026-08-19: the operatorless section has since been inserted
+into IAC Draft 8 — `docs/regulatory/typst/iac/body.typ`,
+`output/pdf/cftc-iac-written-statement-draft-8.pdf` — so "not part of any
+draft" no longer describes the tree. The filing go/no-go itself remains the
+author's and is recorded nowhere in-repo; nothing has been filed, and the
+insertion can be cut as easily as it was added.)* It is *filed* only on the
+author's express go; absent that word, it is filed nowhere. Supporting
+analysis and the go/no-go
 considerations are in [OPERATORLESS_AGENTS.md](OPERATORLESS_AGENTS.md).
 
 Drafting facts. Register: filing register — first person, plain, no claim

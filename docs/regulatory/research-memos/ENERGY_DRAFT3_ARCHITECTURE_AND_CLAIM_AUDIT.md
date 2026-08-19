@@ -134,14 +134,14 @@ facts.
 | RFC question | Official subject | Claim-safe Draft 3 use | Required refusal |
 |---|---|---|---|
 | Q32 | Which energy commodities have unmet hedging/risk-management needs; distinguish commercial from speculative demand and identify the relevant perpetual attribute | **PROPOSED:** ask whether avoidable disclosure of provider-level operational and commercial inputs is a design constraint for commercial participation; distinguish confidentiality of planning inputs from anonymity and from product demand | No claim that a commodity needs a perpetual, that providers would use one, or that confidentiality is empirically demanded |
-| Q37 | Methods to assess effects on physical markets, commercial hedgers, and the economy | **PROPOSED:** a staged analytical framework with frozen public/private fields, exact synthetic scenarios, independent Clear recomputation, failure cases, and later expert/data validation | No physical-market, price, welfare, or macroeconomic conclusion; synthetic tests are not market evidence |
+| Q37 | Methods to assess effects on physical markets, commercial hedgers, and the economy | **VERIFIED method example / PROPOSED framework:** the landed Clear relation freezes semantic visibility, exact synthetic scenarios, canonical optimality and failure cases; future work still needs an independently implemented verifier plus expert/data validation | No physical-market, price, welfare, or macroeconomic conclusion; synthetic tests are not market evidence |
 | Q38–41 | Reference-price source, governance, continuous observability, liquidity, concentration, and cross-market linkage | Preserve Draft 2's reference-program argument, but update it to the exact mock-only source-provenance evidence in section 7 | No claim of a continuously available or manipulation-resistant energy source; no production provider support |
-| Q42–44 | Convergence, funding, cost of carry, storage, convenience yield, seasonality, and alternatives | At most identify these as omitted economic state that a credible future relation or funding calculation must model explicitly | Do not propose a funding formula or claim that dispatch optimization captures term structure or convergence |
-| Q45–49 | Deliverable supply, storage, constraints, negative prices, outages, supply shocks, delivery and logistics | **PROPOSED:** use ramp limits and forced availability only as tiny synthetic examples of private physical constraints; use signed/exact arithmetic and typed failure for negative/extreme-value tests | No deliverable-supply estimate, storage model, AC power-flow model, outage prediction, historical stress result, or delivery conclusion |
+| Q42–44 | Convergence, funding, cost of carry, storage, convenience yield, seasonality, and alternatives | The landed relation makes storage and cost-of-carry explicit omissions; a credible future funding relation must model them rather than import dispatch semantics | Do not propose a funding formula or claim that dispatch optimization captures term structure or convergence |
+| Q45–49 | Deliverable supply, storage, constraints, negative prices, outages, supply shocks, delivery and logistics | **VERIFIED tiny semantic examples:** exact ramp, forced-availability, two-bus line, reserve, signed-flow, overflow-refusal, and infeasibility behavior; **PROPOSED:** use them to illustrate what an explicit physical policy looks like | No deliverable-supply estimate, storage model, AC power-flow model, outage prediction, historical stress result, or delivery conclusion |
 | Q50–51 | Continuous manipulation resistance and timing of funding calculation | Preserve the versioned observation program, frozen time grid, exact calculation, and explicit refusal thesis | Determinism narrows calculation discretion; it does not establish market representativeness or manipulation resistance |
 | Q52 | Cross-market and physical-market surveillance; access to physical data and information-sharing | **PROPOSED:** separate routine confidentiality, bounded compliance queries, and due-process threshold disclosure; every mode names who can learn what | No assertion that bounded queries or threshold disclosure satisfies Core Principle 4 or any recordkeeping/investigative duty |
-| Q53 | Required demonstration and evidentiary basis | Offer a layered evidence record: authentic source, exact relation, admitted-input commitment, independent recomputation or proof, availability/inclusion, failure/recovery, empirical market evidence, and surveillance | Clear replay proves only deterministic recomputation conditional on inputs; current research supplies only selected technical layers |
-| Q60–62 | Clearing, margin, default management, margin calibration, and automatic liquidation | Usually omit. The current research does not model energy margin, default waterfalls, or liquidation. A typed-abort discussion may illustrate why failure policy must be explicit but is not an answer to these questions | No margin number, default-management proposal, liquidation claim, or fully collateralized exemption theory |
+| Q53 | Required demonstration and evidentiary basis | Offer a layered evidence record: authentic source, exact relation, admitted-input commitment, independent recomputation or proof, availability/inclusion, failure/recovery, empirical market evidence, and surveillance; the cost-60 forgery shows feasibility/conservation are weaker than canonical optimality | The current direct verifier reruns the same exhaustive oracle; it is not an independent verifier or proof, and Clear replay remains conditional on inputs |
+| Q60–62 | Clearing, margin, default management, margin calibration, and automatic liquidation | **VERIFIED narrow calculation example:** the Clear relation separately checks plan feasibility, exact pay-as-cost credits/debit, and conservation; **PROPOSED:** use this only to show why calculation, margin/default policy, and transfer must remain separate | No custody, margin number, default-management proposal, liquidation claim, or fully collateralized exemption theory |
 | Q63 | Operational considerations for continuous funding calculation and settlement | **HIGH fit:** distinguish calculation from value transfer; bind the released calculation to settlement; name banking-cycle, default, liveness, retry, and privacy dependencies; explain that public transfers can undo computation privacy | No continuous funding implementation, banking-rail integration, private SBF settlement, or production recovery path |
 | Q66 | Objective, generally applicable criteria for supporting a perpetual contract | **PROPOSED:** technical evidence criteria in section 8, offered as necessary architecture questions rather than sufficient listing criteria | No claim that satisfying the technical criteria establishes Core Principle compliance or product suitability |
 
@@ -210,6 +210,10 @@ Current reusable evidence:
 - **VERIFIED:** `dark-fba/n4-k4-q15/v0` is a frozen, bounded, exact-integer
   clearing relation with canonical ties and allocation rules. It is not an
   energy relation.
+- **VERIFIED:** `confidential-energy-dispatch/p3-t3-b2-q4/v0` at `08a0fc3` is
+  an exact bounded energy-dispatch and pay-as-cost semantic relation with a
+  Clear exhaustive oracle and same-oracle direct-recomputation verifier. One
+  process sees all fields; section 5 states its exact evidence and ceiling.
 - **VERIFIED:** `experiments/relation-ir` represents that relation as canonical
   data and has only a Clear lowering. The lowering agreed with two local
   oracles over **2,116,916** enumerated cases at the documented bounds. This is
@@ -284,55 +288,108 @@ multi-party/threshold FHE protocol, vFHE system, proof-carrying release, TPU
 implementation, private SBF settlement, or Dark composition. `docs/FHE_FRONTIER.md`
 is a sourced research map, not implementation evidence.
 
-## 5. Candidate bounded energy relation
+## 5. Implemented Clear energy relation and proposed confidential target
 
-This section is a Draft 3 schema, not a promoted implementation claim.
+The semantic relation and its Clear execution evidence have now landed. That
+promotion does not promote any confidential backend, real-energy model, or
+deployment claim.
 
-### 5.1 Proposed V0 identifier and shape
+### 5.1 Verified V0 identifier and shape
 
-**CHAT-REPORTED / WAITING FOR COMMIT:** an engineering lane is implementing
-`confidential-energy-dispatch/p3-t3-b2-q4/v0` with:
+**VERIFIED by inspection and reproduction at commit
+`08a0fc357aa32dabf64e2c55f47c33211c148d67`:**
+`confidential-energy-dispatch/p3-t3-b2-q4/v0` is a dependency-free offline
+Clear Rust oracle plus a direct-recomputation verifier with:
 
 - exactly three padded provider slots;
 - exactly three periods;
 - exactly two buses;
 - integer output `0..=4`;
-- private convex two-segment costs, minimum/maximum output, initial output,
-  ramp-up/ramp-down limits, per-period forced availability, and provider
-  bus/owner binding; and
+- semantically private nondecreasing two-segment costs, minimum/maximum output,
+  pre-horizon output, ramp-up/ramp-down limits, per-period forced availability,
+  and provider bus/output-recipient binding; and
 - public zonal demand, line limits, system reserve, epoch, instance, and domain.
 
-The planned V0 has implicit on/off choices plus minimum output and is therefore
-nonconvex. The proposed Clear oracle is exhaustive bounded search with direct
-recomputation verification, not an unsupported primal-dual certificate.
+The V0 has implicit off/on choices plus minimum output and is therefore
+nonconvex. The Clear oracle performs bounded exhaustive trajectory search. The
+verifier checks bindings and feasibility and then reruns that exhaustive search
+to compare the exact canonical optimum. Its `OptimalityCertificate` is a
+byte-stable search transcript, not a succinct proof or cheap certificate.
 
-**DO NOT PROMOTE** this paragraph to VERIFIED until a commit, model document,
-tests, reproducible commands, corpus/hash, and exact claim ceiling land and are
-independently inspected.
+**VERIFIED exact wire facts:** the canonical plaintext witness is always 156
+bytes, occupied or padded. The public result is always 176 bytes across the
+tested settled, unavailable-input, and infeasible executions. The latter
+contains relation, public-domain, accepted-input, plan, and padded-local-output
+commitments; one coarse status; four settled-only invariant bits; and reserved
+bytes. These are serialization properties only. The 156 bytes are plaintext,
+not a ciphertext or proof size, and fixed public framing does not establish
+timing, traffic, access-pattern, or endpoint privacy.
 
-### 5.2 Proposed leakage declaration
+**VERIFIED representative fixture:** the oracle visits 8,025 pairs of the first
+two providers' trajectories and finds 468 feasible schedules. Its canonical
+result is:
 
-The leakage declaration must be frozen before any privacy backend is selected.
-The following is only a design candidate:
+```text
+generation = [[2,2,2], [1,3,2], [2,0,2]]
+line flow  = [0,-1,0]
+reserve    = [6,3,6]
+credits    = [18,30,8]
+objective  = load debit = 56
+```
 
-| Category | Proposed visibility |
+**VERIFIED adversarial boundary:**
+`[[1,2,1], [2,3,3], [2,0,2]]` is feasible, conserving, and can be surrounded
+with recomputed commitments, but costs 60. The verifier rejects it as
+`NotCanonicalOptimum` only by rerunning global exhaustive optimization and
+recovering the canonical cost-56 plan. Feasibility, conservation, an asserted
+objective, a committee signature, or an encrypted output would not by
+themselves establish optimality.
+
+Exact evidence:
+
+- `docs/research/CONFIDENTIAL_ENERGY_DISPATCH_RELATION.md`;
+- `research/confidential-energy-dispatch/`;
+- 25 tests in debug and release: 2 SHA-256, 21 relation/adversarial, and 2
+  corpus tests;
+- strict Clippy over all targets, formatting, rustdoc with warnings denied, and
+  locked corpus reproduction, all rerun successfully on 2026-08-19; and
+- corpus SHA-256
+  `426b28168e4fdaef25d1fc6da33f4b18eb09122f7552dbaeeb848f95a8bb3925`.
+
+The tests include a separate full `5^6` Cartesian search matching the optimized
+derive-the-third-provider oracle on one reduced fixture. This is useful
+cross-checking inside the same crate; it is not independent implementation
+agreement, a formal proof, or evidence beyond the stated bounded domain.
+
+### 5.2 Frozen semantic visibility and proposed leakage target
+
+The relation freezes public, semantically private, and owner-local fields, but
+the Clear process receives every field and computes every output. “Private” in
+this table describes the proposed confidential target, not a property of the
+implemented process.
+
+| Category | Frozen semantic visibility / current reality |
 |---|---|
 | relation/domain/version | public |
 | planning epoch and fixed dimensions | public |
 | provider count | padded capacity only |
-| provider identity | credentialed/private; exact authority model unresolved |
-| provider bus | private unless the physical model makes it logically implied |
-| cost segments | private |
-| min/max, initial output, ramp, availability | private |
+| provider recipient binding | semantically private; visible to the Clear process; no credential system |
+| provider bus | semantically private; visible to the Clear process |
+| cost segments | semantically private; visible to the Clear process |
+| min/max, pre-horizon output, ramp, availability | semantically private; visible to the Clear process |
 | demand, line limits, reserve | public in V0 |
-| global status and invariant booleans | public |
-| input/plan/local-output commitments | public |
-| aggregate objective value | undecided; do not publish by default |
-| provider-local dispatch and credits | owner-local |
-| full schedule | private unless a separate operational recipient is authorized |
-| failure | public bounded type; secret-bearing diagnostics forbidden |
+| global status and invariant booleans | public in the 176-byte frame |
+| input/plan/padded-local-output commitments | public in the 176-byte frame |
+| aggregate objective value | excluded from the public frame; visible inside Clear execution |
+| provider-local dispatch and credits | proposed owner-local; returned inside the Clear process today |
+| full schedule | committed publicly; plaintext visible inside Clear execution |
+| failure | public coarse status; provider defect/search counts/exact timing excluded from the frame |
 | regulator access | separate Shielded threshold/query policy; not part of Dark leakage |
 | settlement graph | no private implementation; explicit STOP |
+
+SHA-256 commitments are binding under their assumption, not hiding. The tiny
+input domain may permit dictionary attacks on guessed fields. No claim of
+confidentiality follows from canonical padding or fixed wire widths.
 
 ### 5.3 Deliberately absent from V0
 
@@ -347,20 +404,35 @@ The user's broader research objective includes inventory, hedge, bid, and
 operational state. Those are future relation families, not fields that may be
 smuggled into the V0 claim.
 
-### 5.4 Promotion gate for the candidate relation
+### 5.4 Claim ceiling and next promotion gates
 
-Before Draft 3 describes the relation as implemented, require:
+Draft 3 may now say that the exact bounded Clear relation and counterexamples
+are implemented and reproducible. It must also say:
 
-1. a committed semantic specification and canonical relation identifier;
-2. exact public/private/local-output declarations;
-3. exact arithmetic widths and refusal behavior;
-4. independent evaluator or independently written verifier;
-5. tests for feasibility, reserve, ramp, forced outage, line, padding,
-   permutation/canonical tie, overflow, infeasibility, and malformed input;
-6. a complete enumeration boundary or declared corpus with zero-divergence
-   results;
-7. reproducible commands, toolchain, date, and artifact digest; and
-8. an explicit statement that no energy expert or real data validated it.
+- no energy expert or real energy data validated the model;
+- the direct verifier reruns the same oracle rather than checking a succinct
+  proof or independently implemented optimality certificate;
+- the relation is a lossless two-bus toy with no operational-scale dispatch or
+  delivery claim; and
+- the evidence does not prove absence of bugs, scalability, incentive
+  compatibility, regulatory compliance, or production readiness.
+
+Before any confidential-computation promotion, require at least:
+
+1. a concrete FHE or MPC backend and exact parameters/protocol;
+2. a frozen corruption, key, leakage, timing, traffic, and local-output model;
+3. real input hiding rather than low-entropy unblinded commitments;
+4. sound verifiable evaluation of exact feasibility, canonical optimality, and
+   conservation, bound to the finalized complete input set;
+5. real inclusion, non-equivocation, availability, censorship, timeout, and
+   recovery mechanisms;
+6. selective output delivery and a private or explicitly Shielded settlement
+   surface; and
+7. energy-domain and independent security/formal review.
+
+**REJECTED as current claims:** FHE, vFHE, MPC, threshold execution, proof,
+privacy, custody, network, authenticated energy data, private delivery,
+regulator-query machinery, deployment, or confidential market operation.
 
 ## 6. Availability, inclusion, and fairness
 
@@ -485,7 +557,9 @@ legal criteria:
 | Single-executor result checks leave material correctness freedom | VERIFIED bounded counterexample | 1,125 alternative runs; 377 accepted; all 33 well-formed public results accepted | One fixed admitted set; no general cryptographic theorem | Q53, Q66 |
 | A threshold committee by itself solves result correctness | REJECTED | Same residual-trust counterexample | Threshold changes confidentiality trust only | Q52–53 |
 | FHE/vFHE Dark computation exists locally | REJECTED | `docs/FHE_FRONTIER.md` is a sourced research map | No backend, parameters, proof, or composition | Architecture limits only |
-| Confidential energy dispatch V0 is implemented | CHAT-REPORTED / WAITING FOR COMMIT | In-flight `confidential-energy-dispatch/p3-t3-b2-q4/v0` lane | Do not promote until section 5.4 gates are inspected | Q32, Q37, Q42–53, Q63, Q66 |
+| Exact bounded energy dispatch V0 Clear semantics are implemented | VERIFIED at the stated bounds | `08a0fc357aa32dabf64e2c55f47c33211c148d67`; `docs/research/CONFIDENTIAL_ENERGY_DISPATCH_RELATION.md`; 25 debug/release tests and clean quality/corpus gates | One Clear process sees everything; direct verifier reruns the same exhaustive oracle; no energy validation, proof, privacy, custody, network, or deployment | Q32, Q37, Q42–53, Q60–63, Q66 |
+| Witness/result framing is confidential | REJECTED | Witness is fixed 156-byte plaintext; public frame fixed 176 bytes in tested statuses | Fixed shape is serialization evidence only; commitments do not hide low-entropy inputs | Q52–53, Q66 limitation |
+| Feasibility and conservation establish the canonical optimum | REJECTED by executable counterexample | Feasible, conserving, recommitted cost-60 plan is rejected only after full recomputation recovers canonical cost 56 | One bounded fixture; demonstrates the need for optimality evidence, not a general theorem | Q37, Q53, Q63, Q66 |
 | Real energy cost/ramp/outage/inventory/hedge/bid data were studied | REJECTED | No such data in the inspected repository | Synthetic inputs only | Mandatory limitation |
 | Live source receipt is bound to SBF Resolve | VERIFIED, scoped | Dragon's Clutch source/archive history through `44bed19` | Mock-only construction; default registry empty; no energy provider | Q38–41, Q50–53 |
 | Native payout semantics execute on Solana | VERIFIED, scoped to local SBF | Dragon's Clutch `6a826b6`: categorical degree 0 and native B-spline degrees 1–3; native point resolve/internal redeem campaign | No native bearer exit; not energy dispatch; no production deployment | Supporting exact-calculation example only |
@@ -523,7 +597,7 @@ history.
 
 1. the commercial-provider confidentiality hypothesis, explicitly unvalidated;
 2. the Clear / Shielded / Dark three-mode architecture;
-3. the bounded energy relation schema and its omissions;
+3. the exact bounded Clear energy relation evidence and its omissions;
 4. the single-executor residual-correctness counterexample;
 5. inclusion/availability as a precondition for fair confidential computation;
 6. Q63's calculation / verification / authorization / transfer split;
@@ -720,8 +794,10 @@ All must be true before the Markdown plan becomes a filing candidate:
 
 - [ ] mandatory artifact marker restored and succeeds exactly once for the
       artifact-authoring session;
-- [ ] energy relation commit/tests inspected, or every reference remains
-      explicitly PROPOSED/CHAT-REPORTED;
+- [x] energy relation commit `08a0fc357aa32dabf64e2c55f47c33211c148d67`,
+      specification, corpus, and debug/release test and quality gates inspected
+      and independently rerun on 2026-08-19; confidential backends remain
+      explicitly PROPOSED or REJECTED as current claims;
 - [ ] independent energy-domain review of vocabulary and omissions;
 - [ ] legal review of scope, statements, identity, affiliation, and submission
       channel;

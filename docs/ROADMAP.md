@@ -119,6 +119,64 @@ Not implied by any earlier phase. A technically excellent research artifact may
 remain deliberately undeployed while still succeeding as public infrastructure,
 formal science, and a regulatory contribution.
 
+## First-class confidential energy coordination track
+
+This track is not an energy-themed instance of the frequent-batch auction. Its
+goal is a specialized relation in which providers can coordinate one efficient,
+physically admissible operating plan without disclosing operational and
+commercial inputs beyond a frozen leakage function and authorized local
+outputs.
+
+Energy E0 — bounded semantic oracle: VERIFIED only at
+`confidential-energy-dispatch/p3-t3-b2-q4/v0`. The dependency-free Clear model
+freezes integer dispatch, costs, minimum/capacity, ramps, forced outages,
+two-bus balance, line limits, reserve, optimality/tie, local outputs, and exact
+pay-as-cost conservation. Its verifier repeats exhaustive search; no privacy
+backend exists.
+
+Energy E1 — semantic enlargement and independent reference:
+
+- add storage only with charge/discharge, exact efficiency, capacity, initial
+  and terminal inventory, degradation, reserve, and settlement frozen together;
+- separately version startup/no-load cost, minimum up/down time, network loss,
+  security constraints, and load-shedding policy rather than silently widening
+  v0;
+- build an independently authored oracle and formalize feasibility,
+  conservation, canonical tie, and refinement at reduced bounds; and
+- freeze physical-source authentication, missing-input refusal, timeout, and
+  refund behavior.
+
+Energy E2 — confidential backend bakeoff:
+
+- decompose additive aggregation from comparisons, projections, commitment
+  choices, and global argmin;
+- compare exact FHE, hybrid additive-encryption plus nonlinear MPC,
+  malicious-secure MPC, and proof-carrying Clear candidates against identical
+  vectors;
+- freeze corruption, key custody, traffic, timing, ciphertext/proof shape, and
+  local-output leakage; and
+- call a named or threshold-capable viewer Shielded, never Dark by implication.
+
+Energy E3 — verifiable private result:
+
+- bind relation version, physical policy, finalized available encrypted inputs,
+  exact feasibility, canonical global optimum or declared bound, local-output
+  commitment, and settlement conservation;
+- demonstrate that a feasible but suboptimal result cannot settle;
+- distinguish a primal/dual or branch-and-bound certificate from an assertion,
+  counter, signature, or proof of the wrong circuit; and
+- measure direct recomputation before adding succinct-proof overhead.
+
+Energy E4 — composed settlement and liveness:
+
+- deliver only authorized provider and load outputs;
+- fund evaluation, proof, availability, retry, and terminal refund work without
+  relying on future volume;
+- join private computation to custody without reconstructing the operational
+  graph publicly; and
+- keep real grid operation, customer funds, deployment, and regulatory claims
+  outside the research artifact unless separately authorized and evidenced.
+
 ## Parallel regulatory track
 
 R-Reg0:
@@ -143,4 +201,3 @@ R-Reg2:
 - complete material facts;
 - no-action, interpretive, exemptive, registered-pilot, or other pathway only if
   appropriate and separately authorized.
-

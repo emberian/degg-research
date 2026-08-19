@@ -1,11 +1,13 @@
 # Dark Egg Research
 
 Dark Egg Research is the public notebook for a family of specialized private and
-verifiable market relations. The central bet is that a useful market does not
-need an arbitrary encrypted virtual machine. It needs a small collection of
-precise relations—aggregation, monotone crossing, allocation, conservation,
-policy activation, net settlement, and selective release—that can be compiled
-into several execution and privacy backends without changing their meaning.
+verifiable market and coordination relations. The central bet is that a useful
+market or confidential operating plan does not need an arbitrary encrypted
+virtual machine. It needs a small collection of precise relations—aggregation,
+monotone crossing, physical feasibility, canonical optimization, allocation,
+conservation, policy activation, net settlement, and selective release—that can
+be compiled into several execution and privacy backends without changing their
+meaning.
 
 This repository keeps questions, designs, evidence, experiments, literature, and
 regulatory research. Executable protocol code belongs in Dragon's Clutch or a
@@ -28,11 +30,12 @@ The working compiler picture is:
 Initial relation families:
 
 1. A padded frequent batch auction over a fixed price grid.
-2. Private net settlement over already-authorized fills.
-3. A fixed-topology multi-token ring clear.
-4. Receipt-compiled OCO and bracket policies.
-5. Guarded late fills and partial computations with eager economic shape.
-6. Public solvency and deterministic settlement proofs over private state.
+2. Confidential multi-provider energy dispatch under frozen physical policy.
+3. Private net settlement over already-authorized fills.
+4. A fixed-topology multi-token ring clear.
+5. Receipt-compiled OCO and bracket policies.
+6. Guarded late fills and partial computations with eager economic shape.
+7. Public solvency and deterministic settlement proofs over private state.
 
 The desired end state is not merely hidden inputs. It is a system where the
 declared leakage is small, the result is independently checkable, the inputs
@@ -54,6 +57,11 @@ and settlement follows the proved relation exactly.
 - docs/research/DARK_RELATION_THREAT_MODEL.md — role-specific transcript leakage,
   inference limits, abort semantics, and a concrete disclosure budget.
 - experiments/leakage-lab/ — deterministic transcript and role-view vectors.
+- docs/research/CONFIDENTIAL_ENERGY_DISPATCH_RELATION.md — bounded exact energy
+  dispatch semantics, optimality counterexamples, leakage contract, and the
+  explicit no-FHE/no-privacy boundary.
+- research/confidential-energy-dispatch/ — the deterministic Clear energy
+  oracle, direct-recomputation verifier, adversarial tests, and corpus.
 - docs/ROADMAP.md — staged research, proof, systems, and regulatory gates.
 - docs/LOCAL_LINEAGE.md — what exists in sibling repositories and what may move.
 - docs/regulatory/README.md — three current public-comment drafts, meeting
@@ -72,7 +80,11 @@ not contain a composed permissionless no-viewer venue. Minidregg proves valuable
 private-computation and guarded-fill semantics and a narrow BFV input relation,
 but has no deployed FHE backend or vFHE proof. Therefore the first honest target
 is a tiny relation with explicit modes and cross-backend differential tests—not
-a claim that the dark exchange already exists.
+a claim that the dark exchange already exists. The first bounded confidential
+energy-dispatch relation is now executable in Clear mode, including exact
+optimality and settlement counterexamples; it adds no FHE, vFHE, MPC, or privacy
+implementation and treats confidential energy coordination as its own research
+track rather than portfolio or auction terminology.
 
 ## Public research posture
 

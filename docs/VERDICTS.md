@@ -28,6 +28,14 @@ than a generic FHE computer. Market clearing has exploitable structure:
 This structure should be encoded explicitly rather than rediscovered as a long
 sequence of generic encrypted instructions.
 
+PROPOSED as a separate first-class target, not an auction example: energy
+providers coordinate one physically admissible efficient operating plan while
+keeping plant-level cost curves, capacity and minimum output, ramps, outages,
+inventory, hedge positions, and other operational state within a frozen
+leakage contract. This target needs its own dispatch relation, optimality story,
+local-output delivery, physical-source boundary, and settlement join. A shaped
+financial payoff or generic market clear does not substitute for it.
+
 ## V2 — Existing local capability
 
 VERIFIED by read-only repository audit:
@@ -287,3 +295,47 @@ could stand.
   understates. Record:
   `experiments/manipulation-cost/README.md`, its `PROVENANCE.md`, and
   `docs/regulatory/research-memos/definitions-q15-reference-integrity.md`.
+
+## V11 — Confidential energy dispatch relation
+
+VERIFIED at exactly the frozen bounds, as deterministic offline Clear semantics
+and no privacy result: commit `08a0fc357aa32dabf64e2c55f47c33211c148d67`
+adds `confidential-energy-dispatch/p3-t3-b2-q4/v0`. It models exactly three
+canonically padded provider slots, three periods, two buses, and integer output
+from zero through four. Private relation fields are two-segment costs,
+capacity/minimum output, ramp bounds, pre-horizon output, forced availability,
+provider bus, and local-output recipient binding. Public fields are zonal
+demand, system reserve, line limits, instance, epoch, an accepted-input
+commitment, and externally supplied finality and payload-availability booleans.
+Those booleans are model inputs, not proofs or a data-availability mechanism.
+
+The Clear oracle enforces exact nodal balance, lossless line capacity, the
+frozen reserve rule, checked cost arithmetic, global minimum modeled production
+cost, deterministic equal-cost priority, padded provider-local dispatch and
+credits, and a load debit exactly equal to provider credits and objective cost.
+The representative fixture visits 8,025 first-two-provider trajectory pairs,
+finds 468 feasible complete schedules, and selects objective 56. A feasible,
+conserving, fully recommitted alternative costing 60 is rejected as
+non-optimal. Minimum-output and interperiod-ramp counterexamples also show why
+independent per-period merit order is not the relation.
+
+VERIFIED within the same implementation boundary: 25 tests pass in debug and
+release; a separate full `5^6` Cartesian search agrees with the optimized
+derive-the-third-provider search on its two-provider fixture; strict Clippy,
+formatting, rustdoc, locked corpus reproduction, and repository checks pass.
+The canonical plaintext witness is 156 bytes and every public result frame is
+176 bytes. The frame exposes only the relation/domain/input/plan/delivery
+commitments, coarse status, and four invariant bits beyond the already-public
+domain. Equal frame length proves no runtime, traffic, endpoint, or
+cryptographic privacy property.
+
+REJECTED as current claims: Dark execution, FHE or vFHE evaluation, MPC,
+succinct proof, encrypted input validity, hiding commitments, constant-time
+execution, selective private delivery, data availability, liveness, custody,
+physical-market adequacy, and deployment. The verifier establishes optimality
+only by repeating the bounded exhaustive search; its counters are a transcript,
+not a cheaper certificate. Storage and inventory are first-class future energy
+requirements but are deliberately absent until charge/discharge, efficiency,
+terminal inventory, reserve, and settlement semantics are frozen together.
+Record: `research/confidential-energy-dispatch/README.md` and
+`docs/research/CONFIDENTIAL_ENERGY_DISPATCH_RELATION.md`.

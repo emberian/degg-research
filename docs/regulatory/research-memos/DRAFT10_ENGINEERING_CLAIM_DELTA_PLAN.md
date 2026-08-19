@@ -106,8 +106,8 @@ absent.
 
 ### 3.2 TFHE candidate validator
 
-**VERIFIED by committed source and recorded local measurement, not independently
-rerun in this memo:** `breadstuffs` commit
+**VERIFIED by committed source and recorded local CPU measurements, not rerun
+in this memo:** `breadstuffs` commit
 `5ad58ba97c7666e5a9ee72aa056a06ea9cd465ac` independently re-specifies a
 bounded arithmetic projection of the energy relation over `tfhe-rs 1.6.3`
 integer ciphertexts. The evidence paths are:
@@ -135,6 +135,36 @@ The recorded optimized single-run evaluation on an Apple M2 Max took about
 84.6 seconds for the canonical case. The adversarial three-evaluation gate took
 about 279.5 seconds. These are one-host, one-run measurements, not latency
 bounds, production capacity, or distributional performance evidence.
+
+**VERIFIED separate cross-host reproduction:** `breadstuffs` commit
+`3e51def6a5a95424e54fbe7432539b06088de5c3` records an isolated x86_64 Linux
+reproduction from the exact `5ad58ba` source archive. On a 12th Gen Intel Core
+i9-12900 CPU, the three-case executable again accepted canonical cost 56 as
+physically feasible and conserving in 66.268 seconds, accepted feasible
+cost 60 as physically feasible and conserving in 68.499 seconds, and accepted
+physical feasibility but refused conservation for the forged cost-59
+settlement in 68.388 seconds. Every case continued to report
+`global_optimality=NOT_EVALUATED`; the complete three-case process took 203.92
+seconds.
+
+The source archive SHA-256 is
+`2a2fdf731bc0cabc74022fabfa730af3a28403d2db946441a3a628a8cd508886`.
+The captured canonical and three-case log SHA-256 values are respectively
+`2f9bec0335938d7b53a421af1575bbe7f7cec328d4a81fcfbd976053ed487893`
+and `1dce5bfbfebc757670c31afbcfb51ee4b752754698220f52d677fd9142b2904f`;
+both adjacent status files record zero. The isolated integration-test build
+needed a transparent manifest-only adjustment because the archive excludes an
+untracked Lean static library and an unrelated auto-discovered benchmark links
+Apple's `Accelerate` framework. That build-only patch has SHA-256
+`0e5058c09cc85941d25d260509c6857ec32311f4056a8c75052d4da839578f9e`
+and changed no dependency, energy module, test, fixture, or semantic.
+
+The x86 host exposed AMD and Intel GPUs, but the selected feature graph used
+the exact TFHE integer CPU backend and no TFHE GPU feature. GPU detection is
+not GPU execution evidence. The cross-host result is evidence that the same
+committed predicate source reproduced the same booleans and objective on a
+second CPU architecture. It is not an independent implementation, performance
+bound, solver, optimality result, or production-capacity measurement.
 
 **REJECTED:** calling this an encrypted solver, encrypted global optimum,
 optimality certificate, proof of correct evaluation, vFHE, Dark execution, or
@@ -325,7 +355,9 @@ definitions comment.
 > forged cost-59 settlement for the cost-60 plan fails conservation. Only a
 > separate Clear enumeration establishes that 56 is the canonical optimum.
 > The encrypted evaluator performs no global search or optimality check. The
-> one-process experiment provides no vFHE proof, evaluator-correctness proof,
+> same source reproduced those predicate outcomes in separate arm64 and x86_64
+> CPU campaigns; the x86 host's detected GPUs were not used. These one-process
+> experiments provide no vFHE proof, evaluator-correctness proof,
 > threshold custody, selective result release, network privacy, private SBF
 > settlement, or deployment, and it is not described as Dark.
 

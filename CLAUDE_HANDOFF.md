@@ -356,3 +356,11 @@ push or publish, install an unreviewed tool, or mutate an external production ho
 explicit current authorization naming the act. Research may challenge a
 regulatory model; it does not authorize a live venue or conceal unfinished
 privacy, correctness, availability, or legal work.
+
+## 2026-08-19: Claude session handoff
+
+A Claude session (2026-08-18/19) landed all seven P1 packets, the Draft 5-7
+filing rewrites, the legal-analysis packet, and two evidence corpora. The
+return handoff — covering both repos, the theory results, queued decisions,
+and known gaps — is `../dragons-clutch/CLAUDE_HANDOFF.md`. Codex's Draft 8
+review editions (18be77e) postdate it.

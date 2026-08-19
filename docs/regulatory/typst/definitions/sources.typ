@@ -54,19 +54,32 @@
   [Comment CFTC-2026-1355-0006, Docket CFTC-2026-1355 (posted August 17, 2026). Primary source only for FalconX Bravo, Inc.'s own listing-status proposal described in position 7; not cited as legal authority. Retrieved August 18, 2026.],
 )
 
-== Local technical materials inspected August 18, 2026
+== Local technical materials inspected August 19, 2026
 
-The technical descriptions were prepared from research artifacts reviewed by
-the submitter: the Dregg and Minidregg guarded-commitment research, the
-Leanuweave candidate-result formalism, and the Dragon's Clutch offline
-conditional-asset prototype (a pure-Rust research kernel with passing
-deterministic tests; tested, not formally verified; not a deployed system,
-product, or offer). A final public edition should cite frozen public
-repository commits and exact paths if those repositories are public by filing
-time. Otherwise it should retain this limited description and avoid claims of
-independent public reproducibility. No claim is made that those artifacts are
-deployed market infrastructure or that their properties determine a legal
-classification.
+*VERIFIED (local inspection).* The technical descriptions were prepared from separately scoped artifacts
+reviewed by the submitter: guarded-commitment and candidate-result formal
+models; exact pure-Rust categorical and degree-one through degree-three
+B-spline kernels; separate Lean proof modules; one narrow Verus-checked
+internal-transfer seam; and focused local-Agave/SBF construction, custody,
+resolution, redemption, reservation, and settlement campaigns. The strongest
+categorical custody evidence is a genesis-assisted 22-transaction signed walk;
+the strongest market-construction evidence begins with a bank containing only
+the program ELF and uses ordinary-wallet transactions to create typed sealed
+artifacts and categorical or native markets. The strongest native execution
+evidence covers point resolution and internal redemption for degrees one
+through three. The settlement evidence is one same-page, full-fill,
+single-claim, zero-fee slice.
+
+A provider-neutral authenticated-source/archive codec seam is implemented,
+but it is not a production provider adapter and is not joined to the live SBF
+resolution route. *PROPOSED / STOP:* this edition therefore does not claim
+authenticated price history, provider-authenticated resolution, native bearer
+exit, a complete venue, or an end-to-end permissionless lifecycle. A final
+public edition should cite frozen public repository commits and exact paths if
+those repositories are public by filing time. Otherwise it should retain this
+limited description and avoid claims of independent public reproducibility.
+No artifact is deployed market infrastructure, and no property stated here
+determines a legal classification.
 
 #review_note[
   *Final-source gate.* The notice requires receipt on or before August 24, 2026.

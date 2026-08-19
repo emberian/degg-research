@@ -48,9 +48,10 @@ crypto-native ledger states, program events, prices, ranges, and path
 statistics --- not politics, sports, gaming, or subjective social events. This scope is not a claim that any example falls outside the
 CEA or other law.
 
-The attachment uses Clear, Shielded, and Dark only as exact
-information-flow terms: regulator-observable Shielded is the reference
-architecture; Dark is solely a long-horizon research boundary, not a venue
-label, compliance conclusion, or deployment recommendation.
+The attachment uses Clear, Shielded, and Dark only as exact information-flow
+terms: regulator-observable Shielded is the reference; Dark is a research
+boundary. It labels scoped formal/local-SBF evidence *VERIFIED* and the absent
+authenticated-source join *PROPOSED / STOP*; neither asserts a complete venue,
+production adapter, whole-system proof, or legal conclusion.
 
 Respectfully submitted, [FULL NAME]

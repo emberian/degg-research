@@ -67,14 +67,16 @@ The design is a fully collateralized conditional-asset market over an
 objectively verifiable onchain price band. A depositor locks collateral into
 a segregated pool that belongs to one market only and receives one claim for
 each cell of an exhaustive, disjoint partition of the possible outcomes.
-Claims trade through a batch venue with a stated close. A deterministic
-observation program, frozen when the market is created, later identifies the
-realized cell, and settlement pays that cell's claims from the pool. I have
-built an offline research prototype of the core accounting for this design.
-It is not a deployed system, a product, or an offer, and nothing in this
-comment asks either Commission to approve it. At each milestone, ask which
-records exist, which are public bytes, and which exist only if somebody is
-required to keep them.
+Claims trade through a batch venue with a stated close. The qualifying design
+would bind a deterministic observation program and authenticated source
+history to the realized cell, after which settlement pays that cell's claims
+from the pool. *PROPOSED / STOP:* the current local SBF resolution route has
+not joined source authentication and an immutable archive to admitted
+evidence. I have implemented separate host-side kernels, formal models, and
+restricted local-SBF subsets of the design; none is a deployed system,
+product, or offer, and nothing in this comment asks either Commission to
+approve it. At each milestone, ask which records exist, which are public
+bytes, and which exist only if somebody is required to keep them.
 
 *Publication.* The market template is created on the ledger: partition rule,
 observation-program version, batch policy, settlement terms. Everything
@@ -121,26 +123,41 @@ recomputation from the frozen book reproduces it exactly, never trusting the
 submitter's claimed quantities. A reporting rule with that shape is more
 than a format check: the rule is the check.
 
+The onchain evidence is narrower. *VERIFIED (restricted local SBF subset):*
+one focused campaign conditionally executes one same-page, full-fill,
+single-claim, zero-fee settlement from two exact funded reservations and a
+prefrozen receipt, with replay and substitution refusals. It does not select
+the candidate, build a complete accepted set, settle partial or portfolio
+orders, cross pages, charge fees, or constitute a venue.
+
 *Resolution.* Between the close of trading and resolution, the outcome is
 genuinely undetermined: any band may realize, and each band's claim trades
-at a price. An actor may submit evidence, but nothing in the software makes
-one outcome authoritative before the frozen observation program admits
-qualifying evidence and the repair period lapses. The narrower claim is that,
-under the frozen rule and its admitted evidence, no discretionary adjudicator
-chooses among outcomes. Reporting vocabulary should be able to say this
-without pretending: pending, disputed, unsupported, and expired are distinct
-states; none is "resolved," and none is an error. Even after certification,
-a ledger reorganization or an application-level dispute can supersede what
-was observed. The record needs a correction linkage that preserves the
-superseded event, not a silent overwrite.
+at a price. An actor may submit evidence, but the qualifying design makes no
+outcome authoritative before an authenticated frozen observation rule admits
+the complete required history and the repair period lapses. Conditional on
+that admission, no discretionary adjudicator chooses among outcomes.
+*PROPOSED / STOP:* a provider-neutral source/archive codec seam exists, but
+there is no production provider authenticator or parser and no live
+archive-to-resolution join. The committed SBF route still accepts caller
+evidence that is not source-authenticated, so it cannot yet support the
+qualifying claim. Reporting vocabulary should distinguish pending, disputed,
+unsupported, expired, and resolved states. Even after certification, a ledger
+reorganization or application-level dispute can supersede what was observed;
+the record needs a correction linkage, not a silent overwrite.
 
-*Settlement.* The realized band's claims redeem from the pool. The public
-bytes show outflows. They do not show which redemption closes which position
-of which owner at what gain --- the fact an examiner reconstructing a
-lifecycle actually needs --- and no transparency purpose requires that they
-show it. The confidential record links them; the public record need not.
+*Settlement.* The realized band's claims redeem from the pool. *VERIFIED
+(restricted local SBF evidence):* a genesis-assisted categorical campaign
+completed a 22-transaction signed custody walk through issuance, resolution,
+internal and bearer redemption, and full withdrawal of the owned collateral;
+separate focused tests cover degree-one through degree-three point resolution
+with internal redemption. These campaigns do not authenticate their source
+history and do not establish a complete permissionless lifecycle. Their
+public bytes show outflows, but not which redemption closes which position of
+which legal or beneficial owner at what gain. The confidential record supplies
+that linkage; the public record need not.
 
-The walk yields the three records: enough public fields to trust prices; the
+The walk yields the three records: enough public fields to inspect
+disseminated market state; the
 exact owner-linked lifecycle, including events the ledger never saw, for the
 regulator; and a deterministic validation rule for the machine. The
 Commissions' three questions take them in turn.
@@ -317,9 +334,10 @@ trades.
 
 *Standardize a failure taxonomy whose states are genuinely distinct* ---
 rejected, pending, unsupported, expired, corrected, reorganized, and
-backend-unavailable --- and hold the first and last apart deliberately. I
-built the observation accumulator to refuse a question its retained
-information cannot support rather than approximate it: "the rule rejects
+backend-unavailable --- and hold the first and last apart deliberately.
+*VERIFIED (host-side kernel only):* I built the observation accumulator to
+refuse a question its retained information cannot support rather than
+approximate it: "the rule rejects
 this" and "the backend cannot answer this" are different facts, and a
 validator that conflates them will
 misreport both --- a rejection stream that silently absorbs outages
@@ -354,8 +372,9 @@ alone, which of the two happened.
 
 This comment takes no position on the classification of any product;
 classification is the subject of a separate joint request. The artifacts
-behind it are formal models and offline research prototypes, not a reporting
-system, and none is deployed, funded, offered, or operating. Nothing here
+behind it are formal models, host-side kernels, and restricted local-SBF
+campaigns, not a reporting system, and none is deployed, funded with customer
+assets, offered, or operating. Nothing here
 argues for reduced regulatory access because a transaction is onchain, and
 no design of mine is claimed to satisfy any current reporting obligation.
 
@@ -372,8 +391,8 @@ no design of mine is claimed to satisfy any current reporting obligation.
 
 Each material technical claim, with its evidentiary basis in one line.
 "Model theorem" means a machine-checked statement about a simplified formal
-model reviewed by the submitter; "prototype" means a deterministic offline
-research prototype reviewed by the submitter. No artifact behind these
+model reviewed by the submitter; "prototype" includes deterministic host-side
+kernels and specifically named local-SBF campaigns. No artifact behind these
 claims is deployed market infrastructure, and none has been independently
 audited.
 
@@ -386,11 +405,13 @@ audited.
   [Repository confidentiality and access rules govern reported swap data], [17 C.F.R. part 49; source note 4],
   [The description of the Ariadne Dataworks recommendations], [The filed comment; source note 5],
   [Solana has no public global mempool; pre-landing visibility follows the RPC, relay or forwarding, and leader path actually used; a landed failure is public ledger data only when included in a confirmed block], [Official Solana transaction-ingress guide and RPC JSON structures; source notes 6 and 7],
-  [The worked example's core accounting --- deposit, recombination, resolution, redemption, with conservation and pool-coverage checks --- has been implemented offline with passing deterministic tests], [Pure-Rust research prototype reviewed by the submitter; tested, not formally verified; not deployed],
+  [Categorical and degree-one through degree-three open-clamped B-spline payout vectors have exact deterministic semantics], [Pure-Rust exact-rational kernels with canonical largest-remainder integer quantization; separate Lean proofs of named construction, support, solvency, and quantization properties; no whole-implementation refinement proof],
+  [Selected construction, resolution, redemption, custody, and settlement paths execute in local SBF tests], [A genesis-assisted 22-transaction categorical custody walk; blank-bank ordinary-wallet construction of categorical and native markets; focused native point-resolution/internal-redemption tests; and one restricted same-page full-fill single-claim zero-fee settlement slice. Tested subsets only; no deployment or complete venue],
   [The prototype's batch verifier was built to accept a submitted clearing only if full recomputation from the frozen book reproduces it], [Prototype source and deterministic tests reviewed by the submitter; offline research code, not a deployed venue],
   [The prototype's observation accumulator was built to refuse questions its retained information cannot support], [Prototype source and deterministic tests reviewed by the submitter; offline research code],
+  [Authenticated complete source history controls resolution], [PROPOSED / STOP: a provider-neutral source/archive codec seam exists, but no production provider authenticator or parser and no live archive-to-resolution join has been implemented; the current SBF route accepts non-source-authenticated caller evidence],
   [A correction's authorized actor, target record, permitted fields, and rule version can be fixed in advance and enforced mechanically], [Model theorems in the submitter's guarded-commitment research; not deployed controls or a reporting adapter],
   [The leakage laboratory was built to replay four synthetic traces against three transcript designs, separating mechanically revealed fields from enabled deductions], [Deterministic synthetic-transcript accounting reviewed by the submitter; measures no anonymity, cryptographic leakage, timing, or real market],
   [The Clear, Shielded, and Dark taxonomy and the associated leakage-surface analysis], [Proposed analytical terminology from the submitter's research; no claim that any Dark system exists, is deployed, or satisfies current rules],
-  [No artifact described in this comment is deployed, funded, offered, or operating], [The submitter's repository status records; a statement about the submitter's own artifacts, not about any third party],
+  [No artifact described in this comment is deployed, funded with customer assets, offered, or operating], [The submitter's repository status records; a statement about the submitter's own artifacts, not about any third party],
 )

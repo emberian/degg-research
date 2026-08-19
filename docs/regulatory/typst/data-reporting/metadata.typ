@@ -1,6 +1,6 @@
 #let meta = (
-  document_kind: "JOINT PUBLIC COMMENT - DRAFT 8",
-  review_label: "DRAFT 8 FOR REVIEW - NOT FILED",
+  document_kind: "JOINT PUBLIC COMMENT - DRAFT 9",
+  review_label: "DRAFT 9 FOR REVIEW - NOT FILED",
   short_title: "Data Reporting RFC",
   title: "Lifecycle Reporting, Privacy, and Machine-Verifiable Rules for Onchain Markets",
   subtitle: "Comment on swap and security-based swap data reporting",
@@ -9,5 +9,5 @@
   author: "[FULL NAME]",
   affiliation: "[INDEPENDENT RESEARCHER / AFFILIATION]",
   contact: "[PUBLIC-CONTACT-SAFE EMAIL]",
-  draft_date: "August 18, 2026",
+  draft_date: "August 19, 2026",
 )

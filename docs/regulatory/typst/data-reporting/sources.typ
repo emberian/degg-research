@@ -51,19 +51,29 @@
   [Official Solana Foundation RPC documentation. Confirmed blocks include transaction records and transaction status metadata includes an error field, supporting the distinction between a landed failed transaction and one rejected or dropped before inclusion. Retrieved August 18, 2026.],
 )
 
-== Local technical materials inspected
+== Local technical materials inspected August 19, 2026
 
-The technical descriptions were prepared from research artifacts reviewed by
-the submitter: the guarded-commitment and candidate-result formal models, the
-Dragon's Clutch offline conditional-asset prototype (a pure-Rust research
-kernel, observation accumulator, and transparent batch-clearing verifier with
-passing deterministic tests; tested, not formally verified; not a deployed
-system, product, or offer), and a deterministic synthetic-transcript leakage
-laboratory. Shielded concealment of individual batch orders is proposed, not a
-property of that transparent prototype. The Clear, Shielded, and Dark taxonomy
-is a proposed analytical distinction, not a claim of any deployed confidential
-system; the strongest composed paths in the submitter's research remain
-Shielded, as the comment states.
+*VERIFIED (local inspection).* The technical descriptions were prepared from separately scoped artifacts
+reviewed by the submitter: guarded-commitment and candidate-result formal
+models; exact pure-Rust categorical, observation-accumulator, batch, and
+degree-one through degree-three B-spline kernels; separate Lean proof modules;
+one narrow Verus-checked transfer seam; focused local-Agave/SBF construction,
+custody, point-resolution, redemption, reservation, and settlement campaigns;
+and a deterministic synthetic-transcript leakage laboratory. The SBF evidence
+includes a genesis-assisted 22-transaction categorical custody walk,
+ordinary-wallet blank-bank construction, native point resolution with internal
+redemption, and one restricted same-page full-fill single-claim zero-fee
+settlement slice. None composes into a complete venue or reporting system.
+
+A provider-neutral authenticated-source/archive codec seam exists, but it has
+no production provider authenticator or parser and no live
+archive-to-resolution join. *PROPOSED / STOP:* authenticated price history and
+provider-authenticated resolution are qualifying designs, not current SBF
+properties. Shielded concealment of individual batch orders is also proposed,
+not a property of the transparent batch prototype. The Clear, Shielded, and
+Dark taxonomy is a proposed analytical distinction, not a claim of any
+deployed confidential system; the strongest composed privacy paths in the
+submitter's research remain Shielded, as the comment states.
 A final public edition should cite frozen public repository commits and exact
 paths if those repositories are public by filing time; otherwise it should
 retain this limited description and avoid claims of independent public

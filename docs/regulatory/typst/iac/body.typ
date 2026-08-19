@@ -94,17 +94,23 @@ is economically unlevered: its payout can exceed a secondary buyer's price,
 and external financing is outside the model. The six milestones below walk
 the rest of the terms.
 
-I have built the core accounting of this design as an offline research
-prototype --- pure Rust, integer-exact, with passing deterministic tests. It
-is tested, not formally verified. It is not a deployed system, a product, or
-an offer, and I do not ask the Commission to approve it.
+*VERIFIED (scoped local artifacts).* I have built exact pure-Rust kernels,
+separate formal models, and restricted local-SBF campaigns for parts of this
+design. Separate Lean modules prove named complete-set, solvency,
+guarded-transition, and B-spline construction and quantization properties; a
+pinned Verus run checks one internal-transfer arithmetic seam. None proves the
+whole Rust or SBF system. Nothing is deployed, offered, funded with customer
+assets, or operating, and I do not ask the Commission to approve it.
 
-Five bands are an instance, not the primitive's limit. The milestone taxonomy
-and maximum-liability relation extend to any bounded, frozen finite payout
-matrix --- including portfolios representing overlapping ranges and graded
-proximity payouts after an explicit discretization and rounding rule. That
-does not establish a pricing algorithm for those claims, and a truly
-continuous implementation would need separately verified numerical bounds.
+Five bands are an instance, not the primitive's limit. *VERIFIED (scoped
+semantics):* the research kernels include categorical degree zero and
+degree-one through degree-three open-clamped B-spline payout vectors, using
+exact rational evaluation and a canonical largest-remainder rule whose integer
+weights sum to a fixed payout denominator. Portfolios can express overlapping
+ranges and shaped graded payouts over that finite exact basis. This does not
+establish a pricing algorithm, prove implementation refinement, or implement
+an arbitrary continuous computer; claims beyond the exact finite semantics
+would require separately verified numerical bounds.
 
 *Publication fixes a reusable specification.* The partition, observation
 program, batch rule, payout terms, and edge-case rules are inspectable, but
@@ -114,8 +120,19 @@ promised anything, and no value can move.
 *Instrument creation freezes one market instance.* A creation transition
 binds a unique identifier to those terms. It issues no claim and accepts no
 claim collateral. It does make later discretion auditable: no one --- author
-included --- can substitute a different transition at execution time; an
-order executes exactly as committed or not at all (the table's first row).
+included --- can substitute a different transition inside the modeled
+relation; deployment mutability and upgrade control remain separate facts. A
+guarded fill executes only within its committed authorization (the table's
+first row).
+
+*VERIFIED (restricted local SBF construction).* Starting from a local bank
+containing only the program ELF, an ordinary wallet creates a real fixed-supply
+Token-2022 collateral mint, uploads and seals typed policy, grid, and terms,
+constructs canonical realm and profile accounts, and creates categorical or
+native markets. Predictable program-state and token accounts tolerate honest
+over-rent prefunding, while a byte-bearing late target refuses atomically.
+This does not yet construct the feed and epoch, prove that sealed terms point
+to an existing grid, or complete a permissionless lifecycle.
 
 *Funding locks collateral and issues gross claims.* A depositor locks one
 unit of collateral into the market's own pool and receives a complete set:
@@ -143,24 +160,31 @@ clearing, and accept a submitted clearing candidate only if it matches what
 the frozen book itself determines, recomputed from scratch --- never
 trusting the submitter's claimed quantities.
 
-*Resolution is licensed by admitted evidence.* The observation window and
-its repair period close, and the frozen program's admitted evidence
-identifies the realized band; until then each band's claim trades at a
-price, and nothing in the software makes one outcome authoritative early.
-The design may still depend on publishers, proposers, and an evidence-
-admission or dispute process. Its narrower property is that, after final
-evidence is admitted under the frozen rule, no discretionary adjudicator
-chooses the band. The terms must name that rule, the dispute procedure, and
-what happens when the source fails; the declared outcome is worth exactly
-what that evidence rule is worth.
+*Resolution is licensed by admitted evidence.* Under the qualifying design,
+the observation window and repair period close, an authenticated frozen rule
+admits the complete required source history, and only then identifies the
+outcome. Conditional on that admission, no discretionary adjudicator chooses
+the band. The design may still depend on publishers, proposers, and an
+evidence-admission or dispute process. *PROPOSED / STOP:* a provider-neutral
+source/archive codec seam exists, but there is no production provider
+authenticator or parser and no live archive-to-resolution join. The current
+SBF route accepts caller evidence that is not source-authenticated, so it does
+not establish the qualifying property. The terms must name the rule, dispute
+procedure, and source-failure behavior; the outcome is worth exactly what that
+evidence rule is worth.
 
-*Settlement is exact, one-shot, and serialized.* The realized band's claims
-redeem from the pool; the other four expire worthless. A redemption executes
-exactly the transfer committed at publication, exactly once: a second
-presentation of the same accepted redemption is refused, and a presentation
-that fails the terms changes nothing. Settlement is also deliberately
-serialized --- one act against one ledger --- for the reason the table's
-last row exhibits.
+*Settlement is exact, one-shot, and serialized in the modeled relation.* The
+realized band's claims redeem from the pool; the other four expire worthless.
+A redemption executes the authorized transfer at most once, and a
+nonconforming presentation changes nothing. *VERIFIED (restricted local SBF
+evidence):* a genesis-assisted categorical campaign completed a
+22-transaction signed custody walk through issuance, resolution, internal and
+bearer redemption, and withdrawal of all owned collateral; focused campaigns
+execute degree-one through degree-three point resolution with internal
+redemption. Another campaign executes one same-page, full-fill, single-claim,
+zero-fee settlement slice from two reservations and a prefrozen receipt. None
+authenticates source history or establishes general partial, portfolio,
+cross-page, fee-bearing, native-bearer, or end-to-end venue settlement.
 
 = Three machine-checked negatives
 
@@ -173,7 +197,7 @@ systems; none is a compliance conclusion.
 #table(
   columns: (1.05in, 1fr, 2.05in),
   table.header([*Property*], [*Counterexample shown (formal model)*], [*Consequence for supervision*]),
-  [An order can be executed exactly as committed or not at all], [A fill outside the committed limits fails and changes nothing --- a property I have machine-checked in formal models of the commitment pattern; no primitive allows an obligation whose amount or obligor is fixed later], [The permitted fill is readable from the committed order; an unexplained state change is a violation, not an ambiguity],
+  [A guarded transition can execute only an authorized fill], [Separate formal models fix the actor, target, field, predicate, and authorized later value; a guard-violating fill fails closed. The model does not establish that every possible obligation fixes its amount or obligor at creation], [The authorized transition is readable from the committed object; an unexplained state change is a violation, not an ambiguity],
   [An outcome is authorized only by accepted evidence], [Declaring an outcome before the evidence window closes is not caution but error: a declaration the remaining evidence can falsify, a failure mode I have exhibited concretely in a formal model], [A declared outcome is worth what its evidence rule is worth; read that rule, not the declaration],
   [Settlement is one act against one ledger], [Two withdrawals can each be valid against the same pool and jointly overdraw it --- a fact I have machine-checked], [Balance-type constraints cannot be checked in independent fragments and merged; serialization is a choice to verify, not a guarantee to assume],
 )
@@ -232,10 +256,15 @@ the question fenced above.
 *Position 7: proofs as scoped evidence.* Useful proof targets exist ---
 accepted-input binding, collateral sufficiency, conservation, deterministic
 matching, duplicate prevention, consistency between public and confidential
-records. A proof claim should name the exact relation and rule version, the
-committed inputs, the verifier and result, the assumptions, and what the
-proof does *not* establish; the Commission could publish machine-testable
-positive and negative conformance examples for each control. Proofs
+records. *VERIFIED (separate scoped artifacts):* named Lean theorems establish
+model-level complete-set, solvency, guarded-transition, and degree-zero through
+degree-three B-spline construction and quantization properties; one pinned
+Verus run checks a single internal-transfer arithmetic seam. There is no
+checked refinement of the complete Rust or SBF parser, control flow, account
+handling, token CPIs, or runtime behavior. A proof claim should name the exact
+relation and rule version, committed inputs, verifier and result, assumptions,
+and what the proof does *not* establish; the Commission could publish
+machine-testable positive and negative conformance examples for each control. Proofs
 complement surveillance, governance, and examination rather than replacing
 them, and the cheapest moment to examine any of this is before deployment,
 through a structured path in the Commission's existing innovation
@@ -244,8 +273,8 @@ channels#note_ref(7) --- which vehicle, the Commission's choice.
 *Position 8: manipulation cost, stated against my own design pattern.* The
 Committee's published agenda names market surveillance and manipulation
 concerns for its prediction-markets session.#note_ref(12) My contribution
-there is self-critical: the worked market's frozen observation program
-does not eliminate reporting or evidence admission. Conditional on final
+there is self-critical: the qualifying frozen observation design does not
+eliminate reporting or evidence admission. Conditional on final authenticated
 evidence admitted under the frozen rule, it removes a discretionary
 adjudicator's choice of outcome. The incentive to move the thing being
 observed is untouched, and the attacker knows in advance which statistic
@@ -272,15 +301,15 @@ venue at these sample instants, under these declared assumptions."
 
 = The operatorless agent
 
-The Committee's agenda includes artificial intelligence.#note_ref(9) The
-architecture in this statement extends to a market participant that is
-itself an AI agent and has no operator. A published specification fixes the
-agent's entire operating loop in advance, and execution is prepaid,
-permissionless work: anyone may perform a step offchain and submit the
-result, and the ledger accepts a step only if its certificates verify
-against the specification. This is the publication-versus-operation
-question of Position 2 in its sharpest form: in such a design there is no
-operator to register, and no operator to trust.
+The Committee's agenda includes artificial intelligence.#note_ref(9)
+*PROPOSED research question.* A target architecture extends this statement to
+a market participant that is itself an AI agent and has no operator. A
+published specification would fix the operating loop, while prepaid,
+permissionless executors submit steps that a ledger accepts only when their
+certificates verify. This is the publication-versus-operation question of
+Position 2 in its sharpest hypothetical form; it is not a claim that the
+market prototype, permissionless construction tests, or any current artifact
+has eliminated every operator function.
 
 Part of the certificate stack this needs is real: my local research
 artifacts implement a Lean-authored parse/guard STARK and a genuine
@@ -322,11 +351,12 @@ author or its executors, and which have no bearer at all.
 
 = Limits
 
-The formal artifacts behind this statement are research models; the market
-prototype is offline research code. Independently provenanced repositories
-contain separately scoped prototype clearing, proof, and privacy
+The artifacts behind this statement are research models, host-side kernels,
+and restricted local-SBF campaigns. Independently provenanced repositories
+contain separately scoped construction, custody, clearing, proof, and privacy
 components; they do not presently compose into a production, permissionless,
-end-to-end Dark market system. This statement describes no deployed product,
+source-authenticated, end-to-end market system of any privacy modality. This
+statement describes no deployed product,
 accepted customer funds, or live orders, and requests approval of nothing.
 Machine-checked properties are properties of models, not of deployed
 systems, and not compliance conclusions. The Committee's duties are solely
@@ -352,9 +382,11 @@ deployed market infrastructure, and none has been independently audited.
   columns: (1fr, 2.1in),
   table.header([*Claim*], [*Basis*]),
   [The statement's legal recitals: event-contract terminology and the DCM/SEF statements; the scope of Regulation 40.11 and the June 2026 proposal (proposed, not current law); the CEA's separate facility and clearing definitions; Staff Letter No. 26-09 as narrow, conditional, and nonbinding; the treatment of fully collateralized positions in part 39; the surveillance and audit-trail functions of part 38 and section 38.7], [Primary sources cited in text; source notes 1 through 6, 10, and 11],
-  [An order can be executed exactly as committed or not at all; a committed redemption executes at most once; no primitive allows an obligation whose amount or obligor is fixed later], [Model theorems in the submitter's guarded-commitment research; not deployed controls],
+  [A guarded transition can fix actor, target, field, predicate, and an authorized later value; a guard-violating fill fails closed; a modeled redemption is one-shot], [Named theorems in separate guarded-commitment models; no claim that every obligation fixes amount or obligor at creation and no deployed control],
   [An outcome declared before the evidence window closes can be falsified by remaining evidence; balance-type constraints cannot be checked in independent fragments and merged], [Model theorems in the submitter's candidate-result formalism; no oracle or legal finality process is implemented or validated],
-  [The worked market's staged accounting: instance creation, claim-collateral lock and gross issuance, and unbalancing transfer are distinct; a complete set has constant outcome value until unbalanced; undercollateralized states are refused; a frozen book is fully recomputed; finite payout-matrix generality does not establish pricing or continuous numerics], [Direct consequence of the stated relation plus the offline pure-Rust prototype reviewed by the submitter; deterministic tests pass; tested, not formally verified; not deployed or a legal classification],
+  [The worked market's staged accounting distinguishes creation, collateral lock, gross issuance, and unbalancing transfer; exact categorical and degree-one through degree-three B-spline payout vectors have complete-set and solvency properties], [Pure-Rust exact kernels and independent oracle tests; separate Lean theorems for named model properties; one narrow Verus-checked internal-transfer seam. No whole-Rust/SBF refinement proof, pricing conclusion, deployment, or legal classification],
+  [Selected market construction, custody, point-resolution, redemption, reservation, and settlement paths execute in local SBF tests], [Ordinary-wallet blank-bank categorical/native construction; a genesis-assisted 22-transaction categorical custody walk; focused degree-one through degree-three point resolution/internal redemption; and one same-page full-fill single-claim zero-fee settlement slice. Restricted subsets only],
+  [Authenticated complete source history controls resolution], [PROPOSED / STOP: provider-neutral source/archive codecs exist, but no production provider authenticator or parser and no live archive-to-resolution join has been implemented; current SBF caller evidence is not source-authenticated],
   [The manipulation-cost observation: capital required and net unwind loss are different outputs, and declared model assumptions produce an envelope rather than a universal venue bound], [Offline deterministic exact-integer experiment over synthetic constant-product pools, cross-checked by independent computations; lower bound only under its stated recovery model; no market data or measurement or bound for any real venue, and no number appears in this statement],
   table.cell(colspan: 2)[The operatorless-agent artifact sentence --- offline research artifacts and one pinned third-party integration, reviewed by the submitter; test suites independently reproduced from the pinned committed tree: 86 tests, zero failures, under the repository's own toolchain pin (record of August 18, 2026), with the Lean emit step not re-run: the committed emitted descriptor, whose Lean pinning is inherited from the commit, is what the tamper canaries exercised],
   table.cell(colspan: 2)[The operatorless-agent boundary statements --- no live model-provider session (a live exchange-API MPC-TLS session was recorded July 11, 2026), no onchain posting path, no verifiable-inference backend, no deployed agent, no funded market; the executing host and the pinned notary are trusted --- rest on the submitter's repository status records and the pinned session record; research artifacts and open design questions, not products, offers, or compliance conclusions],

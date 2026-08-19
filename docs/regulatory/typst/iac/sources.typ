@@ -5,7 +5,7 @@
 
 = Source notes
 
-// Draft 8 layout note: the twelve source entries remain in two columns to
+// Draft 9 layout note: the twelve source entries remain in two columns to
 // preserve room for the operatorless-agent insertion.
 #columns(2, gutter: 16pt)[
 
@@ -95,14 +95,23 @@
 
 ]
 
-== Local technical materials inspected
+== Local technical materials inspected August 19, 2026
 
-The guarded-commitment and candidate-result descriptions derive from research
-models reviewed by the submitter, including a frozen Breadstuffs prototype and
-current Minidregg and Leanuweave formal research. The worked market's
-accounting derives from the Dragon's Clutch offline conditional-asset
-prototype (a pure-Rust research kernel with passing deterministic tests;
-tested, not formally verified; not a deployed system, product, or offer).
+*VERIFIED (local inspection).* The guarded-commitment and candidate-result descriptions derive from separately
+scoped formal models reviewed by the submitter, including a frozen Breadstuffs
+prototype and current Minidregg and Leanuweave research. The worked market's
+accounting and shaped-payout descriptions derive from exact pure-Rust
+categorical and degree-one through degree-three B-spline kernels, separate Lean
+proof modules, one narrow Verus-checked transfer seam, and focused
+local-Agave/SBF campaigns. Those campaigns include ordinary-wallet blank-bank
+construction, a genesis-assisted 22-transaction categorical custody walk,
+native point resolution with internal redemption, funded reservations, and
+one restricted same-page full-fill single-claim zero-fee settlement slice.
+They are tested subsets, not a complete venue or whole-system verification.
+A provider-neutral authenticated-source/archive codec seam exists, but no
+production provider authenticator or parser and no live archive-to-resolution
+join exists. *PROPOSED / STOP:* authenticated price history and
+provider-authenticated resolution are not current SBF properties.
 The manipulation-cost envelope description derives from the submitter's
 offline deterministic exact-integer experiment over synthetic constant-product
 pools; it uses no market data and makes no claim about a real venue. A

@@ -85,12 +85,14 @@ The market's terms are frozen when it is created:
   change, and the exact limits of the permitted fill; a fill outside those
   limits fails and changes nothing --- a property I have machine-checked in
   formal models of this order pattern.
-- *Observation.* A frozen program reads authenticated price history from the
-  named onchain source over the stated window and computes the realized
-  band. No person chooses the reported value: a transaction either carries
-  evidence that satisfies the frozen rule or it is rejected. This removes
-  reporting discretion; it does not prevent trading from influencing the
-  underlying price.
+- *Observation (PROPOSED; current implementation STOP).* The qualifying
+  design freezes a source specification, authenticates a complete price
+  history from that named source over the stated window, and computes the
+  realized band without a person choosing the value. The current local SBF
+  resolution path has not yet joined source authentication and an immutable
+  archive to its admitted evidence; it therefore does not establish this
+  property. If implemented, the rule would remove one form of reporting
+  discretion, not the ability of trading to influence the underlying price.
 - *Settlement.* After the observation window and its repair period close,
   the realized band's claims redeem from the pool at the stated payout; the
   other four expire worthless. Because every complete set was issued against
@@ -106,16 +108,32 @@ participant's maximum contractual payoff loss is the collateral deposited or
 purchase price paid, apart from fees. That statement does not address custody,
 implementation, collateral-value, or other operational loss.
 
-I have implemented the core of this design as an offline research prototype:
-a pure-Rust transition kernel with integer-exact arithmetic covering the
-worked example's accounting --- deposit, recombination, resolution,
-redemption --- with its conservation and pool-coverage checks, together with
-observation-accumulation and batch-clearing prototypes. Its deterministic
-tests pass. It is tested, not formally verified. It is not a deployed
-system, a product, or an offer, and I do not ask either Commission to
-approve it; it has no deployed program, no keys, no customers, and no funds.
-I use it here to show that the staged structure is concrete enough to build
-and test.
+*VERIFIED (scoped local artifacts).* Separate pure-Rust kernels implement
+integer-exact accounting, accumulation, batch relations, categorical claims,
+and degree-one through degree-three open-clamped B-spline payout vectors. A
+canonical largest-remainder rule converts exact rational basis values into
+integer weights that sum to the fixed payout denominator. Separate Lean
+models prove named complete-set, solvency, support, and spline-quantization
+properties; a pinned Verus run checks one internal-transfer arithmetic seam.
+Those proofs do not verify the complete Rust or SBF implementation.
+
+*VERIFIED (restricted local SBF evidence).* In local Agave banks, an ordinary
+wallet can create typed sealed artifacts and canonical categorical or native
+markets from a bank containing the program ELF; predictable program and token
+accounts tolerate honest over-rent prefunding. A separate genesis-assisted
+categorical campaign completed a 22-transaction signed custody walk through
+issuance, resolution, internal and bearer redemption, and collateral
+withdrawal. Further focused campaigns execute degree-one through degree-three
+point resolution with internal redemption and one same-page, full-fill,
+single-claim, zero-fee settlement slice. These are tested subsets, not a
+source-authenticated or complete venue. They do not include native bearer
+exit, general partial or portfolio settlement, production source adapters, or
+an end-to-end permissionless lifecycle.
+
+No artifact is deployed, offered, funded with customer assets, or operating;
+there are no public-cluster programs, customers, or live orders. I use the
+artifacts only to show that the staged structure is concrete enough to build,
+execute locally, and test.
 
 *Scope.* Every example in this comment references objectively verifiable
 crypto-native facts: ledger states, program events, prices, ranges, and path
@@ -285,10 +303,15 @@ specified inputs and failures; they do not establish oracle integrity,
 operational availability, or legal compliance.
 
 Formal verification, where it exists, is evidence only for the named property,
-model, assumptions, and implementation correspondence. The prototype
-described here is not formally verified. Guidance should credit demonstrated
+model, assumptions, and implementation correspondence. Here, separate Lean
+models establish specified complete-set, solvency, guarded-transition, and
+B-spline construction and quantization claims, and one narrow Verus artifact
+checks an internal-transfer arithmetic seam. No checked refinement connects
+the complete Rust and SBF control flow, parsers, account handling, token CPIs,
+or runtime behavior to those theorems. Guidance should credit demonstrated
 risk controls when a credit, custody, or customer-protection rule makes them
-relevant, without converting those controls into classification exclusions.
+relevant, without converting scoped proofs into whole-system assurance or
+classification exclusions.
 
 == Position 7: separate findings for separate functions
 
@@ -355,8 +378,9 @@ any facility's registration status.
 
 = Limits
 
-The worked example is a research design, and the artifacts behind it are an
-offline prototype and formal models, not production market infrastructure.
+The worked example is a research design, and the artifacts behind it are
+host-side kernels, formal models, and restricted local-SBF campaigns, not
+production market infrastructure.
 No artifact described in this comment is deployed, funded, offered, or
 operating, and nothing here requests permission to deploy one. The positions
 are my analysis of questions raised by one stipulated staged structure; none
@@ -392,7 +416,9 @@ market infrastructure, and none has been independently audited.
   [Regulation 40.11 and a pending 2026 proposal address event contracts and public-interest review], [Source notes 5 and 6],
   [The description of the FalconX Bravo listing-status proposal], [The filed comment; source note 7],
   [Under the worked example's stipulated payout table, one claim from every band pays one collateral unit in aggregate in every permitted resolution state], [Direct arithmetic from the five-band terms stated in this comment; an economic observation, not a legal-classification conclusion],
-  [An order can fix actor, affected balances, and the exact limits of the permitted fill, with a nonconforming fill failing and changing nothing], [Model theorems in the submitter's guarded-commitment research; not deployed controls],
-  [The worked example's core accounting --- deposit, recombination, resolution, redemption, with conservation and pool-coverage checks --- has been implemented offline with passing deterministic tests], [Pure-Rust research prototype reviewed by the submitter; tested, not formally verified; not deployed],
+  [A guarded transition can fix an actor, target, field, predicate, and authorized later value, with a guard-violating fill failing closed], [Named theorems in separate guarded-commitment formal models reviewed by the submitter; no claim that every order obligation is fully fixed or that this is a deployed control],
+  [Categorical and degree-one through degree-three open-clamped B-spline payout semantics use exact rational evaluation and canonical largest-remainder integer weights summing to a fixed denominator], [Pure-Rust kernels and independent exact-oracle tests; separate Lean proofs of named construction, support, solvency, and quantization properties; not a proof of Rust or SBF implementation refinement],
+  [Core accounting and selected construction, resolution, redemption, custody, and settlement paths execute in local SBF tests], [A 22-transaction genesis-assisted categorical custody walk; blank-bank ordinary-wallet construction of categorical and native markets; focused native point-resolution/internal-redemption tests; and one restricted same-page full-fill single-claim zero-fee settlement slice. Tested subsets only; no deployment, production provider, full venue, native bearer exit, or end-to-end source-authenticated lifecycle],
+  [Authenticated complete source history controls resolution], [PROPOSED qualifying design and current STOP: a provider-neutral source/archive codec seam exists, but no production provider authenticator or parser and no live archive-to-resolution join has been implemented],
   [No artifact described in this comment is deployed, funded, offered, or operating], [The submitter's repository status records; a statement about the submitter's own artifacts, not about any third party],
 )

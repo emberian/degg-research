@@ -1,6 +1,6 @@
 # CFTC IAC regulatory research packet
 
-**VERIFIED (local repository state):** Draft 1 research memoranda, Draft 2 review PDFs, and Draft 3 Typst filing-candidate review editions were prepared August 17-18, 2026. Nothing in this directory has been filed, sent to a regulator, deployed, or represented as legal advice.
+**VERIFIED (local repository state):** Draft 1 research memoranda, archived review PDFs, and current Typst filing-candidate editions were prepared August 17-19, 2026. Nothing in this directory has been filed, sent to a regulator, deployed, or represented as legal advice.
 
 Claim labels follow the repository convention: **VERIFIED**, **SOURCED**, **INFERRED**, **PROPOSED**, **CHAT-REPORTED**, and **REJECTED**. A label introducing a paragraph, list, or subsection governs the material claims within it until another label appears. Current agency and legal sources were retrieved August 17, 2026 unless a different retrieval date is stated.
 
@@ -14,31 +14,37 @@ Claim labels follow the repository convention: **VERIFIED**, **SOURCED**, **INFE
 - [`JOINT_DATA_REPORTING_RFC_COMMENT_DRAFT.md`](./JOINT_DATA_REPORTING_RFC_COMMENT_DRAFT.md) answers the joint CFTC/SEC data request, principally Questions 3, 8, and 19, on blockchain reporting, public identity/strategy leakage, and machine-readable reporting logic.
 - [`SUBMISSION_WEEK_PLAN.md`](./SUBMISSION_WEEK_PLAN.md) distinguishes the August 24 joint-comment deadline from the August 27 IAC deadline and provides a non-executing review/filing checklist.
 
-## Draft 3 Typst review editions
+## Current Typst review editions
 
 **VERIFIED (local repository state):** The Markdown filings above remain the
-Draft 1 research record, and the rendered Draft 2 PDFs remain archived. The
-current third-draft sources live under [`typst/`](./typst/), with
+Draft 1 research record, and earlier rendered PDFs remain archived. The
+current sources live under [`typst/`](./typst/), with
 independent `main.typ`, `metadata.typ`, `body.typ`, and `sources.typ` files for
-each report and the IAC cover statement, plus a shared presentation module only.
-They add the Regulation 40.11 boundary, early-exit lifecycle milestone, exact
-deadline instructions, restrained Dark research framing, and a one-page
-plain-English question cover. They remain visibly marked
-`DRAFT 3 FOR REVIEW - NOT FILED`.
+each report and the IAC cover statement, plus a shared presentation module
+only. The two joint comments and IAC statement and cover are Draft 9; the
+perpetuals comment is Draft 2. All remain visibly marked for review and not
+filed.
 
-The current Draft 3 review PDFs are:
+The current Draft 9 review PDFs are:
 
-- [`joint-definitions-comment-draft-3.pdf`](../../output/pdf/joint-definitions-comment-draft-3.pdf)
-- [`joint-data-reporting-comment-draft-3.pdf`](../../output/pdf/joint-data-reporting-comment-draft-3.pdf)
-- [`cftc-iac-written-statement-draft-3.pdf`](../../output/pdf/cftc-iac-written-statement-draft-3.pdf)
-- [`cftc-iac-cover-statement-draft-3.pdf`](../../output/pdf/cftc-iac-cover-statement-draft-3.pdf)
+- [`joint-definitions-comment-draft-9.pdf`](../../output/pdf/joint-definitions-comment-draft-9.pdf)
+- [`joint-data-reporting-comment-draft-9.pdf`](../../output/pdf/joint-data-reporting-comment-draft-9.pdf)
+- [`cftc-iac-written-statement-draft-9.pdf`](../../output/pdf/cftc-iac-written-statement-draft-9.pdf)
+- [`cftc-iac-cover-statement-draft-9.pdf`](../../output/pdf/cftc-iac-cover-statement-draft-9.pdf)
+- [`cftc-perpetuals-comment-draft-2.pdf`](../../output/pdf/cftc-perpetuals-comment-draft-2.pdf)
 
-Build all four from the repository root with
+Build all five from the repository root with
 `./scripts/build-regulatory-pdfs.sh`. Rendering a review PDF is not authorization
-to file it. The source repository currently has no committed baseline, the
-identity fields remain unresolved, and a filing edition still requires a frozen
-source commit, exact build manifest and hashes, live-docket revalidation, public
-disclosure review, and appropriate legal review.
+to file it. Identity fields remain unresolved, and a filing edition still
+requires a frozen source commit, exact build manifest and hashes, live-docket
+revalidation, public-disclosure review, and appropriate legal review.
+
+**VERIFIED (Draft 9 engineering boundary):** the current technical evidence
+comprises separate formal models, exact host-side kernels, and restricted local
+SBF campaigns. The authenticated-source/archive seam has not been joined to
+the resolution route; provider-authenticated price history remains
+**PROPOSED / STOP**. Nothing claims whole-protocol verification, production
+readiness, deployment, a complete venue, or a legal classification.
 
 ## Verified open processes
 
@@ -60,7 +66,7 @@ Both sources were retrieved August 17, 2026. Their filing and disclosure instruc
 **VERIFIED (local repository inspection):** No source code was copied into this research repository. The drafts translate concepts from read-only inspection of the following research artifacts:
 
 - Leanuweave commit `f1450667cc87a48706c61f6d5ead71f73ab43fb1`: `Uwueave/Gluing.lean`, `Uwueave/Holes.lean`, and `docs/MAP.md`.
-- Breadstuffs commit `44d0dea45349be20896ed3360a094866a3f62260`: `metatheory/Dregg2/Exec/GuardedHole.lean`, `metatheory/docs/GUARDED-HOLES-METATHEORY.md`, and `docs/DESIGN-partial-turn-promises.md`.
+- Breadstuffs commit `35e4f078c7ac6762161c7770a981c1b035f4779f`: `metatheory/Dregg2/Exec/GuardedHole.lean`, `metatheory/docs/GUARDED-HOLES-METATHEORY.md`, and `docs/DESIGN-partial-turn-promises.md`.
 - Breadstuffs privacy/exchange material was reviewed only to identify research boundaries. No claim is made here that a dark exchange, distributed MPC service, production zero-knowledge clearing system, or verifiable-FHE system exists or is deployment-ready.
 
 **VERIFIED (local formal sources):** Two distinct uses of “hole” must not be conflated:

@@ -1,0 +1,20 @@
+[package]
+name = "degg-confidential-energy-dispatch"
+version = "0.0.0"
+edition = "2024"
+publish = false
+license = "AGPL-3.0-or-later"
+description = "Bounded exact-integer clear oracle and verifier for a proposed confidential energy dispatch relation"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "degg-energy-dispatch-vectors"
+path = "src/bin/vectors.rs"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+pedantic = "warn"

@@ -21,30 +21,37 @@ Draft 1 research record, and earlier rendered PDFs remain archived. The
 current sources live under [`typst/`](./typst/), with
 independent `main.typ`, `metadata.typ`, `body.typ`, and `sources.typ` files for
 each report and the IAC cover statement, plus a shared presentation module
-only. The two joint comments and IAC statement and cover are Draft 9; the
-perpetuals comment is Draft 2. All remain visibly marked for review and not
-filed.
+only. The two joint comments and IAC statement and cover are Draft 10
+(sources under `typst/*-draft-10/`, built by `./scripts/build-draft-10-pdfs.sh`);
+the perpetuals comment is deliberately frozen at Draft 2. All remain visibly
+marked for review and not filed.
 
-The current Draft 9 review PDFs are:
+The current review PDFs are:
 
-- [`joint-definitions-comment-draft-9.pdf`](../../output/pdf/joint-definitions-comment-draft-9.pdf)
-- [`joint-data-reporting-comment-draft-9.pdf`](../../output/pdf/joint-data-reporting-comment-draft-9.pdf)
-- [`cftc-iac-written-statement-draft-9.pdf`](../../output/pdf/cftc-iac-written-statement-draft-9.pdf)
-- [`cftc-iac-cover-statement-draft-9.pdf`](../../output/pdf/cftc-iac-cover-statement-draft-9.pdf)
+- [`joint-definitions-comment-draft-10.pdf`](../../output/pdf/joint-definitions-comment-draft-10.pdf)
+- [`joint-data-reporting-comment-draft-10.pdf`](../../output/pdf/joint-data-reporting-comment-draft-10.pdf)
+- [`cftc-iac-written-statement-draft-10.pdf`](../../output/pdf/cftc-iac-written-statement-draft-10.pdf)
+- [`cftc-iac-cover-statement-draft-10.pdf`](../../output/pdf/cftc-iac-cover-statement-draft-10.pdf)
 - [`cftc-perpetuals-comment-draft-2.pdf`](../../output/pdf/cftc-perpetuals-comment-draft-2.pdf)
 
-Build all five from the repository root with
-`./scripts/build-regulatory-pdfs.sh`. Rendering a review PDF is not authorization
+Draft 9 sources and PDFs remain frozen in place as history. Rendering a review PDF is not authorization
 to file it. Identity fields remain unresolved, and a filing edition still
 requires a frozen source commit, exact build manifest and hashes, live-docket
 revalidation, public-disclosure review, and appropriate legal review.
 
-**VERIFIED (Draft 9 engineering boundary):** the current technical evidence
+**VERIFIED (Draft 10 engineering boundary):** the current technical evidence
 comprises separate formal models, exact host-side kernels, and restricted local
-SBF campaigns. The authenticated-source/archive seam has not been joined to
-the resolution route; provider-authenticated price history remains
-**PROPOSED / STOP**. Nothing claims whole-protocol verification, production
-readiness, deployment, a complete venue, or a legal classification.
+SBF campaigns. Local Resolve now derives and authenticates the canonical
+sealed source receipt (the seam Draft 9 recorded as unjoined); the default
+production build still registers no source release and refuses value
+admission fail-closed (`0x79`), and provider-authenticated production price
+history remains **PROPOSED / STOP**. Nothing in the drafts claims
+whole-protocol verification, production readiness, deployment, a complete
+venue, or a legal classification. NOTE for the filing rewrite: engineering is
+now deploying Track-C research programs to Solana devnet; every draft
+sentence of the form "no artifact is deployed / no public-cluster programs"
+must be rewritten against the dated devnet deployment record before any
+submission.
 
 ## Verified open processes
 

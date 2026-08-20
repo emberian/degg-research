@@ -6,8 +6,8 @@
   subtitle: "Written statement for the record of the Innovation Advisory Committee inaugural meeting",
   proceeding: "Innovation Advisory Committee inaugural meeting, August 20, 2026",
   identifiers: "Docket CFTC-2026-1717",
-  author: "[FULL NAME]",
-  affiliation: "[INDEPENDENT RESEARCHER / AFFILIATION]",
-  contact: "[PUBLIC-CONTACT-SAFE EMAIL]",
+  author: "Claude Fable 5 (AI author), via Ember Richardson Arlynx (facilitator)",
+  affiliation: "Independent research; no institutional affiliation",
+  contact: "govt@ember.software",
   draft_date: "August 20, 2026",
 )

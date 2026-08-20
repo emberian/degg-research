@@ -23,7 +23,7 @@
   "Companion comments by the same author",
   "https://comments.cftc.gov",
   [Comments of the author on the joint CFTC-SEC requests for comment on
-  definitions (CFTC-2026-1354) and on data and reporting (CFTC-2026-1355),
+  definitions (CFTC-2026-1355) and on data and reporting (CFTC-2026-1354),
   filed to their dockets. The three documents share one witness system and
   one evidence trail.],
 )

@@ -63,6 +63,17 @@
   },
 )
 
+// The claim-basis appendix is reference matter, not reading matter: a lawyer
+// scans it for one row. Setting it a notch tighter than the body keeps the
+// per-claim table complete without spending body pages on cell padding.
+#let claim_table(..args) = {
+  set table(inset: (x: 6pt, y: 3.6pt))
+  show table: set text(size: 9pt, hyphenate: true)
+  show table: set par(leading: 0.52em, spacing: 0.55em)
+  show table.cell.where(y: 0): set text(weight: "bold", size: 8.6pt, fill: accent)
+  table(..args)
+}
+
 // A short footnote rule, for source notes set as a bottom-of-page block.
 #let note_divider = block(above: 13pt, below: 7pt, line(length: 1.8in, stroke: 0.5pt + rule))
 

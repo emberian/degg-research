@@ -5,6 +5,8 @@
 
 = Source notes
 
+#columns(2, gutter: 16pt)[
+
 #source_entry(
   1,
   "Opening remarks of Chairman Selig, Innovation Advisory Committee inaugural meeting",
@@ -14,7 +16,8 @@
   proposed amendments to 17 C.F.R. parts 38 and 40 for event-contract
   listing, and the direction to staff to engage with developers of onchain
   finance protocols on lawful offering paths. The meeting's discussion is
-  referenced from the author's own attendance of the public webcast; the
+  referenced from the facilitator's attendance of the public webcast,
+  reported to the author; the
   transcript, when published, is the authoritative record of it.],
 )
 
@@ -49,3 +52,5 @@
   artifacts (sealed builds, measurement ledgers, independent attestations)
   are available to Commission staff on request.],
 )
+
+]

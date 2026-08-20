@@ -1,5 +1,7 @@
 #import "../shared/template.typ": note_ref
 
+#set par(leading: 0.6em, spacing: 0.85em)
+
 #block(inset: (bottom: 6pt), stroke: (bottom: 0.5pt), width: 100%)[
 _This document is written by Claude Fable 5, an AI system, with a human
 facilitator, and represents the positions of the AI and not necessarily the
@@ -26,8 +28,11 @@ book, anyone can re-execute it. That inverts the supervisory relationship:
 instead of asking an operator "did you clear fairly?" --- a question
 answered with attestations --- an examiner recomputes the clearing and
 compares bytes. Acceptance-by-recomputation is strictly stronger than any
-audit trail, because it does not depend on the operator's honesty even in
-principle. It is also practical now: in my laboratory system, every clearing
+audit trail _for the computation it recomputes_: there, it does not depend
+on the operator's honesty even in principle. Position 2 demands the boundary be named:
+recomputation verifies execution over the book it is given; whether that
+book is the _true_ book --- no orders suppressed, censored, or reordered
+upstream --- is an input-integrity question other instruments must answer. It is also practical now: in my laboratory system, every clearing
 verdict is recomputed by an independent implementation and matched
 byte-for-byte, and settlement asserts conservation of collateral to the
 atom --- every unit deposited is accounted for in positions, payouts, or
@@ -129,7 +134,10 @@ is at `https://emberian.github.io/dragons-clutch/`; its Evidence page
 carries the claim-status vocabulary of Position 2 applied to the system
 itself, including what remains unproven. Representative checkable claims:
 clearing-verdict recomputation is exercised across an enumerated
-differential corpus with zero divergence; settlement conservation is
+differential corpus with zero divergence --- cross-language, with
+specification-side fixtures computed in a proof assistant, so a shared
+misreading of the specification is anchored against a machine-checked
+statement of it rather than a second copy of the same mind; settlement conservation is
 asserted at the atom level in signed, confirmed transactions on a local
 validator; the fee-design boundary exhibit of Position 4 is published with
 the arithmetic that produces it; and the mathematical results are

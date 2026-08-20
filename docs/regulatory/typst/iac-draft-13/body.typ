@@ -129,47 +129,53 @@ slice from two reservations and a prefrozen receipt. None of that is a
 production source pipeline or general partial, portfolio, cross-page,
 fee-bearing, or end-to-end venue settlement.
 
-== Verification has a ceiling, and it bites
+== Verification has a ceiling; attribution is measurement work
 
 A chain asked to re-derive a complex result in one transaction meets a hard
-compute ceiling (my batch clearing consumed exactly the limit --- third fact
-below); the alternatives are staging or succinct proof. Three measured facts,
-each a boundary, not a promise.
+compute ceiling --- 1,400,000 CU, of which this project admits a route only
+under 1,120,000 (25-percent headroom); the alternatives at scale are staging
+or succinct proof. Two routes measured as hard stops against that line. Both
+stops were real; I attributed both to the architecture, and the attribution
+was wrong.
 
-*Monolithic native occupation-resolution, degrees one through three ---
-measured STOP.* The route executes in local banks, but no measured initial
-span clears the project's 1,120,000-CU admission threshold (25-percent
-headroom under the 1,400,000-CU ceiling); the best measured initial row is
-1,236,364 CU. Later-step retries clear it; a retry cannot make the first
-transition reachable. Spans above degree three are unmeasured --- nothing is
-inferred about them. A decomposition and admission-policy result, not
-hardware impossibility or production-liveness evidence.
+*The stops, as first measured.* Monolithic native occupation-resolution,
+degrees one through three: no initial span cleared admission, best row
+1,236,364 CU. First-generation batch clearing: full top-three selection
+consumed exactly the 1,400,000-CU ceiling and rolled back every watched byte
+and lamport. I read both as "single-transaction re-execution does not scale."
 
-*Staged resolution over the same sealed archive bytes --- admitted.* Prepaid
-begin, fold, finalize, and abort steps executed in local SBF banks, preserved
-output equality with the monolithic route, and cleared the
-25-percent-headroom profile on every measured row (per-step maxima 810,992,
-815,573, 1,094,832, and 587,197 CU). The admission covers exactly the
-measured route and its prepaid zero-charge policy: not a global liveness
-policy, nor deployment, production-source, extrapolated-shape,
-terminal-closure, or transaction-inclusion evidence.
+*The cause was a hash implementation, not an architecture.* The program
+compiled in a software SHA-256. Replacing it with the runtime's hashing
+syscall --- no digest value changed; equivalence is tested at every call site
+and pinned against independently computed reference hashes --- made every
+measured instruction three to eight times cheaper. On the resealed artifact
+every measured occupation initial row is admitted (172,665--197,766 CU);
+staged resolution (prepaid begin, fold, finalize, and abort steps,
+output-equal to the monolithic route) shows per-step maxima of 90,924,
+95,505, 164,287, and 46,677 CU; and the formerly stopped selection completes
+and commits at 226,071 CU, 16 percent of the ceiling. Spans above degree
+three remain unmeasured --- nothing is inferred about them. The admissions
+cover exactly the measured routes and their prepaid zero-charge policy: not
+a global liveness policy, nor deployment, production-source,
+extrapolated-shape, terminal-closure, or transaction-inclusion evidence.
 
-*Batch clearing --- measured STOP, then a redesign.* The first-generation
-path initializes, freezes, and submits bounded full-width candidates, but
-full top-three selection reaches exactly the 1,400,000-CU ceiling and rolls
-back every watched byte and lamport: non-promotable, and why
-single-transaction re-execution does not scale. The successor stages
-placement, freeze, abort, submission with full re-verification, per-candidate
-staged verification, selection, settlement with exact asset transfer, and
-three lapse phases, each a bounded transaction; every measured row clears the
-ceiling, the tightest a candidate replacement at 1,127,892 CU. One bank
-profile (five candidates, eleven-tick grid) is the evidence --- wider grids,
-exact score ties, and reordered retained accounts remain model and host
-evidence, and the staged route carries no compute, rent, or
-terminal-admission row in the liveness profile governing resolution.
-Selection means the best valid submitted candidate admitted before an
-immutable close boundary; the verifier recomputes rather than trusting a
-claimed score.
+*What survives the correction.* The staged successor stands on growth, not
+on the old constants: placement, freeze, abort, submission with full
+re-verification, per-candidate staged verification, selection, settlement
+with exact asset transfer, and three lapse phases, each a bounded
+transaction --- measured worst row 383,909 CU at freeze, candidate
+replacement 203,128 CU. One bank profile (five candidates, eleven-tick grid)
+is the evidence --- wider grids, exact score ties, and reordered retained
+accounts remain model and host evidence, and the staged route carries no
+compute, rent, or terminal-admission row in the liveness profile governing
+resolution. Selection means the best valid submitted candidate admitted
+before an immutable close boundary; the verifier recomputes rather than
+trusting a claimed score.
+
+A measured stop is evidence about an artifact, not an architecture; only a
+cause-level change and re-measurement tell those apart. An earlier draft of
+this statement carried the wrong generalization; this one carries the
+correction.
 
 = Four machine-checked negatives
 

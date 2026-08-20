@@ -114,10 +114,12 @@ check. The onchain evidence is narrower. Local campaigns settle one
 same-page, full-fill, single-claim, zero-fee slice from funded reservations
 and a prefrozen receipt, with replay and substitution refusals. The live
 batch path submits bounded full-width candidates; full top-three selection
-reaches exactly the 1,400,000-compute-unit transaction ceiling and rolls back
-(a measured stop), while its staged successor, split across bounded
-transactions, clears the ceiling on every measured row in a
-single-bank-profile campaign. Onchain selection is not the verification
+once consumed exactly the 1,400,000-compute-unit transaction ceiling and
+rolled back --- a measured stop whose cause proved to be a software SHA-256
+implementation, not the verification design; with the runtime's hashing
+syscall it completes and commits at 226,071 compute units. Its staged
+successor, split across bounded transactions, clears the ceiling on every
+measured row in a single-bank-profile campaign. Onchain selection is not the verification
 story; any future selection claim covers only the best valid submitted
 candidate admitted before an immutable close boundary.
 
@@ -339,7 +341,7 @@ artifacts has been independently audited.
   [The Ariadne Dataworks recommendations as described], [The filed comment; source note 5],
   [Solana ingress visibility; landed-failure publicity], [Solana transaction-ingress guide and RPC JSON structures; source notes 6 and 7],
   [Exact categorical and degree-one through degree-three B-spline payout semantics], [Exact-rational Rust kernels with canonical largest-remainder quantization; Lean proofs of the named construction properties; no whole-implementation refinement proof],
-  [Local SBF and devnet execution of construction, resolution, redemption, custody, staged resolution, submission, one settlement slice], [Signed and bank campaigns: the 22-transaction custody walk, per-degree blank-bank walks; full top-three selection a measured 1,400,000-CU rollback stop, its staged successor clearing the ceiling on one bank profile; dated devnet deployment record],
+  [Local SBF and devnet execution of construction, resolution, redemption, custody, staged resolution, submission, one settlement slice], [Signed and bank campaigns: the 22-transaction custody walk, per-degree blank-bank walks; full top-three selection completing at 226,071 CU after a hasher fix dissolved its measured 1,400,000-CU rollback stop, its staged successor clearing the ceiling on one bank profile; dated devnet deployment record],
   [Batch-verifier acceptance only on exact recomputation from the frozen book], [Program source and deterministic tests],
   [Accumulator refusal of unsupported questions], [Program source and deterministic tests],
   [One canonical, sealed, program-owned source receipt; deposits refused absent a compiled source release], [Receipt-binding and substitution-refusal tests; source construction against the non-production stand-in provider],

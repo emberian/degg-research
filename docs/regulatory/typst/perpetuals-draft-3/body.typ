@@ -76,9 +76,17 @@ NYMEX on July 8 and stayed the following day.#note_ref(4) That contract is
 the live case for these positions. It keeps physical delivery, so
 convergence still anchors its expiry --- but convergence discipline was
 designed around business-hour logistics, and the contract's off-hours
-sessions trade where that discipline sleeps. The computation of Position 2,
-run on the off-hours windows specifically, is the evidence that would show
-whether thin sessions are defensible; and a stay is the Commission saying
+sessions trade where that discipline sleeps. The computation of Position 2 has now
+been run on exactly this question:#note_ref(3) across an 8,640-row
+synthetic sweep of settlement-window designs against a thin session, a
+window contained in the thin session loses its manipulation cost linearly
+with depth, the widest cost-recovery any surveyed design achieves is
+sixfold, and no design in the grid holds its daylight cost at a tenth of
+normal depth --- with the sweep's own header recording that a
+better-than-daylight ratio never means the thin session is safer (the
+cheapest attack is the minimum across sessions) and that
+inventory-carried attacks are deliberately out of the model's scope. That
+is the shape of evidence a stay resolution should demand of the sponsor; and a stay is the Commission saying
 the rulebook's coverage is uncertain, which is Position 3 stated as a
 case --- the listing's supervision schedule should be shown to equal its
 trading schedule before the stay lifts. The Commission asked about this

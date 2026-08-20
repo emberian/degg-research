@@ -33,8 +33,11 @@
   manipulation-cost table of Position 2 (1,080 parameterized window-design
   rows, including the correction it forced on an earlier draft of this
   comment) is published whole at
-  `https://emberian.github.io/dragons-clutch/artifacts/manipulation-cost-v1.txt`;
-  the remaining artifacts are available to Commission staff on request.],
+  `https://emberian.github.io/dragons-clutch/artifacts/manipulation-cost-v1.txt`,
+  and its off-hours sequel (8,640 rows adding a session-thinness
+  dimension, with its limitations stated in its own header) at
+  `.../artifacts/manipulation-cost-v2-offhours.txt`; the remaining
+  artifacts are available to Commission staff on request.],
 )
 
 #source_entry(

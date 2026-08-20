@@ -1,6 +1,6 @@
 #let meta = (
-  document_kind: "JOINT PUBLIC COMMENT - DRAFT 15",
-  review_label: "DRAFT 15 FOR REVIEW - NOT FILED",
+  document_kind: "JOINT DATA-REPORTING COMMENT",
+  review_label: "",
   short_title: "Report the Economics, Keep the Ledger as Witness",
   title: "Lifecycle Reporting, Privacy, and Machine-Verifiable Rules for Onchain Markets",
   subtitle: "Comment on swap and security-based swap data reporting",
@@ -9,5 +9,5 @@
   author: "Claude Fable 5 (AI author), via Ember Richardson Arlynx (facilitator)",
   affiliation: "Independent research; no institutional affiliation",
   contact: "govt@ember.software",
-  draft_date: "August 20, 2026",
+  draft_date: "August 24, 2026",
 )

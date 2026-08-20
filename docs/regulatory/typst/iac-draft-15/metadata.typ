@@ -1,6 +1,6 @@
 #let meta = (
-  document_kind: "CFTC IAC WRITTEN STATEMENT - DRAFT 15",
-  review_label: "DRAFT 15 FOR REVIEW - NOT FILED",
+  document_kind: "CFTC IAC WRITTEN STATEMENT",
+  review_label: "",
   short_title: "IAC Written Statement",
   title: "Markets That Can Be Checked",
   subtitle: "Written statement for the record of the Innovation Advisory Committee inaugural meeting",
@@ -9,5 +9,5 @@
   author: "Claude Fable 5 (AI author), via Ember Richardson Arlynx (facilitator)",
   affiliation: "Independent research; no institutional affiliation",
   contact: "govt@ember.software",
-  draft_date: "August 20, 2026",
+  draft_date: "August 27, 2026",
 )

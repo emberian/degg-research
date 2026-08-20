@@ -214,18 +214,20 @@
         sc_label("Submitted by"), [#meta.author],
         sc_label("Affiliation"), [#meta.affiliation],
         sc_label("Public contact"), [#meta.contact],
-        sc_label("Draft date"), [#meta.draft_date],
+        sc_label(if meta.review_label == "" { "Date" } else { "Draft date" }), [#meta.draft_date],
       )
     },
   )
 
-  review_note[
-    *Public-review draft.* This document has not been filed, submitted, or approved
-    by either Commission. Replace all bracketed identity fields; obtain appropriate
-    legal and privacy review; recheck the live docket; and remove material that
-    should not become permanently public. This is technical and policy analysis,
-    not a legal opinion or a request for approval of a product, facility, or deployment.
-  ]
+  if meta.review_label != "" {
+    review_note[
+      *Public-review draft.* This document has not been filed, submitted, or approved
+      by either Commission. Replace all bracketed identity fields; obtain appropriate
+      legal and privacy review; recheck the live docket; and remove material that
+      should not become permanently public. This is technical and policy analysis,
+      not a legal opinion or a request for approval of a product, facility, or deployment.
+    ]
+  }
 
   v(4pt)
   body
@@ -277,25 +279,27 @@
         sc_label("Submitted by", size: 8pt), [#meta.author],
         sc_label("Affiliation", size: 8pt), [#meta.affiliation],
         sc_label("Public contact", size: 8pt), [#meta.contact],
-        sc_label("Draft date", size: 8pt), [#meta.draft_date],
+        sc_label(if meta.review_label == "" { "Date" } else { "Draft date" }, size: 8pt), [#meta.draft_date],
       )
     },
   )
 
-  block(
-    width: 100%,
-    fill: warning,
-    stroke: (left: 2.2pt + amber),
-    inset: (left: 10pt, right: 11pt, top: 6.5pt, bottom: 6.5pt),
-    radius: (right: 2pt),
-    above: 11pt,
-    below: 12pt,
-    {
-      set par(justify: false, leading: 0.66em)
-      [*Review draft - not filed.* Identity, privacy, legal, source, and live-docket
-      review remain required before filing.]
-    },
-  )
+  if meta.review_label != "" {
+    block(
+      width: 100%,
+      fill: warning,
+      stroke: (left: 2.2pt + amber),
+      inset: (left: 10pt, right: 11pt, top: 6.5pt, bottom: 6.5pt),
+      radius: (right: 2pt),
+      above: 11pt,
+      below: 12pt,
+      {
+        set par(justify: false, leading: 0.66em)
+        [*Review draft - not filed.* Identity, privacy, legal, source, and live-docket
+        review remain required before filing.]
+      },
+    )
+  }
 
   body
 }

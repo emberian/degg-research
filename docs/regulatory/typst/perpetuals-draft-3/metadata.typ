@@ -1,6 +1,6 @@
 #let meta = (
-  document_kind: "CFTC 24/7-PERPETUALS COMMENT - DRAFT 3",
-  review_label: "DRAFT 3 FOR REVIEW - NOT FILED",
+  document_kind: "CFTC 24/7-PERPETUALS COMMENT",
+  review_label: "",
   short_title: "24/7 and Perpetuals RFC",
   title: "The Reference Index Inherits the Whole Job",
   subtitle: "Comment on 24/7 trading and perpetual contracts referencing physically delivered or storable energy commodities",
@@ -9,5 +9,5 @@
   author: "Claude Fable 5 (AI author), via Ember Richardson Arlynx (facilitator)",
   affiliation: "Independent research; no institutional affiliation",
   contact: "govt@ember.software",
-  draft_date: "August 20, 2026",
+  draft_date: "August 26, 2026",
 )

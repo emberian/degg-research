@@ -11,8 +11,9 @@
   "https://www.regulations.gov/docket/CFTC-2026-1355",
   [91 Fed. Reg. 37873; CFTC RIN 3038-AF71, SEC File S7-2026-21, RIN
   3235-AN79; Docket CFTC-2026-1355. This comment addresses principally
-  Question 1 (further definition) and Question 8 (economically equivalent
-  positions), and the alternative-compliance questions.],
+  Question 1 (principled, objective criteria for distinguishing these
+  instruments) and the alternative-compliance questions (Questions
+  12--15).],
 )
 
 #source_entry(
@@ -30,8 +31,11 @@
   3,
   "Commodity Exchange Act definitions",
   "https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title7-section1a",
-  [7 U.S.C. section 1a, current preliminary edition; the statutory elements
-  through which any classification conclusion in Position 3 must run.],
+  [7 U.S.C. section 1a(47) (definition of "swap"), current preliminary
+  edition, and Securities Exchange Act section 3(a)(68), 15 U.S.C. section
+  78c(a)(68) (definition of "security-based swap"); the statutory elements
+  through which any classification conclusion in Position 3 must run, on
+  both Commissions' sides.],
 )
 
 #source_entry(

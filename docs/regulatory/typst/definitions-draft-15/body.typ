@@ -11,7 +11,8 @@ against its artifacts._
 
 The Commissions ask how to further define "swap" and "security-based swap"
 and what alternative compliance could look like.#note_ref(1) This comment
-offers five positions, principally on Question 1 and Question 8, from the
+offers five positions, principally on Question 1 and the
+alternative-compliance questions (Questions 12--15), from the
 vantage of a builder whose instruments exist entirely as executable code. A
 research system appears as witness in single sentences, with a checkable
 trail in the appendix; it has no customers, no tokens, no public
@@ -56,10 +57,10 @@ consequence attaches to.
 
 = 3. Complete sets are a diagnostic, not an axiom
 
-Question 8 asks when economically equivalent positions should be treated
-alike. A complete set --- one unit of every outcome of a claim, jointly
-redeemable for the deposit --- is riskless as a bundle, and that fact is
-genuinely diagnostic: it identifies the exact boundary where a position
+Question 1 asks for principled, objective criteria for distinguishing
+these instruments. One such criterion is arithmetic. A complete set ---
+one unit of every outcome of a claim, jointly redeemable for the deposit
+--- is riskless as a bundle, and that fact is genuinely diagnostic: it identifies the exact boundary where a position
 stops being exposure and becomes a deposit, and a venue can locate that
 boundary mechanically, trade by trade. But the diagnostic does not settle
 legal classification, and it should not be smuggled in as if it did:
@@ -98,8 +99,8 @@ structure whose conservation is asserted by executable check at every
 settlement has demonstrated more than a quarterly reconciliation
 narrative.#note_ref(4) Artifact compliance is also cheaper for small
 entrants than process compliance --- artifacts scale down; compliance
-departments do not --- so this alternative serves the competition
-interest the joint release names, not only the innovation interest.
+departments do not --- so this alternative serves competition, not only
+innovation.
 
 = Appendix: the witness
 

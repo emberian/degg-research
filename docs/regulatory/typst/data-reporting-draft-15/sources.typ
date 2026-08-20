@@ -12,7 +12,9 @@
   [91 Fed. Reg. 37877; CFTC RIN 3038-AF70, SEC File S7-2026-22, RIN
   3235-AN78; Docket CFTC-2026-1354. This comment addresses principally
   Questions 3 (reporting on new infrastructure), 8 (public dissemination),
-  and 19 (machine-readable and machine-verifiable reporting).],
+  and 19 (in the release's own words, "machine-readable rule structures or
+  standardized reporting logic," including their maintenance and
+  interpretation over time).],
 )
 
 #source_entry(

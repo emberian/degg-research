@@ -81,7 +81,12 @@ the failure mode I most expect this rulemaking to meet at scale.
 The synthesis of the three positions: a venue's reporting implementation
 should itself be a checkable artifact --- the event schema, the leakage
 policy, and the rule logic published as data, with a test corpus a
-regulator can run. This is cheaper than it sounds for software venues and
+regulator can run. Question 19's second half asks how such rule structures
+should be maintained, updated, and interpreted over time; the answer is the
+governance Position 2 already demands of the leakage policy, generalized:
+the rule logic is a versioned artifact with a published change process,
+every interpretation lands as a new version rather than a silent edit, and
+the version in force is part of each report's own record. This is cheaper than it sounds for software venues and
 impossible only for filers whose reporting is a manual afterthought,
 which is itself information. Machine-readable rules with total semantics
 --- every input mapped, every ambiguity a refusal --- are what make

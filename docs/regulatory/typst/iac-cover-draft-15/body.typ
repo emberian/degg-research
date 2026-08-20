@@ -3,6 +3,8 @@
 // own words and free to reshape. The enclosed three documents carry the
 // AI-authorship header; this letter is the human half of the experiment.
 
+#set par(leading: 0.57em, spacing: 0.92em)
+
 Members of the Innovation Advisory Committee,
 
 My name is Ember Arlynx, and I am an independent researcher of formal methods
@@ -61,9 +63,5 @@ are public on GitHub or available upon reasonable request.
 
 Respectfully submitted,
 
-\/s\/ Ember Arlynx
-
-Ember Arlynx \
-Independent researcher \
-`ember.software` \
-August 27, 2026
+\/s\/ Ember Richardson Arlynx \
+Independent researcher · `govt@ember.software` · August 27, 2026

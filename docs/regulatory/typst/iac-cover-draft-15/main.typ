@@ -4,4 +4,3 @@
 #show: body => cover_filing(meta, body)
 
 #include "body.typ"
-#include "sources.typ"

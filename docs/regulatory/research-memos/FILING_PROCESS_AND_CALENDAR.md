@@ -1491,3 +1491,46 @@ opened.
   the procedural authorities in Part 1, Part 3, Part 4, or Part 7 is on that
   ledger**; each is cited here by section, source URL, and retrieval date, and
   anything relied on in a filing must be added to the ledger first.
+
+---
+
+## Addendum, 2026-08-20 evening — the inaugural IAC meeting occurred
+
+Recorded same-day from desk monitoring (ember's desk watched the meeting;
+the transcript will adjudicate in-room specifics later — AAC precedent says
+~14 days). Verification status per item:
+
+- **Chairman Selig's opening remarks were POSTED on cftc.gov before the
+  meeting** (Aug 20, ~16:13Z) and are quotable now. They announce a
+  "Roadmap for the New Frontier of Finance" with three named tracks:
+  (1) crypto capital markets; (2) "Winning the AI Race: Roadmap for Compute
+  Market Dominance" — naming the compute derivatives RFC (Release 9286-26,
+  RIN 3038-AF77, issued Aug 19) as "our first step" toward "a gold standard
+  regulatory framework," in partnership with Commerce under the AI Action
+  Plan; (3) prediction markets.
+- **A fourth door**: the remarks state the Commission expects to propose
+  **Parts 38 & 40 amendments** — modernized DCM core principles and listing
+  rules for event contracts (consumer protection, product governance,
+  market design, incentive programs). Not yet published, no clock running;
+  joins the FR watch.
+- **The developer-engagement directive**: staff directed to "engage with
+  developers of onchain finance protocols to establish ways in which
+  developers can offer their protocols in a legal and compliant manner."
+- **Compute RFC context** (desk research, re-verify before citing beyond
+  the RFC itself): two exchange applications already pending (CME +
+  Silicon Data futures settling to daily GPU rental benchmarks, announced
+  May 12; ICE + Ornn cash-settled futures on Ornn's OCPI). The RFC's
+  analytical frame leans on Bandi & Su, "(Early) AI Compute Asset Pricing"
+  (arXiv 2607.12156): compute service flow $430B–$1.3T/yr; the named
+  structural gap is that compute has **no market-clearing venue publishing
+  real clearing prices** — only surveyed indexes — the same gap FERC Order
+  888's market operators closed for electricity. Structurally: a
+  settlement/clearing layer.
+- **In-room content** (unquotable until the transcript): the meeting
+  discussed formal verification among other aspects (firsthand report).
+
+Consequences for the calendar: the compute RFC is no longer merely a
+forward opportunity — it is the Chairman's titled agenda track, with a
+~60-day window from FR publication (~mid/late Oct). The Aug-27 IAC
+statement should be meeting-responsive against the posted remarks; the
+full compute response belongs in the RFC window.

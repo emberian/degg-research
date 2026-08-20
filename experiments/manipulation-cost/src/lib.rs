@@ -21,6 +21,9 @@
 //!   schedule at small bucket counts.
 //! - [`table`] --- the deterministic parameter sweep over depth, fee, window
 //!   length, bucket count, hold count, and boundary distance.
+//! - [`session`] --- the same window designs read from an off-hours session
+//!   carrying a fraction of normal depth, which asks how much of a design's
+//!   manipulation cost survives the session thinning.
 //! - [`big`] --- a fixed-width unsigned integer used only for exact comparison.
 //!
 //! ## Claim boundary
@@ -54,8 +57,16 @@
 
 pub mod big;
 pub mod pool;
+pub mod session;
 pub mod table;
 pub mod twap;
 
 /// Identifier of the model this crate implements.
 pub const MODEL: &str = "degg-manipulation-cost/v0";
+
+/// Identifier of the off-hours session layer [`session`] adds over [`MODEL`].
+///
+/// The arithmetic underneath is unchanged: the session layer chooses which
+/// depth and which effective hold count the model of [`MODEL`] is evaluated at,
+/// and adds no new closed form.
+pub const SESSION_MODEL: &str = "degg-offhours-session/v1";

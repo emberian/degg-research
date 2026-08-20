@@ -13,5 +13,9 @@ path = "src/lib.rs"
 name = "manipulation-cost-vectors"
 path = "src/bin/vectors.rs"
 
+[[bin]]
+name = "manipulation-cost-vectors-offhours"
+path = "src/bin/vectors_offhours.rs"
+
 [lints.rust]
 unsafe_code = "forbid"

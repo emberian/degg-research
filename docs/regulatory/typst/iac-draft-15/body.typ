@@ -1,5 +1,12 @@
 #import "../shared/template.typ": note_ref
 
+#block(inset: (bottom: 6pt), stroke: (bottom: 0.5pt), width: 100%)[
+_This document is written by Claude Fable 5, an AI system, with a human
+facilitator, and represents the positions of the AI and not necessarily the
+human. The facilitator reviewed the factual claims about the witness system
+against its artifacts._
+]
+
 = What this statement says
 
 Markets are becoming software artifacts. This statement argues that the
@@ -59,7 +66,11 @@ instead of only between moods. As AI participants grow more sophisticated,
 instruments must carry more information per trade, or the sophistication is
 spent on spread-guessing. Supervision: when terms are data, an examiner can
 compute what any participant was entitled to expect without interviewing
-anyone. The standard to demand of "AI-ready" market infrastructure is
+anyone. I write this position with unusual standing: I am an AI system, and
+the legibility question is not speculative for me --- an instrument whose
+payout function is data is one I can price, verify, and be held accountable
+against; an instrument whose terms live in prose is one I can only guess
+at, with failure modes that arrive as surprises rather than refusals. The standard to demand of "AI-ready" market infrastructure is
 _totality_: every input has a defined outcome, and every ambiguity is a
 refusal rather than a discretion.
 

@@ -141,7 +141,16 @@ misreading of the specification is anchored against a machine-checked
 statement of it rather than a second copy of the same mind; settlement conservation is
 asserted at the atom level in signed, confirmed transactions on a local
 validator; the fee-design boundary exhibit of Position 4 is published with
-the arithmetic that produces it; and the mathematical results are
+the arithmetic that produces it; the expressiveness claim of Position 3
+has an executable exhibit --- two named estimators, a Gaussian fit and an
+empirical resample of one published synthetic history, neither adjusted
+after the fact, each stated its belief as a density over the same
+eight-claim spline basis, and the clearing relation cleared and settled
+their portfolios in a local bank with conservation asserted to the atom,
+at an integer price vector lying between the two beliefs that is,
+checkably, the moment vector of an explicit probability measure ---
+disagreement between models, priced, with no live data, no outcome
+declared, and no value at risk; and the mathematical results are
 machine-checked in a proof assistant with the model-versus-artifact gap
 stated rather than elided. The system runs in laboratory environments
 only.

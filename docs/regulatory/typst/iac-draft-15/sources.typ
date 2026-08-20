@@ -27,8 +27,9 @@
   "https://comments.cftc.gov",
   [Comments of the author on the joint CFTC-SEC requests for comment on
   definitions (CFTC-2026-1355) and on data and reporting (CFTC-2026-1354),
-  filed to their dockets. The three documents share one witness system and
-  one evidence trail.],
+  and on the 24/7-and-perpetuals request (CFTC-2026-1388), filed to their
+  dockets. The four documents share one witness system and one evidence
+  trail.],
 )
 
 #source_entry(

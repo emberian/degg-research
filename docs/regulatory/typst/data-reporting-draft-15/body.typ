@@ -97,6 +97,6 @@ clearing verdicts, and settlement conservation asserted by executable
 check. A public literate explanation with its evidence trail is at
 `https://emberian.github.io/dragons-clutch/`;#note_ref(3) underlying
 artifacts are available to Commission staff on request. It runs in
-laboratory environments only. A companion statement to the Innovation
-Advisory Committee and a companion comment on the joint definitions
-release#note_ref(2) share this witness and this trail.
+laboratory environments only. A companion statement to the Innovation Advisory Committee and companion
+comments on the joint definitions and 24/7-perpetuals
+releases#note_ref(2) share this witness and this trail.

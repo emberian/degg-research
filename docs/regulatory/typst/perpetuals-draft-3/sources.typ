@@ -32,6 +32,17 @@
   page labeling each verification claim by the object it binds. The
   manipulation-cost table of Position 2 (1,080 parameterized window-design
   rows, including the correction it forced on an earlier draft of this
-  comment) is part of the underlying research record, available with the
-  other artifacts to Commission staff on request.],
+  comment) is published whole at
+  `https://emberian.github.io/dragons-clutch/artifacts/manipulation-cost-v1.txt`;
+  the remaining artifacts are available to Commission staff on request.],
+)
+
+#source_entry(
+  4,
+  "Extension of comment period and further request for comment",
+  "https://www.federalregister.gov/documents/2026/07/28",
+  [91 Fed. Reg. 47158 (July 28, 2026; FR Doc. 2026-15216): extends this
+  window through August 26, 2026, and further requests comment on the
+  self-certified 24/7 NYMEX crude-oil contract listed July 8, 2026 and
+  stayed by the Commission July 9, 2026.],
 )

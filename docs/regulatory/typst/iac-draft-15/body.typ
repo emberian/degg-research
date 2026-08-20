@@ -43,7 +43,8 @@ operational risk than most disclosure.
 
 = 2. "Formally verified" should trigger three questions, not comfort
 
-The Committee's discussion reached formal verification. Its regulatory
+Formal verification was raised before the Committee at its inaugural
+meeting. Its regulatory
 meaning is narrower than its reputation, and more useful. A proof is a fact
 about a model; the supervisory question is always the gap between the model
 and the deployed artifact. So when "formally verified" appears in a filing,
@@ -100,7 +101,7 @@ that cannot is telling the Commission something important.
 
 The Chairman directed staff to engage with developers of on-chain finance
 protocols on lawful ways to offer them.#note_ref(1) This statement and its
-two companion comments#note_ref(2) are one developer's half of that
+three companion comments#note_ref(2) are one developer's half of that
 engagement, in writing, before any customer, token, or deployment exists
 --- because the right time to talk to a regulator is before there is
 anything to defend. One suggestion for the channel: value artifacts over

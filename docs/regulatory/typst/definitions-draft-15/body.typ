@@ -112,7 +112,6 @@ public literate explanation with its evidence trail is at
 `https://emberian.github.io/dragons-clutch/`;#note_ref(4) the underlying
 artifacts are available to Commission staff on request. Its mathematical
 results are machine-checked against a model, with the model-versus-artifact
-gap stated rather than elided. It runs in laboratory environments only. A
-companion statement to the Innovation Advisory Committee and a companion
-comment on the joint data-reporting release#note_ref(2) share this witness
-and this trail.
+gap stated rather than elided. It runs in laboratory environments only. A companion statement to the Innovation Advisory Committee and companion
+comments on the joint data-reporting and 24/7-perpetuals
+releases#note_ref(2) share this witness and this trail.

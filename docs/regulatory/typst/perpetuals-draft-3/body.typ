@@ -68,14 +68,30 @@ supervision schedule are the same schedule. This requirement is cheap
 precisely for the modern venues most likely to want 24/7 listing, and its
 absence is most dangerous in exactly those markets.
 
+= The stayed contract is this proceeding's live case
+
+On July 28 the Commission extended this comment window and further
+requested comment on the self-certified 24/7 crude-oil contract listed on
+NYMEX on July 8 and stayed the following day.#note_ref(4) That contract is
+the live case for these positions. It keeps physical delivery, so
+convergence still anchors its expiry --- but convergence discipline was
+designed around business-hour logistics, and the contract's off-hours
+sessions trade where that discipline sleeps. The computation of Position 2,
+run on the off-hours windows specifically, is the evidence that would show
+whether thin sessions are defensible; and a stay is the Commission saying
+the rulebook's coverage is uncertain, which is Position 3 stated as a
+case --- the listing's supervision schedule should be shown to equal its
+trading schedule before the stay lifts. The Commission asked about this
+contract by name; these positions answer by name.
+
 = Appendix: the witness
 
 The system referenced above is Dragon's Clutch, a research protocol for
 markets over typed outcome claims whose clearing rule is deterministic and
 recomputable and whose settlement conservation is asserted by executable
 check --- the properties Positions 2 and 3 rely on, demonstrated rather
-than promised. The manipulation-cost table of Position 2, including the
-self-correction it forced, is part of its public research record. A public
+than promised. The manipulation-cost table of Position 2 is published whole, including
+the self-correction it forced, on the explanation's Evidence page. A public
 literate explanation with the evidence trail is at
 `https://emberian.github.io/dragons-clutch/`;#note_ref(3) underlying
 artifacts are available to Commission staff on request. The system runs in

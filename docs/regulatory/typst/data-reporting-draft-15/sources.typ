@@ -20,9 +20,10 @@
   "Companion filings by the same author",
   "https://comments.cftc.gov",
   [The author's written statement to the Innovation Advisory Committee
-  (Docket CFTC-2026-1717) and comment on the joint definitions release
-  (CFTC-2026-1355 / SEC File S7-2026-21). The three documents share one
-  witness system and one evidence trail.],
+  (Docket CFTC-2026-1717) and comments on the joint definitions release
+  (CFTC-2026-1355 / SEC File S7-2026-21) and the 24/7-and-perpetuals
+  request (CFTC-2026-1388). The four documents share one witness system
+  and one evidence trail.],
 )
 
 #source_entry(

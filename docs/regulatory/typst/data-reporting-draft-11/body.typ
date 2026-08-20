@@ -133,8 +133,9 @@ campaigns settle one same-page, full-fill, single-claim, zero-fee slice from
 funded reservations and a prefrozen receipt, with replay and substitution
 refusals; the live batch path submits bounded full-width candidates, but its
 full top-three selection reaches exactly the 1,400,000-compute-unit
-transaction ceiling and rolls back --- a measured stop --- and the successor
-selection design is not yet a live route. So deterministic recomputation of
+transaction ceiling and rolls back --- a measured stop --- while the staged
+successor, which splits that work across bounded transactions, clears the
+ceiling on every measured row in a single-bank-profile campaign. So deterministic recomputation of
 a frozen rule is the verification story here, onchain selection is not, and
 any future selection claim is limited to the best valid submitted candidate
 admitted before an immutable close boundary.
@@ -434,7 +435,7 @@ of the artifacts has been independently audited.
   [The description of the Ariadne Dataworks recommendations], [The filed comment; source note 5],
   [Solana has no public global mempool; pre-landing visibility follows the RPC, relay or forwarding, and leader path actually used; a landed failure is public ledger data only when included in a confirmed block], [Official Solana transaction-ingress guide and RPC JSON structures; source notes 6 and 7],
   [Categorical and degree-one through degree-three B-spline payout vectors have exact deterministic semantics], [Exact-rational Rust kernels with canonical largest-remainder quantization; Lean proofs of the named construction properties; no whole-implementation refinement proof],
-  [Construction, resolution, redemption, custody, staged-resolution, submission, and one settlement slice execute in local SBF tests and the devnet research deployment], [Local signed and bank campaigns including the 22-transaction custody walk and per-degree blank-bank walks; full top-three selection is a measured 1,400,000-CU rollback stop; the dated devnet deployment record],
+  [Construction, resolution, redemption, custody, staged-resolution, submission, and one settlement slice execute in local SBF tests and the devnet research deployment], [Local signed and bank campaigns including the 22-transaction custody walk and per-degree blank-bank walks; full top-three selection is a measured 1,400,000-CU rollback stop whose staged successor clears the ceiling on one bank profile; the dated devnet deployment record],
   [The batch verifier accepts a submitted clearing only if full recomputation from the frozen book reproduces it], [Program source and deterministic tests],
   [The observation accumulator refuses questions its retained information cannot support], [Program source and deterministic tests],
   [Resolution is controlled by one canonical, sealed, program-owned source receipt; the default build refuses deposits with no compiled source release], [Local receipt-binding and substitution-refusal tests; source construction exercised against the non-production stand-in provider],

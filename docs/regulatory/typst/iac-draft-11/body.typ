@@ -217,14 +217,22 @@ profile, with measured per-step maxima of 810,992, 815,573, 1,094,832, and
 587,197 CU. That admission covers exactly the measured route and its selected
 prepaid zero-charge policy; it is not a global liveness policy, and it is not
 deployment, production-source, extrapolated-shape, terminal-closure, or
-transaction-inclusion evidence. Third, a second measured STOP: the live batch
-path can initialize, freeze, and submit bounded full-width candidates
-(measured submission maximum 1,194,085 CU), but its full top-three selection
-reaches exactly the 1,400,000-CU ceiling and rolls back every watched byte
-and lamport --- a measured, non-promotable STOP --- and the successor
-selection design exists as model and design only, with no live instruction
-ABI or SBF route. Any future selection claim would be limited to the best
-valid submitted candidate admitted before an immutable close boundary.
+transaction-inclusion evidence. Third, a measured STOP and the redesign that answers it. The first-generation
+batch path can initialize, freeze, and submit bounded full-width candidates,
+but its full top-three selection reaches exactly the 1,400,000-CU ceiling and
+rolls back every watched byte and lamport --- a measured, non-promotable stop,
+and the reason single-transaction re-execution of a clearing does not scale.
+The successor stages the work instead: placement, freeze, abort, submission
+with full re-verification, per-candidate staged verification, selection,
+settlement with exact asset transfer, and three lapse phases, each its own
+bounded transaction. Every measured row clears the ceiling; the tightest is a
+candidate replacement at 1,127,892 CU. That evidence is one bank profile ---
+five candidates on an eleven-tick grid --- so wider grids, exact score ties,
+and reordered retained accounts remain model and host evidence, and the staged
+route carries no compute, rent, or terminal-admission row in the liveness
+profile that governs the resolution path. Selection claims are limited to the
+best valid submitted candidate admitted before an immutable close boundary;
+the verifier recomputes rather than trusting a submitter's claimed score.
 
 = Four machine-checked negatives
 
@@ -430,7 +438,7 @@ of the artifacts has been independently audited.
   [A guarded transition can fix actor, target, field, predicate, and an authorized later value; a guard-violating fill fails closed; a modeled redemption is one-shot], [Named theorems in separate guarded-commitment models; no claim that every obligation fixes amount or obligor at creation and no deployed control],
   [An outcome declared before the evidence window closes can be falsified by remaining evidence; balance-type constraints cannot be checked in independent fragments and merged], [Model theorems in the submitter's candidate-result formalism; no oracle or legal finality process is implemented or validated],
   [The staged accounting distinguishes creation, collateral lock, gross issuance, and unbalancing transfer; the B-spline claim families have machine-checked complete-set and solvency properties], [Exact Rust kernels with oracle tests; Lean theorems for the named model properties; one Verus-checked arithmetic seam; no whole-implementation refinement proof],
-  [Construction, custody, point-resolution, redemption, staged-resolution, submission, and one settlement slice execute in local SBF tests and the devnet research deployment], [Local signed and bank campaigns including the 22-transaction custody walk and per-degree blank-bank walks; the measured compute boundaries are stated in the operational-readiness section; the dated devnet deployment record],
+  [Construction, custody, point-resolution, redemption, staged-resolution, the staged clearing lifecycle, and settlement execute in local SBF tests and the devnet research deployment], [Local signed and bank campaigns including the 22-transaction custody walk, per-degree blank-bank walks, and a five-candidate staged-clearing campaign on one bank profile; the measured compute boundaries are stated in the operational-readiness section; the dated devnet deployment record],
   [Resolution is controlled by one canonical, sealed, program-owned source receipt; the default build refuses deposits with no compiled source release], [Local receipt-binding and substitution-refusal tests; source construction exercised against the non-production stand-in provider],
   [The Clear energy-dispatch relation selects canonical objective 56 and rejects a feasible, conserving cost-60 plan only by recomputing the frozen optimum and tie rule], [Exact Rust oracle and recomputation verifier over a frozen synthetic relation; deterministic locked corpus],
   [An encrypted evaluator validates a candidate's feasibility and exact settlement conservation, and detects a forged settlement, without holding the client key], [A `tfhe-rs` experiment reproduced on arm64 and x86_64; no encrypted search, optimality check, custody, or release protocol],

@@ -16,3 +16,5 @@ artifacts/private/
 *.secret
 # generated Typst renders; rebuild from docs/regulatory/typst/ (filing/ keeps the exact submitted bytes)
 output/pdf/
+# never track rendered PDFs; sources are the Typst dirs
+*.pdf

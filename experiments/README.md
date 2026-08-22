@@ -1,6 +1,11 @@
 # Experiments
 
-No experiment implementation has landed.
+Nine experiments have landed (updated 2026-08-22): dark-fba,
+dark-fba-independent (clean-room, pre-read digests in INDEPENDENCE.md),
+relation-ir, inclusion-availability, shielded-baseline, settlement-model,
+manipulation-cost (whose corpora are published on the dragons-clutch
+site), bundling-invariance, and leakage-lab. Each carries its own README,
+PROVENANCE, and status label.
 
 Each future experiment receives:
 

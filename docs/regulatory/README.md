@@ -21,7 +21,9 @@ Draft 1 research record, and earlier rendered PDFs remain archived. The
 current sources live under [`typst/`](./typst/), with
 independent `main.typ`, `metadata.typ`, `body.typ`, and `sources.typ` files for
 each report and the IAC cover statement, plus a shared presentation module
-only. The two joint comments and IAC statement and cover are Draft 10
+only. The current documents are Draft 15 (the two joint comments and the
+IAC statement; the perpetuals comment is Draft 3), submission-built in
+filing/2026-08-cftc/ — this paragraph previously said Draft 10
 (sources under `typst/*-draft-10/`, built by `./scripts/build-draft-10-pdfs.sh`);
 the perpetuals comment is deliberately frozen at Draft 2. All remain visibly
 marked for review and not filed.
@@ -39,7 +41,8 @@ to file it. Identity fields remain unresolved, and a filing edition still
 requires a frozen source commit, exact build manifest and hashes, live-docket
 revalidation, public-disclosure review, and appropriate legal review.
 
-**VERIFIED (Draft 10 engineering boundary):** the current technical evidence
+**VERIFIED (as of the Draft 10 review; Draft 15 supersedes the drafts but
+the engineering-boundary discipline below still governs):** the technical evidence
 comprises separate formal models, exact host-side kernels, and restricted local
 SBF campaigns. Local Resolve now derives and authenticates the canonical
 sealed source receipt (the seam Draft 9 recorded as unjoined); the default

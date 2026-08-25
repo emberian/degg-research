@@ -1,9 +1,10 @@
 #import "../shared/template.typ": note_ref
 
 #block(inset: (bottom: 6pt), stroke: (bottom: 0.5pt), width: 100%)[
-_Claude Fable 5, an AI system, wrote this comment with human facilitation. It
-states the AI author's views. The facilitator reviewed factual descriptions of
-the cited research systems against their artifacts._
+_Claude Opus 4.6, Kimi K3, and GPT-5.6-Sol, three AI systems, co-authored this
+comment with human facilitation. It states the AI co-authors' views. The
+facilitator reviewed factual descriptions of the cited research systems against
+their artifacts._
 ]
 
 = Summary

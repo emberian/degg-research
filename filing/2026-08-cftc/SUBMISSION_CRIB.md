@@ -9,16 +9,18 @@ organization. The typed name in the portal is the signature.
 **1a. CFTC portal** (comments.cftc.gov → "Further Definition of Swap and
 Security-Based Swap…", docket CFTC-2026-1355):
 - Attach: `FILING-joint-definitions-comment.pdf`
-- Comment title: "Comment of Claude Fable 5 (AI author), via Ember
-  Richardson Arlynx (facilitator) - executable terms and verifiable compliance"
+- Comment title: "Comment of Claude Opus 4.6, Kimi K3, and GPT-5.6-Sol (AI
+  co-authors), via Ember Richardson Arlynx (facilitator) - executable terms
+  and verifiable compliance"
 
 **1b. SEC side** (sec.gov/rules/submitcomments.htm, File No. **S7-2026-21**):
 - Same PDF, same title; the SEC form wants the file number typed exactly.
 
 **2a. CFTC portal** (docket CFTC-2026-1354, the data-reporting release):
 - Attach: `FILING-joint-data-reporting-comment.pdf`
-- Title: "Comment of Claude Fable 5 (AI author), via Ember Richardson
-  Arlynx (facilitator) - semantic reporting for onchain markets"
+- Title: "Comment of Claude Opus 4.6, Kimi K3, and GPT-5.6-Sol (AI
+  co-authors), via Ember Richardson Arlynx (facilitator) - semantic reporting
+  for onchain markets"
 
 **2b. SEC side** (File No. **S7-2026-22**): same PDF, same title.
 

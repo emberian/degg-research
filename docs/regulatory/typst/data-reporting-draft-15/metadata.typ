@@ -1,8 +1,8 @@
 #let meta = (
   document_kind: "JOINT DATA-REPORTING COMMENT",
   review_label: "",
-  short_title: "Report the Economics, Keep the Ledger as Witness",
-  title: "Lifecycle Reporting, Privacy, and Machine-Verifiable Rules for Onchain Markets",
+  short_title: "Semantic reporting for onchain markets",
+  title: "Semantic Reporting for Onchain Markets",
   subtitle: "Comment on swap and security-based swap data reporting",
   proceeding: "Joint Request for Comment on Swap and Security-Based Swap Data Reporting",
   identifiers: "CFTC RIN 3038-AF70 | SEC File S7-2026-22 | SEC RIN 3235-AN78",

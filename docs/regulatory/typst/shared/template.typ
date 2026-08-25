@@ -1,8 +1,7 @@
 // Shared house style for the regulatory filing package.
 //
-// Typography: STIX Two Text (variable, 400-700) throughout. It is a Times-family
-// text face built for scientific and legal publishing: real small capitals, real
-// italics, lining tabular figures, and a full citation glyph set.
+// Typography: Charter throughout. It is compact enough for legal submissions
+// while remaining open and readable at ordinary screen and print sizes.
 
 // ---------------------------------------------------------------- palette ----
 
@@ -17,7 +16,7 @@
 
 // ------------------------------------------------------------ typography ----
 
-#let body_font = "STIX Two Text"
+#let body_font = "Charter"
 #let body_size = 10.5pt
 #let body_lead = 0.68em
 #let body_space = 1.18em
@@ -82,9 +81,10 @@
   breakable: true,
   above: 8pt,
   below: 8pt,
-  par(hanging-indent: 1.6em, leading: 0.66em, justify: true)[
-    #text(weight: "bold", fill: accent)[#number.]#h(0.5em)#link(url)[#title]. #detail
-  ],
+  {
+    set par(hanging-indent: 1.6em, leading: 0.66em, justify: true)
+    [#text(weight: "bold", fill: accent)[#number.]#h(0.5em)#link(url)[#title]. #detail]
+  },
 )
 
 // --------------------------------------------------------- shared styling ----
@@ -131,11 +131,18 @@
     it,
   )
 
-  show heading.where(level: 1): it => block(above: 18pt, below: 8pt, sticky: true, width: 100%)[
-    #sc_label(it.body, size: 12.5pt, fill: accent, weight: "bold", tracking: 0.05em)
-    #v(5pt, weak: true)
-    #line(length: 100%, stroke: 0.7pt + rule)
-  ]
+  show heading.where(level: 1): it => block(
+    above: 18pt,
+    below: 8pt,
+    sticky: true,
+    width: 100%,
+    grid(
+      columns: (1fr,),
+      row-gutter: 5pt,
+      text(size: 12.7pt, weight: "bold", fill: accent)[#it.body],
+      line(length: 100%, stroke: 0.7pt + rule),
+    ),
+  )
   show heading.where(level: 2): it => block(above: 14pt, below: 5pt, sticky: true)[
     #text(size: 11.2pt, weight: "bold", fill: ink)[#it.body]
   ]
@@ -162,7 +169,7 @@
 }
 
 #let folio(size: 8pt) = context align(center)[
-  #text(size: size, fill: muted, tracking: 0.06em, smallcaps[Page #counter(page).display("1")])
+  #text(size: size, fill: muted)[#counter(page).display("1")]
 ]
 
 // ------------------------------------------------------------- documents ----
@@ -182,17 +189,17 @@
   show: house_rules
 
   align(center)[
-    #v(2pt)
-    #sc_label(meta.document_kind, size: 8.6pt, fill: accent, weight: "bold", tracking: 0.08em)
-    #v(15pt)
-    #block(width: 86%)[
+    #block(above: 2pt, below: 15pt)[
+      #sc_label(meta.document_kind, size: 8.6pt, fill: accent, weight: "bold", tracking: 0.08em)
+    ]
+    #block(width: 86%, below: 11pt)[
       #par(justify: false, leading: 0.54em, linebreaks: "optimized")[
         #text(size: 20pt, weight: "bold", fill: ink, hyphenate: false)[#meta.title]
       ]
     ]
-    #v(11pt)
-    #line(length: 2.1in, stroke: 0.9pt + accent)
-    #v(11pt)
+    #block(width: 2.1in, below: 11pt)[
+      #line(length: 100%, stroke: 0.9pt + accent)
+    ]
     #par(justify: false, leading: 0.5em)[
       #text(size: 10.8pt, style: "italic", fill: muted, hyphenate: false)[#meta.subtitle]
     ]

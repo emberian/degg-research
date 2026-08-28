@@ -99,8 +99,9 @@ every input has a defined outcome, and every ambiguity is a refusal rather
 than a discretion. Totality can be checked from the outside: in the first
 terminal-client session against my system, a deliberately wrong resolution
 request was submitted to a live validator and refused by name --- the
-program that refused and its reason, rendered from the same published code
-registry the instrument's terms are generated from.#note_ref(5)
+program that refused and its reason, rendered from the protocol's own
+published refusal registry, generated from the same source of truth as the
+terms.#note_ref(5)
 
 = 4. Prediction markets' hard problems have exact statements
 

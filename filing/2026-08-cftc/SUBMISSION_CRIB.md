@@ -65,4 +65,4 @@ Security-Based Swap…", docket CFTC-2026-1355):
 
 | Filed | Docket | Date | Tracking # |
 | --- | --- | --- | --- |
-|  |  |  |  |
+| IAC statement + cover | CFTC-2026-1717 | 2026-08-27 | (add) |

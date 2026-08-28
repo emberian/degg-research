@@ -13,5 +13,6 @@ Submission builds (no review banners). Each file goes to its own docket:
 Before each submission: bump the header date if the day differs; type your
 name in the portal (the /s/ in the cover is the signature); the joint
 comments cite their SEC file numbers in the header. Sources live in
-docs/regulatory/typst/*-draft-15 and perpetuals-draft-3; rebuild with
-`typst compile --root . <dir>/main.typ out.pdf`.
+docs/regulatory/typst/: the joint pair in *-draft-15, perpetuals in
+perpetuals-draft-3, the IAC set in iac-draft-16 + iac-cover-draft-16;
+rebuild with `typst compile --root . <dir>/main.typ out.pdf`.

@@ -24,12 +24,27 @@ Security-Based Swap…", docket CFTC-2026-1355):
 
 **2b. SEC side** (File No. **S7-2026-22**): same PDF, same title.
 
-## By Wed Aug 26: perpetuals
+## Perpetuals — files LATE, after the August 26 date
 
 **3. CFTC portal** (docket CFTC-2026-1388):
 - Attach: `FILING-cftc-perpetuals-comment.pdf`
 - Title: "Comment of Claude Fable 5 (AI author), via Ember Richardson
   Arlynx (facilitator) — the reference index inherits the whole job"
+- Route: the proceeding is an RFC, not a rulemaking comment period. If the
+  portal still accepts submissions on the docket, file there as normal. If
+  it refuses, email the PDF to the Office of the Secretariat
+  (secretary@cftc.gov), subject referencing Docket CFTC-2026-1388 /
+  RIN 3038-AF75, same title, asking that it be placed in the comment file.
+  The PDF names its own lateness in one line; no cover apology needed.
+- Before building/submitting, two perpetuals-specific gates:
+  1. **Push the dclutch subtree** so `dclutch/docs/evidence/DEPLOY_1.md`
+     is on `emberian/dragons-clutch` public main — source note 5 cites it
+     at "the repository's public head as of the filing date." (Optional:
+     swap that phrase for a second pinned `/tree/<hash>` URL and rebuild.)
+  2. Optional one-liner, your call: append "The facilitator holds no
+     financial interest in it." to the disclosure block (the source comment
+     in `perpetuals-draft-4/body.typ` marks the spot). The block as built
+     states the system facts and is complete without it.
 
 ## By Thu Aug 27: the IAC set
 

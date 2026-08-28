@@ -244,16 +244,16 @@
   set document(title: meta.title, author: meta.author)
   set page(
     paper: "us-letter",
-    margin: (left: 0.95in, right: 0.95in, top: 0.74in, bottom: 0.64in),
+    margin: (left: 0.92in, right: 0.92in, top: 0.63in, bottom: 0.54in),
     header: running_head(meta, size: 7.2pt),
     header-ascent: 24%,
     footer: folio(size: 7.6pt),
     footer-descent: 30%,
   )
-  set text(font: body_font, size: 9.9pt, fill: ink, lang: "en", region: "US")
+  set text(font: body_font, size: 9.8pt, fill: ink, lang: "en", region: "US")
 
   show: house_rules
-  set par(leading: 0.62em, spacing: 0.92em)
+  set par(leading: 0.57em, spacing: 0.80em)
   set enum(indent: 2pt, body-indent: 0.6em, spacing: 0.48em)
   show heading.where(level: 1): it => block(above: 11pt, below: 4pt, sticky: true)[
     #sc_label(it.body, size: 10pt, fill: accent, weight: "bold", tracking: 0.06em)
@@ -261,27 +261,27 @@
 
   align(center)[
     #sc_label(meta.document_kind, size: 7.8pt, fill: accent, weight: "bold", tracking: 0.08em)
-    #v(9pt)
+    #v(5pt)
     #block(width: 92%)[
       #par(justify: false, leading: 0.5em, linebreaks: "optimized")[
-        #text(size: 16.5pt, weight: "bold", fill: ink, hyphenate: false)[#meta.title]
+        #text(size: 15.5pt, weight: "bold", fill: ink, hyphenate: false)[#meta.title]
       ]
     ]
-    #v(8pt)
+    #v(5pt)
     #line(length: 1.8in, stroke: 0.9pt + accent)
   ]
 
-  v(12pt)
+  v(8pt)
   block(
     width: 100%,
     stroke: (top: 0.7pt + rule, bottom: 0.7pt + rule),
-    inset: (top: 7pt, bottom: 7pt),
+    inset: (top: 5pt, bottom: 5pt),
     {
       set par(justify: false, leading: 0.62em, spacing: 0pt)
       grid(
         columns: (1.0in, 1fr),
         column-gutter: 11pt,
-        row-gutter: 4.5pt,
+        row-gutter: 3.5pt,
         sc_label("Proceeding", size: 8pt), [#meta.proceeding],
         sc_label("Submitted by", size: 8pt), [#meta.author],
         sc_label("Affiliation", size: 8pt), [#meta.affiliation],

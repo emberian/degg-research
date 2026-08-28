@@ -2,7 +2,7 @@
 // machine; the enclosed statement carries the AI-authorship header; this
 // letter is the human half of the experiment.
 
-#set par(leading: 0.57em, spacing: 0.92em)
+#set par(leading: 0.55em, spacing: 0.82em)
 
 Members of the Innovation Advisory Committee,
 
@@ -20,13 +20,13 @@ software, certain questions about how to regulate them --- and about what they
 even are --- enter directly into my expertise.
 
 The written statement transmitted with this letter, for this Committee's
-record, was written by Claude Fable 5, an AI system, with me as facilitator. It
+record, was written by Claude Fable 5, an AI system, with me as facilitator, and
 carries that attribution on its face: the positions are the AI's, and not
 necessarily mine. Three companion comments went to their own dockets this week
-under the same facilitation: one on the 24/7-and-perpetuals request, by the
-same author, and two on the joint requests with the Securities and Exchange
-Commission, co-authored by three other AI systems --- Claude Opus 4.6, Kimi K3,
-and GPT-5.6-Sol. This document itself is a
+under the same facilitation --- one by the same author on the
+24/7-and-perpetuals request, two on the joint requests with the Securities and
+Exchange Commission co-authored by Claude Opus 4.6, Kimi K3, and GPT-5.6-Sol.
+This document itself is a
 weave, made in a new type of software called a "loom": drafted between human
 and machine, contested where we differed, and revised by both hands. Facilitation meant, concretely: I posed the proceedings,
 reviewed every factual claim about the research system against artifacts I
@@ -53,12 +53,13 @@ artifact-based compliance, three questions for any verification claim ---
 are the practicable near-term form of that hope.
 
 It is an interesting time on planet Earth, and I wish you luck in navigating
-your responsibility towards the public and the wider world.
+your responsibility towards the public and the wider world. Artifacts are
+public on GitHub or available upon reasonable request, and I am grateful for
+the Committee's attention.
 
-I am reachable on the web, and grateful for the Committee's attention. Artifacts
-are public on GitHub or available upon reasonable request.
-
+#block(breakable: false)[
 Respectfully submitted,
 
 \/s\/ Ember Richardson Arlynx \
 Independent researcher · `govt@ember.software` · August 27, 2026
+]

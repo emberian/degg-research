@@ -224,7 +224,15 @@ overstatement, and an outside reviewer who opens the file will see that.
 - Neither leg constrains *which admitted set* the executor used, unless admission is itself in
   the log. That third freedom is the one to measure next.
 - This is the executable form of the lattice's "same predicate, different `assumes`" (lattice
-  §0). As it stands it is a hypothesis.
+  §0). **Landed 2026-11-06**: `tests/residual_trust.rs` now asserts `arms == [1, 377, 1, 1]`
+  (quote/sound custody, quote/broken custody, validity/sound, validity/broken). Run with
+  `cargo test --test residual_trust`, filtered; 5.7 s.
+  - The honest enumeration candidate matches the pinned module's recomputed output byte for byte
+    (public digest and delivery root). That match is what makes the count 1 rather than 0.
+  - The broken-custody arm is the vacuity falsifier: a check that accepts everything leaves all
+    377.
+  - These arms are accounting over one enumeration, not a new attack measurement. The freedom
+    over *which admitted set* the executor used is still unmeasured.
 
 ## W6. The seL4 STARK PD verifies its own proof
 

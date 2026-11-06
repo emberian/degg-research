@@ -69,6 +69,34 @@ fn the_owner_check_battery_leaves_a_measured_space_of_admissible_lies() {
     ];
     let max_volume: u64 = quantities.iter().sum();
 
+    // ARMS (2026-11-06). The pinned module's output on the admitted assembly, recomputed. Both
+    // added legs below accept a published run only if it matches this; they differ in the
+    // ASSUMPTION that makes the check available, which is the point of the arms:
+    //  * attested executor: a quote over (public digest, delivery root) from an enclave running
+    //    the pinned module. With sound key custody the enclave only quotes what the module
+    //    computed; with BROKEN custody (key extraction) a quote exists for anything.
+    //  * validity proof: a reference re-execution standing in for a sound proof. It does not
+    //    depend on key custody at all.
+    // This is accounting over one enumeration, not a new attack: the measured residue is still
+    // 377, and these arms say which assumption collapses it to the honest run.
+    let reference = session.executor.execute(&honest.assembly, &Tamper::None);
+    let reference_public = reference.public.digest();
+    let reference_delivery = reference.delivery.root();
+    #[derive(Clone, Copy)]
+    enum Custody {
+        Sound,
+        Broken,
+    }
+    let quote_accepts = |custody: Custody, public: [u8; 32], delivery: [u8; 32]| match custody {
+        Custody::Sound => public == reference_public && delivery == reference_delivery,
+        Custody::Broken => true,
+    };
+    let validity_accepts = |_custody: Custody, public: [u8; 32], delivery: [u8; 32]| {
+        public == reference_public && delivery == reference_delivery
+    };
+    // [quote/sound, quote/broken, proof/sound, proof/broken]
+    let mut arms = [0usize; 4];
+
     let mut enumerated = 0usize;
     let mut admissible = 0usize;
     let mut admissible_tick_volume = std::collections::BTreeSet::new();
@@ -179,6 +207,11 @@ fn the_owner_check_battery_leaves_a_measured_space_of_admissible_lies() {
                     }
                 }
                 if accepted {
+                    let (pd, dr) = (public.digest(), delivery.root());
+                    arms[0] += usize::from(quote_accepts(Custody::Sound, pd, dr));
+                    arms[1] += usize::from(quote_accepts(Custody::Broken, pd, dr));
+                    arms[2] += usize::from(validity_accepts(Custody::Sound, pd, dr));
+                    arms[3] += usize::from(validity_accepts(Custody::Broken, pd, dr));
                     admissible += 1;
                     admissible_tick_volume.insert((format!("{tick:?}"), volume));
                 }
@@ -211,6 +244,12 @@ fn the_owner_check_battery_leaves_a_measured_space_of_admissible_lies() {
                 // complete batteries.
                 assert_eq!(enumerated, 1_125);
                 assert_eq!(admissible, 377);
+
+                // The arms: an attested executor collapses the residue to the honest run ONLY
+                // under sound key custody (1), and leaves all 377 when custody is broken; the
+                // validity leg collapses it to 1 under either custody. Same predicate,
+                // different assumption sets (GOVERNANCE-CLAIM-LATTICE.md section 0).
+                assert_eq!(arms, [1, 377, 1, 1]);
 
                 // The sharp form of the same measurement: *every* well-formed
                 // public result is admissible. A well-formed result is a

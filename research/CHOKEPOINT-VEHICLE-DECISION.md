@@ -13,6 +13,9 @@ Tags: VERIFIED (inspected or run today), SOURCED, INFERRED, PROPOSED.
 
 ## Decision
 
+*(Amended 2026-11-06, see the next section: option 1 is re-scored as the verified-compilation
+path into this same seL4 vehicle, once the HOL4-Lean bridge reflects panSem.)*
+
 **Option (2): the step function is defined and proved in Lean, and the deployed object is that
 same Lean definition, compiled by Lean's compiler and hosted in a seL4 Microkit protection
 domain.** It is also `@[export]`able into the host dataplane on the `dregg_deleg_admit` pattern,
@@ -23,6 +26,65 @@ Keep the orb's *method* as the lesson (emit, lower, prove, byte-pin). Drop the v
 
 The first step of the winner is done and checks: `experiments/chokepoint-step/CommitStep.lean`
 (below).
+
+## Amendment (2026-11-06): ember's correction, and option 1 re-scored
+
+Ember, through the coordinator: "we're supposed to be exporting the cakeml semantics from HOL4 into
+a format that we can load with Lean and do proofs about the semantics of one system from the other
+so both systems have verified translators/loaders of the other ..... afaict this basically closes
+the formal knot on any issues."
+
+**Objection 1 is closed by the bridge once panSem is reflected.** My main objection was that the
+orb proof is about a hand-copied Lean version of CakeML's Pancake semantics, with nothing joining
+the two. That is exactly the gap the July P2 probe was built to close.
+
+- P2 (`/Users/ember/dev/DreggNet/docs/engine/probes/P2-REPORT.md`, locked as ADR-3-REV) is an SML
+  exporter running under Holmake. It walks the kernel's TypeBase and DB and emits Lean, with three
+  checkers. It reflected the CakeML `ast`, `namespace` and `semanticPrimitives` surface, and
+  was never extended to Pancake. [READ]
+- A dedicated bridge lane is now doing two things:
+  - reflecting panLang/panSem, with an agreement theorem against `orb-compiler/Pancake/Sem.lean`;
+  - the reverse direction: carrying `CommitStep.lean` into HOL4 by a proof-producing Lean-to-HOL4
+    export, then through CakeML's translator with its correctness theorem.
+- Its notes will be `research/BRIDGE-*.md` and `DreggNet/docs/engine/probes/p3-bridge/`.
+- I read P2's report after this correction. I should have found it before writing objection 1.
+
+**Option 1 re-scored, under the bridge:**
+- **Theorem carried.** Once reflected panSem agrees with `Sem.lean`, a Lean proof about a lowered
+  Pancake program composes with CakeML's compiler correctness down to machine code. That makes it
+  the *strongest* compilation story of the five options. Option 2's Lean compiler is unverified.
+- **Bypass surface.** Unchanged by the bridge. That property depends on *where* the code runs,
+  not on how it is compiled. On a Linux host it is one userspace path. Pancake was built for
+  verified systems code, seL4 device drivers among it (Pohjola et al., "Pancake: verified systems programming made
+  sweeter", 2023 [SOURCED from memory; recheck]), so an
+  seL4 PD is its natural home and (2)'s capability argument applies to it as well.
+- **Residuals the bridge does not close, which the lane may want to check:**
+  - the C FFI drivers must satisfy CakeML's FFI oracle contract; `health_ffi.c` writes its *conf*
+    buffer, which the model forbids [VERIFIED];
+  - whether CakeML's end-to-end theorem covers `export fun` under `--main_return=true` (an open
+    question I have not checked);
+  - the backend: `serve.S` today is x86-64, while CakeML also has arm8 and riscv backends.
+- **Reprove cost** becomes Lean-side proof plus a HOL4/CakeML rebuild per change, on hbox.
+
+**Revised decision, which ember's framing turns into convergence rather than competition.**
+- The specification is one object: the first-order Lean step function in `CommitStep.lean`.
+- The PD hosting proceeds now with the Lean-compiled object (option 2), because that runs this
+  month.
+- When the reverse bridge lands, the same PD seat takes the CakeML-compiled object built from the
+  same definition, with compiler correctness. The vehicle stays seL4/Microkit in both cases; the
+  compiler is what upgrades.
+- Option 1 is therefore not legacy. It is the verified-compilation path *into* the seL4 vehicle.
+  The orb's HTTP slice stays parked, but Pancake and CakeML are on the path.
+
+**Export-friendliness commitment** (for the bridge lane reflecting these definitions into HOL4):
+- `CommitStep` and the core of `CommitBytes` (`enc`, `le8`, `Summary`, `stepS`, `proj`) stay
+  first-order: plain inductives and structures, structural recursion only (`run`, `fwdIds`,
+  `hexDecode`), and `if` only on Nat/Bool equalities and orders.
+- No typeclass-encoded data. The `deriving DecidableEq, Repr` instances are conveniences that the
+  reflection can ignore.
+- The one type parameter (`D`, the digest type) maps to a HOL type variable.
+- `UInt8` and `BitVec 64` in `CommitBytes` will need the word8/word64 mapping.
+- The `String` wire layer (`arriveWire`, `parseHex`) is a host codec, outside the reflected core.
 
 ## The five options, priced
 
@@ -44,7 +106,8 @@ files since removed from hbox `/tmp`].
 
 ## Why (2), and the trade it makes
 
-- **It removes the transcription.** The Pancake proof is about a Lean copy of a HOL4 semantics,
+- **It removes the transcription.** *(Superseded by the amendment: the bridge closes this
+  objection.)* The Pancake proof is about a Lean copy of a HOL4 semantics,
   and the verified CakeML compiler's guarantee is about the HOL4 original. Nothing mechanised
   joins them, so (1)'s "verified compilation" does not reach our theorem. In (2) the theorem's
   subject *is* the deployed definition. The unverified link is the Lean compiler, which is

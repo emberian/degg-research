@@ -70,3 +70,16 @@ printer residue and uncontracted rows. Findings and adjudication:
 | 6 | A numeral printer bug (8 printed as 9) changes `byte_index` and passes every contract | **Accepted. The decisive finding**: contracts move trust from per-constant rows to the printer's generic core, they do not remove it | KNOT §0 sentence 5, §4 TCB table, §4.1 item 1 |
 | 7 | `word_slice`, `word_slice_alt`, `OPT_MMAP` (on the fragment's path), `word_asr`, `word_ror`, `ARB` uncontracted | **Accepted for the first three** | contracts added (40 forward); mutants caught. asr/ror are outside `liftProg`'s image; `ARB` is underspecified by design |
 | 8 | `mutate-row.sh` reporting no failure is not evidence of equivalence | **Accepted** | the harness says "row NOT caught" in that case |
+
+## Round 4 (2026-11-06): reverse contracts, the ledger proposal, overclaims
+
+| # | finding | adjudication | action |
+|---|---|---|---|
+| 1 | The oracle check ignores axioms: `new_axiom` then contradiction would pass (spoofing `DISK_THM` itself is rejected by the kernel) | **Accepted** | both runs now also require no axioms and no hypotheses; the reverse script checks its theory has no axiom and exactly the expected theorem count; the exporter refuses a theory with axioms (DreggNet `6d3eee7`) |
+| 2 | `nat_add` alone does not pin `+` (`A m n := m` satisfies it, since `n + 1` uses the same row) | **Accepted** as a statement about standalone contracts; the mutant is caught by others | KNOT §4.1 item 4 says uniqueness is relative |
+| 3 | `bool`: swapping `true`/`false` passes | **Accepted, kept as base**: the swap is an automorphism over Bool alone and no reverse row uses a Bool as a HOL truth value | KNOT §4.1 row table |
+| 4 | `ite` at pair/state types (used by `step`, `stepS`) and `UInt8.ofBitVec` were uncontracted | **Accepted** | `ite` contracted at every type, UInt8 carrier contract added (24 reverse); mutants caught |
+| 5 | `mutate-rev-row.sh` counted any Holmake failure as caught | **Accepted** | only a named contract failure counts |
+| 6 | §4.2: A's "zero HOL work" ignores the seam (body `evaluate` vs `semantics_decls`, entry, compiler premises); B need not port 20k lines (symbolic execution of the concrete serve); the middle form is under A's trust and needs real printer work | **Accepted, all three** | §4.2 rewritten; recommendation now orders the seam lemma first |
+| 7 | "Sem.lean appears only inside proofs" overclaims: `RefinesPan` is phrased through `ofPan`/`SR` | **Accepted** | LadderPanSem header (breadstuffs `27ad92ee3`) and KNOT §3 corrected |
+| 8 | "a wrong row makes the statement false" should be conditional on coverage | **Accepted** | KNOT §4.1 wording |

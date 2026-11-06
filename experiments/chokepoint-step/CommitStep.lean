@@ -176,6 +176,41 @@ theorem commit_before_forward (H : List UInt8 → D) :
     obtain ⟨h1, h2⟩ := ih (step H st e).1
     exact cbf_cons_block H st e _ h1 h2
 
+/-- **commit_of_forward (Astra S03, injective form).** Positional restatement: the forward at
+stream position `k` has its persist at position `k - 1` (so `k ≥ 1`). The map `k ↦ k - 1` from
+forward positions to persist positions is injective, so no two forwards share one commit. -/
+theorem commit_of_forward (H : List UInt8 → D) {outs : List (Output D)}
+    (h : CommitBeforeForward H outs) (k : Nat) (occ : Nat) (p : List UInt8)
+    (hk : outs[k]? = some (Output.forward occ p)) :
+    1 ≤ k ∧ ∃ l, outs[k - 1]? = some (Output.persist l) ∧ l.occ = occ ∧ l.digest = H p := by
+  have hlt : k < outs.length := by
+    rcases Nat.lt_or_ge k outs.length with h' | h'
+    · exact h'
+    · rw [List.getElem?_eq_none h'] at hk; cases hk
+  have hget : outs[k] = Output.forward occ p := by
+    rw [List.getElem?_eq_getElem hlt] at hk; exact Option.some.inj hk
+  have hsplit : outs = outs.take k ++ Output.forward occ p :: outs.drop (k + 1) := by
+    conv => lhs; rw [← List.take_append_drop k outs]
+    rw [List.drop_eq_getElem_cons hlt, hget]
+  obtain ⟨pre', l, hp, hl1, hl2⟩ := h _ _ _ _ hsplit
+  have hlen : (outs.take k).length = k := by simp [Nat.min_eq_left (Nat.le_of_lt hlt)]
+  have hk1 : k = pre'.length + 1 := by rw [← hlen, hp]; simp
+  refine ⟨by omega, l, ?_, hl1, hl2⟩
+  have hlt' : k - 1 < k := by omega
+  have : outs[k - 1]? = (outs.take k)[k - 1]? := by
+    rw [List.getElem?_take]; simp [hlt']
+  rw [this, hp, show k - 1 = pre'.length by omega]
+  simp
+
+/-- Corollary: distinct forward positions have distinct commit positions. -/
+theorem commit_positions_injective (H : List UInt8 → D) {outs : List (Output D)}
+    (h : CommitBeforeForward H outs) {k₁ k₂ o₁ o₂ : Nat} {p₁ p₂ : List UInt8}
+    (h₁ : outs[k₁]? = some (Output.forward o₁ p₁)) (h₂ : outs[k₂]? = some (Output.forward o₂ p₂))
+    (hne : k₁ ≠ k₂) : k₁ - 1 ≠ k₂ - 1 := by
+  have a := (commit_of_forward H h k₁ o₁ p₁ h₁).1
+  have b := (commit_of_forward H h k₂ o₂ p₂ h₂).1
+  omega
+
 /-! ## The durable log only grows; every persisted leaf is in it -/
 
 theorem step_log_prefix (H : List UInt8 → D) (st : DevState D) (e : Event) :

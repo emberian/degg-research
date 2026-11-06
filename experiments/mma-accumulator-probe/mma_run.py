@@ -123,7 +123,7 @@ def compile_check(nvcc, arches):
     cuobjdump = str(pathlib.Path(nvcc).parent / "cuobjdump")
     have_cuobj = pathlib.Path(cuobjdump).exists() and pathlib.Path(nvcc).parent.joinpath("nvdisasm").exists()
     res = {}
-    for src in ("probe.cu", "probe_fixed.cu", "probe_sm75.cu", "probe_sm80.cu", "gemm_probe.cu"):
+    for src in ("probe.cu", "probe_fixed.cu", "probe_sm75.cu", "probe_sm80.cu", "gemm_probe.cu", "rotation_probe.cu"):
         if not (HERE / src).exists():
             continue
         for a in arches:
@@ -476,7 +476,7 @@ def ampere(binp, cc):
         check(f"sm80.b1rand.{op}.exact_mod_2_32", ok.all(), elements=int(ok.size), mismatches=int((~ok).sum()),
               sums_crossing_2_32=int(((C < 0) & (want >= 0)).sum()))
     # 8-bit fragments: sanity (u8, s8, e4m3) and the e4m3 within-instruction gap probe
-    for ty in ("u8", "s8") + (("e4m3",) if cc >= 89 else ()):
+    for ty in ("u8", "s8") + (("e4m3",) if cc == 89 else ()):
         tests = []
         for t in range(16):
             if ty == "e4m3":
@@ -802,6 +802,214 @@ def ltprobe(binp, ty, fast):
     return T
 
 
+# ---------------------------------------------------------------------------------------------- rotation (ROTATION.md section 5)
+def f16_parity(binp):
+    """FP16 0/1 parity path with the bias read on HMMA m16n8k8: C = 2^(m'-1), count n of 0/1 products; while
+    n < 2^(m'-1) the register must equal 2^(m'-1) + n exactly and raw f32 bit (24 - m') must be n mod 2."""
+    rng = np.random.default_rng(2401)
+    P = 1024
+    Am = rng.integers(0, 2, size=(P, 16, 8))       # A[i][row][k]
+    Bm = rng.integers(0, 2, size=(P, 8, 8))        # B[i][k][col]
+    one = f16_bits(1)
+    Aw = np.zeros((P, 32, 2), dtype=np.uint32)
+    Bw = np.zeros((P, 32), dtype=np.uint32)
+    for lane in range(32):
+        g, q = lane >> 2, lane & 3
+        Aw[:, lane, 0] = Am[:, g, 2 * q] * one + (Am[:, g, 2 * q + 1] * one << 16)
+        Aw[:, lane, 1] = Am[:, g + 8, 2 * q] * one + (Am[:, g + 8, 2 * q + 1] * one << 16)
+        Bw[:, lane] = Bm[:, 2 * q, g] * one + (Bm[:, 2 * q + 1, g] * one << 16)
+    per = np.einsum("irk,ikc->irc", Am, Bm)                         # counts per instruction, (P, 16, 8)
+    S = np.concatenate([np.zeros((1, 16, 8), dtype=np.int64), np.cumsum(per, axis=0)])   # prefix sums
+    full = int(S[P].mean())
+    tests = []
+    for mb in (24, 20, 16, 13):
+        bound = 1 << (mb - 1)
+        for f in (0.0, 0.25, 0.97, 1.03, 1.5):
+            R_ = int(f * bound / full)
+            T_ = int(rng.integers(0, P))
+            tests.append((mb, P, R_, T_))
+        tests.append((mb, 7, 0, 7))
+    prm = np.array([[Pu, R_, T_, f32_bits(Fraction(2) ** (mb - 1))] for mb, Pu, R_, T_ in tests], dtype=np.int64)
+    files = [WORK / f"f16par_{x}.bin" for x in ("prm", "A", "B", "D")]
+    prm.tofile(files[0]); Aw.tofile(files[1]); Bw.tofile(files[2])
+    info = run_json([binp, "f16parity"] + files, timeout=900)[0]
+    D = np.fromfile(files[3], dtype=np.uint32).reshape(len(tests), 32, 4)
+    out = []
+    for t, (mb, Pu, R_, T_) in enumerate(tests):
+        cnt = R_ * S[Pu] + S[T_]                                    # (16, 8)
+        bit = 24 - mb
+        inside = ok_inside = past = past_read_ok = 0
+        for lane in range(32):
+            g, q = lane >> 2, lane & 3
+            for j in range(4):
+                r, c = g + (8 if j >= 2 else 0), 2 * q + (j & 1)
+                n = int(cnt[r, c])
+                raw = int(D[t, lane, j])
+                read = (raw >> bit) & 1
+                if n < (1 << (mb - 1)):
+                    inside += 1
+                    ok_inside += (f32_val(raw) == (1 << (mb - 1)) + n) and read == (n & 1)
+                else:
+                    past += 1
+                    past_read_ok += read == (n & 1)
+        row = dict(m=mb, P=Pu, R=R_, T=T_, count_min=int(cnt.min()), count_max=int(cnt.max()), inside=inside,
+                   inside_ok=ok_inside, past=past, past_read_matches=past_read_ok)
+        out.append(row)
+        check(f"f16parity.m{mb}.R{R_}.T{T_}", ok_inside == inside, **row)
+    fals = [r for r in out if r["past"] and r["past_read_matches"] < r["past"]]
+    check("f16parity.falsifier_past_bound", bool(fals), note="past 2^(m-1) the bit no longer reads the parity",
+          tests_with_wrong_reads=len(fals))
+    return dict(info=info, tests=out)
+
+
+def f16ip(binp, shrink, free, copy_bw):
+    out = []
+    for lg in ((20, 22, 24, 25) if shrink else (20, 22, 24, 25)):
+        if 2 * 64 << lg > free * 0.8:
+            continue
+        r = run_json([binp, "f16ip", lg, 10 if shrink else 20, WORK], timeout=900)[0]
+        host_bad = None
+        if r.get("dumped"):
+            V = np.fromfile(WORK / f"f16ip_{lg}_V.bin", dtype=np.float16).astype(np.float64).reshape(32, -1)
+            U = np.fromfile(WORK / f"f16ip_{lg}_U.bin", dtype=np.float16).astype(np.float64).reshape(32, -1)
+            want = (V @ U.T).astype(np.uint64)
+            got = np.fromfile(WORK / f"f16ip_{lg}_D.bin", dtype=np.uint64).reshape(32, 32)
+            host_bad = int((want != got).sum())
+        r["host_mismatches"] = host_bad
+        if copy_bw:
+            r["ratio_to_copy_bw"] = r["bytes_per_s"] / copy_bw
+        check(f"f16ip.2^{lg}", r["simt_ref_mismatches"] == 0 and host_bad in (None, 0),
+              simt_ref_mismatches=r["simt_ref_mismatches"], host_mismatches=host_bad)
+        log("f16ip", lg, r["ms"], "ms", f"{r['bytes_per_s']:.3e} B/s", f"x copy {r.get('ratio_to_copy_bw', 0):.2f}")
+        out.append(r)
+    return out
+
+
+def ltparity(binp, ty, fast, shrink):
+    """0/1 count and parity sweep through cuBLASLt, C = 2^23 (fp32 epilogue: the API-level bias read at m = 24)"""
+    rng = np.random.default_rng(1 + fast)
+    M = N = 64
+    Kmax = 1 << 20
+    A = rng.integers(0, 2, size=(M, Kmax), dtype=np.uint8)
+    B = rng.integers(0, 2, size=(N, Kmax), dtype=np.uint8)
+    A[0, :] = 1
+    B[0, :] = 1
+    c1 = {"f16": f16_bits(1), "e4m3": e4m3_bits(1)}.get(ty, 2)
+    def pack(X):
+        if ty in ("e2m1", "mxf4"):
+            return (X[:, 0::2] * c1 | (X[:, 1::2] * c1) << 4).astype(np.uint8)
+        return (X.astype(np.uint16) * c1).astype(np.uint16 if ty == "f16" else np.uint8)
+    fa, fb = WORK / f"ltpar_{ty}_A.bin", WORK / f"ltpar_{ty}_B.bin"
+    pack(A).tofile(fa); pack(B).tofile(fb)
+    ks = [1 << e for e in (10, 12, 14, 16, 18, 20)]
+    cb = f32_bits(2 ** 23)
+    info = run_json([binp, "ltparity", ty, M, N, Kmax, fast, fa, fb, f"{cb:08x}", WORK / f"ltpar_{ty}_{fast}_D",
+                     ",".join(map(str, ks))], timeout=1200)[0]
+    Af, Bf = A.astype(np.float32), B.astype(np.float32)
+    res = []
+    first_inexact = None
+    for run in info["runs"]:
+        K = run["K"]
+        if not run["n_ran"]:
+            res.append(dict(K=K, status=run["heuristic_status"], n_ran=0))
+            continue
+        cnt = (Af[:, :K] @ Bf[:, :K].T).astype(np.int64)            # exact: sums < 2^24 in float32
+        D = np.fromfile(WORK / f"ltpar_{ty}_{fast}_D_{K}.bin", dtype=np.float32).reshape(-1, N, M)
+        per = []
+        for a in range(D.shape[0]):
+            Dm = D[a].T.astype(np.float64)                             # [i][j]
+            exact = Dm - 2 ** 23 == cnt
+            raw = D[a].T.copy().view(np.uint32)
+            read = (raw & 1) == (cnt & 1)
+            per.append(dict(algo=run["algos"][a], count_exact=bool(exact.all()), parity_read=bool(read.all()),
+                            inexact=int((~exact).sum()), max_count=int(cnt.max())))
+        res.append(dict(K=K, ms_first=run["ms_first"], per_algo=per))
+        if first_inexact is None and not all(p["count_exact"] for p in per):
+            first_inexact = K
+    T = dict(info={k: v for k, v in info.items() if k != "runs"}, rows=res, first_inexact_K=first_inexact,
+             note="row 0 / column 0 all ones: the (0,0) count is K; others about K/4.  C enters in cuBLAS's fp32 "
+                  "epilogue, so this is the bias read at m = 24 at API level; the in-accumulator read is wgmma/HMMA")
+    log("ltparity", ty, "fast", fast, "first inexact K", first_inexact,
+        [(r["K"], [p["count_exact"] for p in r.get("per_algo", [])]) for r in res])
+    return T
+
+
+def towermul(binp, ty, shrink):
+    vec = HERE / "t256_vectors.jsonl"
+    rows = [json.loads(l) for l in vec.read_text().splitlines()]
+    T = {}
+    for ri, d in enumerate(rows):
+        cols = [int.from_bytes(bytes.fromhex(c), "little") for c in d["cols"]]
+        mr = np.zeros((256, 256), dtype=np.uint8)                       # row c, column j: bit c of r * e_j
+        for j in range(256):
+            for c in range(256):
+                mr[c, j] = cols[j] >> c & 1
+        xs = b"".join(bytes.fromhex(x) for x, _ in d["tests"])
+        fm, fx, fo = WORK / f"t256_mr{ri}.bin", WORK / f"t256_x{ri}.bin", WORK / f"t256_out_{ty}_{ri}.bin"
+        mr.tofile(fm); fx.write_bytes(xs)
+        lg = (18 if shrink else 20) if ri == 0 else 8
+        info = run_json([binp, "towermul", ty, lg, fm, fx, fo, 10 if ri == 0 else 1], timeout=900)[0]
+        if info.get("status") != "SUCCESS":
+            T[f"r{ri}"] = info
+            continue
+        out = fo.read_bytes()
+        xin = pathlib.Path(str(fo) + ".x").read_bytes()
+        bad_rust = sum(out[32 * i:32 * i + 32] != bytes.fromhex(y) for i, (_, y) in enumerate(d["tests"]))
+        bad_lin = 0
+        for i in range(len(d["tests"]), len(out) // 32):
+            xi = int.from_bytes(xin[32 * i:32 * i + 32], "little")
+            acc = 0
+            for j in range(256):
+                if xi >> j & 1:
+                    acc ^= cols[j]
+            bad_lin += out[32 * i:32 * i + 32] != acc.to_bytes(32, "little")
+        info.update(rust_tests=len(d["tests"]), rust_mismatches=bad_rust, random_rows=len(out) // 32 - len(d["tests"]),
+                    xor_of_rust_columns_mismatches=bad_lin)
+        check(f"towermul.{ty}.r{ri}", bad_rust == 0 and bad_lin == 0, rust_mismatches=bad_rust,
+              xor_mismatches=bad_lin, rows=len(out) // 32)
+        T[f"r{ri}"] = info
+        if ri == 0:
+            log("towermul", ty, f"{info['ns_per_element']:.3f} ns/element (gemm {info['gemm_ns_per_element']:.3f})")
+    return T
+
+
+def wgmma_bias(binp, m_measured):
+    """in-accumulator bias read on QGMMA (e4m3) and HGMMA (f16): C = 2^(m-1) + c0, 0/1 patterns, count n"""
+    T = {}
+    rng = np.random.default_rng(90)
+    for kind, per, one_enc, val in (("e4m3", 16, lambda b: e4m3_bits(1) if b else 0, e4m3_val),
+                                    ("f16", 8, lambda b: f16_bits(1) if b else 0, f16_val)):
+        ms = sorted({m for m in (m_measured.get(kind), 12, 13, 14, 24) if m and 2 <= m <= 24})
+        rows = []
+        for m in ms:
+            for c0 in (0, 1):
+                pa = rng.integers(0, 2, size=per); pb = rng.integers(0, 2, size=per)
+                pa[0] = pb[0] = 1
+                kk = 32 if kind == "e4m3" else 16
+                n_inst = sum(int(pa[k % per] * pb[k % per]) for k in range(kk))
+                for f in (0.5, 0.95, 1.2):
+                    iters = max(1, int(f * (1 << (m - 1)) / n_inst))
+                    if kind == "e4m3":
+                        A = [one_enc(int(b)) for b in pa]; B = [one_enc(int(b)) for b in pb]
+                    else:
+                        A = list(struct.pack("<8H", *[one_enc(int(b)) for b in pa]))
+                        B = list(struct.pack("<8H", *[one_enc(int(b)) for b in pb]))
+                    of = WORK / f"wgbias_{kind}.bin"
+                    run_json([binp, "wgcheck", kind, iters, bytes(A).hex(), bytes(B).hex(),
+                                     f"{f32_bits(Fraction(2) ** (m - 1) + c0):08x}", of], timeout=600)[0]
+                    d = np.fromfile(of, dtype=np.uint32)
+                    n = iters * n_inst + c0
+                    raw = int(d[0])
+                    inside = n < (1 << (m - 1))
+                    exact = bool((d == d[0]).all()) and f32_val(raw) == (1 << (m - 1)) + n
+                    read = ((raw >> (24 - m)) & 1) == (n & 1)
+                    rows.append(dict(m=m, c0=c0, iters=iters, count=n, inside=inside, exact=exact, read=read))
+                    if inside:
+                        check(f"wgmma.bias.{kind}.m{m}.c{c0}.n{n}", exact and read, raw=hex(raw))
+        T[kind] = rows
+    return T
+
+
 # ---------------------------------------------------------------------------------------------- main
 def main():
     global OUT, WORK
@@ -811,6 +1019,7 @@ def main():
     ap.add_argument("--sku", default="")
     ap.add_argument("--arches", default="sm_75,sm_80,sm_89,sm_90a,sm_100a,sm_103a")
     ap.add_argument("--skip", nargs="*", default=[])
+    ap.add_argument("--sections", default="all", help="comma list of sections to run (default all)")
     ap.add_argument("--gpu", type=int, default=0)
     a = ap.parse_args()
     OUT = pathlib.Path(a.out).resolve()
@@ -830,16 +1039,21 @@ def main():
     save()
     shrink = a.shrink
 
+    want = None if a.sections == "all" else set(a.sections.split(","))
+    R["sections_requested"] = a.sections
+
     def section(nm, f):
-        if nm in a.skip:
+        if nm in a.skip or (want is not None and nm not in want):
             return
         log("== section", nm)
+        t0 = time.time()
         try:
             R[nm] = f()
         except Exception as e:
             import traceback
             R["errors"][nm] = traceback.format_exc()[-2000:]
             log("SECTION ERROR", nm, str(e)[-400:])
+        R.setdefault("section_s", {})[nm] = round(time.time() - t0, 1)
         save()
 
     section("compile", lambda: compile_check(nvcc, a.arches.split(",")))
@@ -848,8 +1062,11 @@ def main():
     bins = {}
     lf = link_flags(nvcc)
     for src, extra in (("probe_sm75.cu", []), ("probe_sm80.cu", []), ("gemm_probe.cu", lf), ("probe.cu", []),
-                       ("probe_fixed.cu", [])):
+                       ("probe_fixed.cu", []), ("rotation_probe.cu", [])):
         if src in ("probe_sm80.cu", "probe.cu", "probe_fixed.cu") and ccv < 80 or not (HERE / src).exists():
+            continue
+        # dropped on sm_90+: probe.cu's e4m3 mma.sync C path runs on HMMA there (ROTATION section 5)
+        if src in ("probe.cu", "probe_fixed.cu") and ccv >= 90:
             continue
         exe = WORK / src[:-3]
         rc, so, se, dt = sh([nvcc] + NVCC_PRE + ["-O2", f"-arch={arch}", "-o", str(exe), str(HERE / src)] + extra, timeout=900)
@@ -866,10 +1083,18 @@ def main():
     if "probe_sm80.cu" in bins:
         b = bins["probe_sm80.cu"]
         section("ampere", lambda: ampere(b, ccv))
-        section("rates_sm80", lambda: rates(b, ["s8", "b1and", "b1xor", "e4m3", "f16"] +
+        section("rates_sm80", lambda: rates(b, ["s8", "f16"] + (["b1and", "b1xor"] if ccv < 100 else []) +
+                                            (["e4m3"] if ccv == 89 else []) +
                                             (["wg_s8", "wg_b1", "wg_e4m3", "wg_f16"] if arch == "sm_90a" else []), 300))
         if arch == "sm_90a":
             section("wgmma", lambda: wgmma(b))
+
+            def wgb():
+                wg = R.get("wgmma", {})
+                mm = {k: min(24, wg[f"{k}_cint_jmax"]["m"]) for k in ("e4m3", "f16")
+                      if wg.get(f"{k}_cint_jmax", {}).get("m")}
+                return wgmma_bias(b, mm)
+            section("wgmma_bias", wgb)
     if "probe.cu" in bins:
         def orig():
             rc, so, se, dt = sh([str(bins["probe.cu"])], timeout=300)
@@ -900,7 +1125,7 @@ def main():
 
         def peak():
             out = {}
-            for ty in ["i8", "f16"] + (["e4m3"] if ccv >= 89 else []) + (["e2m1"] if ccv >= 100 else []):
+            for ty in ["i8", "f16"] + (["e4m3"] if ccv >= 89 else []) + (["e2m1", "mxf4"] if ccv >= 100 else []):
                 try:
                     out[ty] = run_json([g, "peak", ty, 8192, 10 if shrink else 20], timeout=600)[0]
                     log("peak", ty, out[ty].get("status"), f"{out[ty].get('macs_per_s', 0):.3e} MAC/s")
@@ -962,6 +1187,35 @@ def main():
                     log("ltprobe", ty, fast, "ERROR", str(e)[-300:])
             return out
         section("ltprobe", ltp)
+
+        def ltpar():
+            out = {}
+            specs = [("f16", 0)] + ([("e4m3", 0), ("e4m3", 1)] if ccv >= 89 else []) + \
+                    ([("mxf4", 0), ("e2m1", 0)] if ccv >= 100 else [])
+            for ty, fast in specs:
+                try:
+                    out[f"{ty}_fast{fast}"] = ltparity(g, ty, fast, shrink)
+                except Exception as e:
+                    out[f"{ty}_fast{fast}"] = {"error": str(e)[-600:]}
+                    log("ltparity", ty, fast, "ERROR", str(e)[-300:])
+            return out
+        section("ltparity", ltpar)
+
+        def tmul():
+            out = {}
+            for ty in ["f16", "i8"] + (["e4m3"] if ccv >= 89 else []) + (["mxf4", "e2m1"] if ccv >= 100 else []):
+                try:
+                    out[ty] = towermul(g, ty, shrink)
+                except Exception as e:
+                    out[ty] = {"error": str(e)[-600:]}
+                    log("towermul", ty, "ERROR", str(e)[-300:])
+            return out
+        section("towermul", tmul)
+    if "rotation_probe.cu" in bins:
+        rp = bins["rotation_probe.cu"]
+        section("f16parity", lambda: f16_parity(rp))
+        freem = int(sh("nvidia-smi --query-gpu=memory.free --format=csv,noheader,nounits")[1].split()[a.gpu]) << 20
+        section("f16ip", lambda: f16ip(rp, shrink, freem, R.get("copy", {}).get("copy_rw_bytes_per_s")))
 
     # summary ratios
     s = {}

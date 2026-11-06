@@ -13,7 +13,9 @@
 //                                         against a SIMT int64 kernel on the device.
 //   ltip TYPE LOGN LIMBS REPS FAST DUMPDIR  TYPE f16|e4m3: base-16 digits (0..15) as limbs, LIMBS per element,
 //                                         per batch LIMBS x 32768 x LIMBS through cublasLtMatmul (TN, f32 out).
-//   peak TYPE N REPS                      dense N^3 GEMM rate: i8, f16 (cublasGemmEx), e4m3, e2m1 (cublasLt).
+//   peak TYPE N REPS                      dense N^3 GEMM rate: i8, f16 (cublasGemmEx), e4m3, e2m1 (nvfp4), mxf4 (cublasLt).
+//   ltparity TYPE M N KMAX FAST A B CBITS DOUT KLIST   0/1 count and parity sweep over K with C = CBITS (bias read).
+//   towermul TYPE LOGN MR X OUT REPS      Tower256 fixed-r multiply as a 0/1 GEMM with unpack and parity repack.
 //   ltprobe TYPE M N K FAST A B DOUT      D = A B (A: M x K row-major, B: N x K row-major, i.e. both
 //                                         K-contiguous) for TYPE f16|e4m3|e2m1 (e2m1: two codes per byte,
 //                                         element 2i in the low nibble; block scales VEC16_UE4M3 all 1.0),
@@ -200,18 +202,25 @@ static cudaDataType lt_type(const char *t) {
   if (!strcmp(t, "f16")) return CUDA_R_16F;
   if (!strcmp(t, "e4m3")) return CUDA_R_8F_E4M3;
 #if CUDA_VERSION >= 12080
-  if (!strcmp(t, "e2m1")) return CUDA_R_4F_E2M1;
+  if (!strcmp(t, "e2m1") || !strcmp(t, "mxf4")) return CUDA_R_4F_E2M1;
 #endif
   fprintf(stderr, "type %s unsupported by this build\n", t); exit(1);
 }
 static size_t elem_bytes_x2(const char *t) { return !strcmp(t, "f16") ? 4 : !strcmp(t, "e4m3") ? 2 : 1; }  // bytes*2
+// the code of 1 in each type (f16 0x3C00, e4m3 0x38, e2m1 nibble 0x2, s8 1)
+static uint16_t one_code(const char *t) {
+  return !strcmp(t, "f16") ? 0x3C00 : !strcmp(t, "e4m3") ? 0x38 : !strcmp(t, "i8") ? 1 : 0x2;
+}
 
 struct LtGemm {
   cublasLtHandle_t lt; cublasLtMatmulDesc_t op; cublasLtMatrixLayout_t Ad, Bd, Cd; cublasLtMatmulPreference_t pref;
   void *ws = nullptr; size_t wsz = 64ull << 20; void *sa = nullptr, *sb = nullptr;
   cublasLtMatmulHeuristicResult_t res[16]; int nres = 0; cublasStatus_t st = CUBLAS_STATUS_SUCCESS;
-  LtGemm(const char *type, int M, int N, int K, int batch, long long sA, long long sB, long long sC, int fast) {
+  LtGemm(const char *type, int M, int N, int K, int batch, long long sA, long long sB, long long sC, int fast,
+         int lda = 0, int ldb = 0) {
     cudaDataType ty = lt_type(type);
+    if (!lda) lda = K;
+    if (!ldb) ldb = K;
     cublasLtCreate(&lt);
     cublasLtMatmulDescCreate(&op, CUBLAS_COMPUTE_32F, CUDA_R_32F);
     cublasOperation_t T = CUBLAS_OP_T, Nn = CUBLAS_OP_N;
@@ -222,19 +231,22 @@ struct LtGemm {
       cublasLtMatmulDescSetAttribute(op, CUBLASLT_MATMUL_DESC_FAST_ACCUM, &fa, sizeof(fa));
     }
 #if CUDA_VERSION >= 12080
-    if (ty == CUDA_R_4F_E2M1) {   // block scales of 1.0 (ue4m3 0x38) everywhere: the scale layout is then irrelevant
-      size_t ns = (size_t)((std::max(M, N) + 127) / 128 * 128) * ((K / 16 + 3) / 4 * 4) * std::max(batch, 1);
+    if (ty == CUDA_R_4F_E2M1) {   // unit block scales everywhere (nvfp4: ue4m3 0x38 per 16; mxf4: ue8m0 0x7f per 32),
+                                  // so the scale layout is irrelevant
+      bool mx = !strcmp(type, "mxf4");
+      size_t ns = (size_t)((std::max(M, N) + 127) / 128 * 128) * ((std::max(std::max(lda, ldb), K) / 16 + 3) / 4 * 4) *
+                  std::max(batch, 1);
       CK(cudaMalloc(&sa, ns)); CK(cudaMalloc(&sb, ns));
-      CK(cudaMemset(sa, 0x38, ns)); CK(cudaMemset(sb, 0x38, ns));
-      cublasLtMatmulMatrixScale_t sm = CUBLASLT_MATMUL_MATRIX_SCALE_VEC16_UE4M3;
+      CK(cudaMemset(sa, mx ? 0x7f : 0x38, ns)); CK(cudaMemset(sb, mx ? 0x7f : 0x38, ns));
+      cublasLtMatmulMatrixScale_t sm = mx ? CUBLASLT_MATMUL_MATRIX_SCALE_VEC32_UE8M0 : CUBLASLT_MATMUL_MATRIX_SCALE_VEC16_UE4M3;
       cublasLtMatmulDescSetAttribute(op, CUBLASLT_MATMUL_DESC_A_SCALE_MODE, &sm, sizeof(sm));
       cublasLtMatmulDescSetAttribute(op, CUBLASLT_MATMUL_DESC_B_SCALE_MODE, &sm, sizeof(sm));
       cublasLtMatmulDescSetAttribute(op, CUBLASLT_MATMUL_DESC_A_SCALE_POINTER, &sa, sizeof(sa));
       cublasLtMatmulDescSetAttribute(op, CUBLASLT_MATMUL_DESC_B_SCALE_POINTER, &sb, sizeof(sb));
     }
 #endif
-    cublasLtMatrixLayoutCreate(&Ad, ty, K, M, K);
-    cublasLtMatrixLayoutCreate(&Bd, ty, K, N, K);
+    cublasLtMatrixLayoutCreate(&Ad, ty, K, M, lda);
+    cublasLtMatrixLayoutCreate(&Bd, ty, K, N, ldb);
     cublasLtMatrixLayoutCreate(&Cd, CUDA_R_32F, M, N, M);
     if (batch > 1) {
       for (auto &pr : {std::make_pair(Ad, sA), std::make_pair(Bd, sB), std::make_pair(Cd, sC)}) {
@@ -267,6 +279,10 @@ struct LtGemm {
   cublasStatus_t run(int i, const void *A, const void *B, float *D) {
     float one = 1.f, zero = 0.f;
     return cublasLtMatmul(lt, op, &one, A, Ad, B, Bd, &zero, D, Cd, D, Cd, &res[i].algo, ws, wsz, 0);
+  }
+  cublasStatus_t run_c(int i, const void *A, const void *B, const float *C, float *D) {   // D = A B + C
+    float one = 1.f;
+    return cublasLtMatmul(lt, op, &one, A, Ad, B, Bd, &one, C, Cd, D, Cd, &res[i].algo, ws, wsz, 0);
   }
   std::string algo_json(int i) {
     int id = -1, tile = -1, splitk = -1, red = -1, stages = -1; size_t w;
@@ -371,7 +387,7 @@ static int cmd_ltip(const char *type, int logn, int limbs, int reps, int fast, c
 // (f16: small values via the digit table); only the rate is reported.
 static int cmd_peak(const char *type, int n, int reps) {
   size_t ne = (size_t)n * n;
-  bool isf16 = !strcmp(type, "f16"), isi8 = !strcmp(type, "i8"), isfp4 = !strcmp(type, "e2m1");
+  bool isf16 = !strcmp(type, "f16"), isi8 = !strcmp(type, "i8"), isfp4 = !strcmp(type, "e2m1") || !strcmp(type, "mxf4");
   size_t eb = isf16 ? 2 : 1;
   size_t ab = isfp4 ? ne / 2 : ne * eb;
   void *A, *B, *C;
@@ -421,9 +437,166 @@ static int cmd_peak(const char *type, int n, int reps) {
   return 0;
 }
 
+// ------------------------------------------------------------------------------------------------ ltparity
+// 0/1 count and parity through the GEMM API: A (M x KMAX codes, K-contiguous; e2m1/mxf4 packed two per byte, element
+// 2i low), B (N x KMAX), D = A B + C with C = the f32 whose bits are CBITS (the bias read: C = 2^(m-1)).  For each K
+// of the list the first K columns are used (ld = KMAX), with the first heuristic algorithm and its split-K = 1
+// variant.  DOUT_<K>.bin: nalgo x N x M f32.
+__global__ void k_fill_f32(float *p, size_t n, float v) {
+  for (size_t i = blockIdx.x * (size_t)blockDim.x + threadIdx.x; i < n; i += (size_t)gridDim.x * blockDim.x) p[i] = v;
+}
+static int cmd_ltparity(const char *type, int M, int N, int Kmax, int fast, const char *fa, const char *fb,
+                        const char *cbits, const std::string &dout, const char *klist) {
+  auto A = slurp(fa), B = slurp(fb);
+  size_t ea = elem_bytes_x2(type);
+  if (A.size() != (size_t)M * Kmax * ea / 2 || B.size() != (size_t)N * Kmax * ea / 2) { fprintf(stderr, "ltparity: size\n"); return 2; }
+  void *dA, *dB; float *dC, *dD;
+  CK(cudaMalloc(&dA, A.size())); CK(cudaMalloc(&dB, B.size()));
+  CK(cudaMalloc(&dC, (size_t)M * N * 4)); CK(cudaMalloc(&dD, (size_t)M * N * 4));
+  CK(cudaMemcpy(dA, A.data(), A.size(), cudaMemcpyHostToDevice));
+  CK(cudaMemcpy(dB, B.data(), B.size(), cudaMemcpyHostToDevice));
+  uint32_t cb = (uint32_t)strtoul(cbits, 0, 16); float cv; memcpy(&cv, &cb, 4);
+  k_fill_f32<<<64, 256>>>(dC, (size_t)M * N, cv);
+  CK(cudaDeviceSynchronize());
+  std::string js = "[";
+  char *kl = strdup(klist);
+  int first = 1;
+  for (char *t = strtok(kl, ","); t; t = strtok(nullptr, ",")) {
+    int K = atoi(t);
+    LtGemm g(type, M, N, K, 1, 0, 0, 0, fast, Kmax, Kmax);
+    if (g.nres > 1) g.nres = 1;
+    g.add_no_splitk();
+    std::vector<float> all;
+    std::string algos = "[";
+    int ok = 0;
+    cudaEvent_t e0, e1; CK(cudaEventCreate(&e0)); CK(cudaEventCreate(&e1));
+    float ms0 = -1;
+    for (int i = 0; i < g.nres; i++) {
+      CK(cudaMemset(dD, 0xFF, (size_t)M * N * 4));
+      CK(cudaEventRecord(e0));
+      cublasStatus_t st = g.run_c(i, dA, dB, dC, dD);
+      CK(cudaEventRecord(e1)); CK(cudaDeviceSynchronize());
+      if (st != CUBLAS_STATUS_SUCCESS) continue;
+      if (ms0 < 0) CK(cudaEventElapsedTime(&ms0, e0, e1));
+      std::vector<float> h((size_t)M * N);
+      CK(cudaMemcpy(h.data(), dD, h.size() * 4, cudaMemcpyDeviceToHost));
+      all.insert(all.end(), h.begin(), h.end());
+      algos += (ok ? ", " : "") + g.algo_json(i);
+      ok++;
+    }
+    algos += "]";
+    spill(dout + "_" + std::to_string(K) + ".bin", all.data(), all.size() * 4);
+    char b[160];
+    snprintf(b, sizeof b, "%s{\"K\": %d, \"heuristic_status\": \"%s\", \"n_ran\": %d, \"ms_first\": %.4f, \"algos\": ", first ? "" : ", ",
+             K, cublas_err(g.st), ok, ms0);
+    js += b + algos + "}";
+    first = 0;
+  }
+  js += "]";
+  printf("{\"cmd\": \"ltparity\", \"type\": \"%s\", \"M\": %d, \"N\": %d, \"Kmax\": %d, \"fast_accum\": %d, \"cbits\": \"%s\", "
+         "\"runs\": %s}\n", type, M, N, Kmax, fast, cbits, js.c_str());
+  return 0;
+}
+
+// ------------------------------------------------------------------------------------------------ towermul
+// Tower256 multiply by a fixed r as a dense 0/1 GEMM (ROTATION section 2(b)): x (N packed 32-byte elements) is
+// unpacked to N x 256 0/1 operands, D = Xu * M_r counts over GF(2)-bilinear coordinates (M_r[j][c] = bit c of
+// r * e_j, from the Rust reference), and the parity of each count is repacked to 32 bytes.  Unfused (three
+// kernels through HBM); the timing is an upper bound for a fused kernel.
+__global__ void k_unpack_bits(const uint8_t *x, size_t nbytes, void *out, int kind, uint16_t one) {
+  // kind 0: 2-byte codes (f16), 1: 1-byte codes (e4m3, s8), 2: e2m1 nibbles (two per byte, element 2i low)
+  for (size_t i = blockIdx.x * (size_t)blockDim.x + threadIdx.x; i < nbytes; i += (size_t)gridDim.x * blockDim.x) {
+    uint8_t v = x[i];
+    if (kind == 0) for (int k = 0; k < 8; k++) ((uint16_t *)out)[i * 8 + k] = (v >> k & 1) ? one : 0;
+    else if (kind == 1) for (int k = 0; k < 8; k++) ((uint8_t *)out)[i * 8 + k] = (v >> k & 1) ? (uint8_t)one : 0;
+    else for (int t = 0; t < 4; t++)
+      ((uint8_t *)out)[i * 4 + t] = (uint8_t)(((v >> (2 * t) & 1) ? one : 0) | (((v >> (2 * t + 1) & 1) ? one : 0) << 4));
+  }
+}
+__global__ void k_repack_f32(const float *D, size_t nwords, uint32_t *out) {
+  for (size_t w = blockIdx.x * (size_t)blockDim.x + threadIdx.x; w < nwords; w += (size_t)gridDim.x * blockDim.x) {
+    uint32_t r = 0;
+    for (int b = 0; b < 32; b++) r |= (__float2uint_rn(D[w * 32 + b]) & 1u) << b;
+    out[w] = r;
+  }
+}
+__global__ void k_repack_s32(const int32_t *D, size_t nwords, uint32_t *out) {
+  for (size_t w = blockIdx.x * (size_t)blockDim.x + threadIdx.x; w < nwords; w += (size_t)gridDim.x * blockDim.x) {
+    uint32_t r = 0;
+    for (int b = 0; b < 32; b++) r |= ((uint32_t)D[w * 32 + b] & 1u) << b;
+    out[w] = r;
+  }
+}
+static int cmd_towermul(const char *type, int logn, const char *fmr, const char *fx, const char *fout, int reps) {
+  long long N = 1ll << logn;
+  auto mr = slurp(fmr), X0 = slurp(fx);   // mr: 256 x 256 bytes, row c, column j: bit c of r * e_j (A = M_r^T)
+  if (mr.size() != 65536 || X0.size() % 32 || (long long)X0.size() / 32 > N) { fprintf(stderr, "towermul: size\n"); return 2; }
+  bool i8 = !strcmp(type, "i8");
+  int kind = !strcmp(type, "f16") ? 0 : (i8 || !strcmp(type, "e4m3")) ? 1 : 2;
+  size_t ew2 = kind == 0 ? 4 : kind == 1 ? 2 : 1;   // bytes per element x 2
+  uint16_t one = one_code(type);
+  uint8_t *dmr, *dX; void *dA, *dXu, *dD; uint32_t *dO;
+  CK(cudaMalloc(&dmr, 65536)); CK(cudaMemcpy(dmr, mr.data(), 65536, cudaMemcpyHostToDevice));
+  // pack the 0/1 bytes of M_r^T into bits, then reuse the unpack kernel to make A's codes
+  std::vector<uint8_t> mrb(8192, 0);
+  for (int i = 0; i < 65536; i++) if (mr[i]) mrb[i / 8] |= 1 << (i % 8);
+  uint8_t *dmrb; CK(cudaMalloc(&dmrb, 8192)); CK(cudaMemcpy(dmrb, mrb.data(), 8192, cudaMemcpyHostToDevice));
+  CK(cudaMalloc(&dA, 65536 * ew2 / 2));
+  k_unpack_bits<<<32, 256>>>(dmrb, 8192, dA, kind, one);
+  CK(cudaMalloc(&dX, (size_t)N * 32)); CK(cudaMalloc(&dXu, (size_t)N * 256 * ew2 / 2));
+  CK(cudaMalloc(&dD, (size_t)N * 256 * 4)); CK(cudaMalloc(&dO, (size_t)N * 32));
+  k_fill_bytes<<<1024, 256>>>(dX, (size_t)N * 32, 0x7000 + logn);
+  CK(cudaMemcpy(dX, X0.data(), X0.size(), cudaMemcpyHostToDevice));
+  CK(cudaDeviceSynchronize());
+  cublasHandle_t h; cublasCreate(&h);
+  LtGemm *g = nullptr;
+  if (!i8) {
+    g = new LtGemm(type, 256, (int)N, 256, 1, 0, 0, 0, 0);
+    if (!g->nres) { printf("{\"cmd\": \"towermul\", \"type\": \"%s\", \"status\": \"no_algo %s\"}\n", type, cublas_err(g->st)); return 0; }
+  }
+  int32_t ione = 1, izero = 0;
+  auto gemm = [&]() {
+    if (i8) return cublasGemmEx(h, CUBLAS_OP_T, CUBLAS_OP_N, 256, (int)N, 256, &ione, dA, CUDA_R_8I, 256, dXu, CUDA_R_8I, 256,
+                                &izero, dD, CUDA_R_32I, 256, CUBLAS_COMPUTE_32I, CUBLAS_GEMM_DEFAULT);
+    return g->run(0, dA, dXu, (float *)dD);
+  };
+  cudaEvent_t e[4]; for (auto &x : e) CK(cudaEventCreate(&x));
+  std::vector<double> tu, tg, tr, tt;
+  cublasStatus_t st = CUBLAS_STATUS_SUCCESS;
+  for (int r = 0; r < reps + 1; r++) {
+    CK(cudaEventRecord(e[0]));
+    k_unpack_bits<<<1024, 256>>>(dX, (size_t)N * 32, dXu, kind, one);
+    CK(cudaEventRecord(e[1]));
+    st = gemm();
+    CK(cudaEventRecord(e[2]));
+    if (i8) k_repack_s32<<<1024, 256>>>((const int32_t *)dD, (size_t)N * 8, dO);
+    else k_repack_f32<<<1024, 256>>>((const float *)dD, (size_t)N * 8, dO);
+    CK(cudaEventRecord(e[3])); CK(cudaEventSynchronize(e[3]));
+    float a, b, c; CK(cudaEventElapsedTime(&a, e[0], e[1])); CK(cudaEventElapsedTime(&b, e[1], e[2])); CK(cudaEventElapsedTime(&c, e[2], e[3]));
+    if (r) { tu.push_back(a); tg.push_back(b); tr.push_back(c); tt.push_back(a + b + c); }
+  }
+  CK(cudaGetLastError());
+  if (st != CUBLAS_STATUS_SUCCESS) { printf("{\"cmd\": \"towermul\", \"type\": \"%s\", \"status\": \"%s\"}\n", type, cublas_err(st)); return 0; }
+  size_t nout = std::min<size_t>((size_t)N, std::max<size_t>(X0.size() / 32, 4096)) * 32;
+  std::vector<uint8_t> ho(nout), hx(nout);
+  CK(cudaMemcpy(ho.data(), dO, nout, cudaMemcpyDeviceToHost));
+  CK(cudaMemcpy(hx.data(), dX, nout, cudaMemcpyDeviceToHost));
+  spill(std::string(fout), ho.data(), nout);
+  spill(std::string(fout) + ".x", hx.data(), nout);
+  double mt = median(tt);
+  printf("{\"cmd\": \"towermul\", \"type\": \"%s\", \"logn\": %d, \"status\": \"SUCCESS\", \"reps\": %d, \"unpack_ms\": %.4f, "
+         "\"gemm_ms\": %.4f, \"repack_ms\": %.4f, \"total_ms\": %.4f, \"ns_per_element\": %.4f, \"gemm_ns_per_element\": %.4f, "
+         "\"checked_rows\": %zu, \"algo\": %s}\n", type, logn, reps, median(tu), median(tg), median(tr), mt, mt * 1e6 / N,
+         median(tg) * 1e6 / N, nout / 32, g ? g->algo_json(0).c_str() : "null");
+  return 0;
+}
+
 int main(int argc, char **argv) {
   if (argc < 2) { fprintf(stderr, "usage: see header\n"); return 1; }
   std::string c = argv[1];
+  if (c == "ltparity" && argc == 12)
+    return cmd_ltparity(argv[2], atoi(argv[3]), atoi(argv[4]), atoi(argv[5]), atoi(argv[6]), argv[7], argv[8], argv[9], argv[10], argv[11]);
+  if (c == "towermul" && argc == 8) return cmd_towermul(argv[2], atoi(argv[3]), argv[4], argv[5], argv[6], atoi(argv[7]));
   if (c == "peak" && argc == 5) return cmd_peak(argv[2], atoi(argv[3]), atoi(argv[4]));
   if (c == "copy" && argc == 4) return cmd_copy(strtoull(argv[2], 0, 10), atoi(argv[3]));
   if (c == "i8ip" && argc == 6) return cmd_i8ip(atoi(argv[2]), argv[3], atoi(argv[4]), argv[5]);

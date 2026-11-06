@@ -166,6 +166,14 @@ later commits):
 - The SNP TCB floor fix: `SnpPolicy::new(min_tcb, ...)` is now required (`4d98292c2`).
 - The Nitro freshness fix (`a9d5df4db`).
 
+**Landed 2026-11-06 (breadstuffs `f65df440f`).**
+- `tee-verify/src/nvidia.rs` verifies NVIDIA's public GH100 sample report end to end against the
+  pinned NVIDIA Device Identity CA: chain, P-384 report signature, nonce, and a strict
+  measurement parse with a golden comparison. Six falsifiers refuse.
+- `tdx.rs` exposes `mr_servicetd` and `tee_tcb_svn2`, and refuses an unpinned service TD.
+- Still open: golden values from signed RIMs, OCSP, and the `gpu_evidence` hookup in
+  `dregg-chutes-e2ee`.
+
 **2026 format state (SOURCED, lit notes).**
 
 The NVIDIA GPU report:

@@ -171,8 +171,19 @@ later commits):
   pinned NVIDIA Device Identity CA: chain, P-384 report signature, nonce, and a strict
   measurement parse with a golden comparison. Six falsifiers refuse.
 - `tdx.rs` exposes `mr_servicetd` and `tee_tcb_svn2`, and refuses an unpinned service TD.
-- Still open: golden values from signed RIMs, OCSP, and the `gpu_evidence` hookup in
-  `dregg-chutes-e2ee`.
+- **Landed 2026-11-06 (breadstuffs `d200f0225`, `93f1d383d`, `7ebe54f2f`).** Golden values
+  now come from NVIDIA's signed driver and VBIOS RIMs (XML-DSig under a strict XML subset and
+  Canonical XML 1.1, chain to the pinned CoRIM root, versions bound to the report). All 33
+  active entries match the sample. OCSP covers the device chain and both RIM chains, with
+  CertID matching and freshness, which nvtrust does not check. The FWID is bound to the leaf
+  certificate. `dregg-chutes-e2ee` refuses any instance whose `gpu_evidence` is absent or fails.
+- **Finding [MEASURED].** The public sample cannot pass the composed check at any single
+  instant. NVIDIA's RIM service still serves the driver 550.90.07 RIM signed by a certificate
+  that expired on 2026-06-01. A test pins the refusal, which comes after every earlier step has
+  passed. The composed *accept* path is therefore shown component by component on real data,
+  not end to end.
+- Still open: a live Chutes run (the GPU nonce binding is inferred from chutes-api), Blackwell
+  (TcbInfo FWID, `NV_GPU_CC_DRIVER_*` ids), and the meaning of individual indices.
 
 **2026 format state (SOURCED, lit notes).**
 

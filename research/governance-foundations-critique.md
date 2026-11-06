@@ -182,8 +182,20 @@ later commits):
   that expired on 2026-06-01. A test pins the refusal, which comes after every earlier step has
   passed. The composed *accept* path is therefore shown component by component on real data,
   not end to end.
-- Still open: a live Chutes run (the GPU nonce binding is inferred from chutes-api), Blackwell
-  (TcbInfo FWID, `NV_GPU_CC_DRIVER_*` ids), and the meaning of individual indices.
+- **Live Chutes run, 2026-11-06 [MEASURED]** (breadstuffs `bd71f3014`). One `-TEE` chute served
+  61 instances, each with one GPU.
+  - **The nonce does reach the GPU, in hashed form.** On all 5 instances whose ML-KEM key
+    discovery returned, every GPU report's SPDM nonce equals `SHA-256(nonce_hex ‖ e2e_pubkey_b64)`.
+    That is the TDX quote's `report_data[0..32]`, not the raw nonce. The 61 GPU nonces are
+    distinct. So the GPU report is bound to the fresh nonce and to the encryption key, and the
+    gate now checks exactly that. My earlier inference that the raw nonce is passed through was
+    wrong in form.
+  - **Every GPU is Blackwell** (GB202, driver 595.71.05). Each chains to the pinned NVIDIA Device
+    Identity CA, and the report signature verifies. The verifier is Hopper-only, so every
+    instance would be refused. The narrator default therefore stays **off** until Blackwell
+    support lands.
+- Still open: Blackwell (TcbInfo FWID, `NV_GPU_CC_DRIVER_*` RIM ids) and the meaning of
+  individual indices.
 
 **2026 format state (SOURCED, lit notes).**
 

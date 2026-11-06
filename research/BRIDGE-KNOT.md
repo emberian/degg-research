@@ -414,7 +414,7 @@ CakeML's HOL4 compiler theorem, what licenses the step from "Lean's `evaluate`" 
 closed fragment, `P3.Pan.evaluate` is `panSem$evaluate` at word64 under the contracted
 prelude rows and the generic printer." Evidence: the stored and certified equations
 re-proved in Lean (checker 2), the uniqueness argument for a clocked recursion over
-HOL's measure, 40 + 23 contracts, 42 vectors, the round trip as fault detector.
+HOL's measure, 40 + 24 contracts, 42 vectors, the round trip as fault detector.
 *Cost per new theorem:* zero HOL work for the identification itself. Every option
 still owes the composition obligations at the seam: running `evaluate` on the function
 body is not yet `pan_to_target`'s whole-program semantics (`semantics_decls`, entry

@@ -91,8 +91,6 @@ __global__ void k_fill_bytes_f16(__half *p, size_t n, uint64_t seed) {
 __global__ void __launch_bounds__(128) k_f16ip(const __half *V, const __half *U, long long N, unsigned long long *out) {
   int lane = threadIdx.x & 31, g = lane >> 2, q = lane & 3;
   long long warp = (blockIdx.x * (long long)blockDim.x + threadIdx.x) >> 5, nwarps = (gridDim.x * (long long)blockDim.x) >> 5;
-  const uint32_t *v32 = reinterpret_cast<const uint32_t *>(V), *u32 = reinterpret_cast<const uint32_t *>(U);
-  long long N2 = N / 2;   // plane length in uint32 words
   unsigned long long acc[2][4][4];
 #pragma unroll
   for (int a = 0; a < 2; a++)
@@ -108,22 +106,34 @@ __global__ void __launch_bounds__(128) k_f16ip(const __half *V, const __half *U,
       for (int b = 0; b < 4; b++)
 #pragma unroll
         for (int j = 0; j < 4; j++) f[a][b][j] = 0.f;
-    long long w0 = ch * 128;   // first uint32 word of the chunk in each plane
-#pragma unroll 4
-    for (int ks = 0; ks < 32; ks++) {
-      long long w = w0 + ks * 4 + q;
-      uint32_t a[2][2], b[4];
+    // The sum is order-free, so A and B share one permutation of k inside a 32-element sub-chunk: lane (g, q)
+    // loads 16 bytes (8 halves, elements 8q..8q+7) of each row it needs, and k-step p of the sub-chunk uses the
+    // pair (8q+2p, 8q+2p+1) in fragment position (2q, 2q+1).  Over p = 0..3 every element is used once.
+    const uint4 *v4 = reinterpret_cast<const uint4 *>(V), *u4 = reinterpret_cast<const uint4 *>(U);
+    long long N8 = N / 8;   // plane length in uint4
+#pragma unroll 2
+    for (int sub = 0; sub < 8; sub++) {
+      long long o = ch * 32 + sub * 4 + q;
+      uint4 a[2][2], b[4];
 #pragma unroll
       for (int mt = 0; mt < 2; mt++) {
-        a[mt][0] = __ldg(v32 + (long long)(mt * 16 + g) * N2 + w);
-        a[mt][1] = __ldg(v32 + (long long)(mt * 16 + g + 8) * N2 + w);
+        a[mt][0] = __ldg(v4 + (long long)(mt * 16 + g) * N8 + o);
+        a[mt][1] = __ldg(v4 + (long long)(mt * 16 + g + 8) * N8 + o);
       }
 #pragma unroll
-      for (int nt = 0; nt < 4; nt++) b[nt] = __ldg(u32 + (long long)(nt * 8 + g) * N2 + w);
+      for (int nt = 0; nt < 4; nt++) b[nt] = __ldg(u4 + (long long)(nt * 8 + g) * N8 + o);
 #pragma unroll
-      for (int mt = 0; mt < 2; mt++)
+      for (int pp = 0; pp < 4; pp++) {
 #pragma unroll
-        for (int nt = 0; nt < 4; nt++) hmma(f[mt][nt], a[mt][0], a[mt][1], b[nt]);
+        for (int mt = 0; mt < 2; mt++)
+#pragma unroll
+          for (int nt = 0; nt < 4; nt++) {
+            uint32_t x0 = pp == 0 ? a[mt][0].x : pp == 1 ? a[mt][0].y : pp == 2 ? a[mt][0].z : a[mt][0].w;
+            uint32_t x1 = pp == 0 ? a[mt][1].x : pp == 1 ? a[mt][1].y : pp == 2 ? a[mt][1].z : a[mt][1].w;
+            uint32_t y0 = pp == 0 ? b[nt].x : pp == 1 ? b[nt].y : pp == 2 ? b[nt].z : b[nt].w;
+            hmma(f[mt][nt], x0, x1, y0);
+          }
+      }
     }
 #pragma unroll
     for (int a = 0; a < 2; a++)

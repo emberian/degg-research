@@ -77,8 +77,8 @@ UINT8 limbs into INT32) exactly, which validates it. The results for a BabyBear 
 - **Products per multiply.** FP4-E2M1 base-13 balanced limbs need 9 limbs, so 81 limb
   products. INT8 limbs need 16.
 - **Break-even.** FP4 beats INT8 only on a SKU where TOPS(FP4)/TOPS(INT8) > 5.06.
-- **Exact block length.** For an FP4 limb pair this is 116,508 under a 24-bit accumulator and 113
-  under a 14-bit one. A 14-bit accumulator makes the mapping useless.
+- **Exact block length.** For an FP4 limb pair this is 262,143 under a 24-bit accumulator and 255
+  under a 14-bit one. A 14-bit accumulator still makes the mapping close to useless (corrected 2026-11-06 after the Codex Astra statement audit: the encoder's largest digit is 8, not 12, so max product 64 rather than 144; the limb count 9 and break-even 5.06 are unchanged).
 
 **Repair.** State the hardware theorem with the accumulator as a parameter:
 `AccModel m` (an `m`-bit significand, truncating alignment), and

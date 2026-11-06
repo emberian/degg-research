@@ -157,7 +157,13 @@ cited in `zkml-research/docs/the-position.md`, SOURCED). So every claim also car
 `exact : Bool`. Exact needs integer or bit-exact semantics. MXFP4 block dots are exact ≤13-bit
 integers (`zkml-research/phase0`, SOURCED from the brief). For training, Peigné et al. demand
 bit-exact BF16/FP32 with RNE and pinned kernels, and find tensor-parallel allreduce is the blocker
-(SOURCED). Tolerance claims are never stronger than T3 with an eps that includes the channel.
+(SOURCED). **Corrected by the Astra statement audit (G07).** My first sentence here said
+tolerance claims are never stronger than T3 with an ε that includes the channel, and that was
+wrong. An exact proof of `|y − f(x)| ≤ δ` can have zero proof error. Its *predicate* is weaker
+than equality, but it is not a randomly wrong proof of equality. What the steering result
+actually says is that the tolerance relation admits outputs an adversary can choose, so the
+receipt must carry the tolerance relation itself (δ, units, quantifiers) as its predicate. It
+must never convert δ into ε unless a game over perturbations is separately specified.
 
 ---
 
@@ -409,5 +415,8 @@ narrowed forms are given here.
 - If the union-bound composition proves too loose in practice (eps adds up past usefulness over
   millions of requests), the X-8 receipt needs a sequential or martingale composition instead.
   `AuditSampling.sequential_bound` is the shape to reuse. A related warning: composing a receipt
-  with itself doubles ε, so receipts must be deduplicated by evidence identity before
-  composition.
+  with itself doubles ε. My first repair, deduplicating by evidence identity, is *unsound* (Astra
+  audit G09): identical bytes can support different predicates whose false-accept events are
+  disjoint. Deduplicate only exact repeated judgments (same experiment, resources, predicate,
+  subject, window and assumptions), or uses proved to imply one shared primitive failure event,
+  recorded in a derivation DAG.

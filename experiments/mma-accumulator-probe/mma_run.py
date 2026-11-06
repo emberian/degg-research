@@ -74,6 +74,10 @@ def run_json(args, timeout=600):
 
 
 # ---------------------------------------------------------------------------------------------- toolchain
+# extra nvcc flags from the environment (the paid-box script passes -ccbin for a conda toolkit)
+NVCC_PRE = os.environ.get("NVCC_FLAGS", "").split()
+
+
 def find_nvcc():
     for c in (os.environ.get("NVCC"), shutil.which("nvcc"), "/usr/local/cuda/bin/nvcc"):
         if c and pathlib.Path(c).exists():
@@ -119,12 +123,12 @@ def compile_check(nvcc, arches):
     cuobjdump = str(pathlib.Path(nvcc).parent / "cuobjdump")
     have_cuobj = pathlib.Path(cuobjdump).exists() and pathlib.Path(nvcc).parent.joinpath("nvdisasm").exists()
     res = {}
-    for src in ("probe.cu", "probe_sm75.cu", "probe_sm80.cu", "gemm_probe.cu"):
+    for src in ("probe.cu", "probe_fixed.cu", "probe_sm75.cu", "probe_sm80.cu", "gemm_probe.cu"):
         if not (HERE / src).exists():
             continue
         for a in arches:
             cub = WORK / f"cc_{src[:-3]}_{a}.cubin"
-            rc, so, se, dt = sh([nvcc, "-O2", f"-arch={a}", "-cubin", "-o", str(cub), str(HERE / src)] + inc, timeout=900)
+            rc, so, se, dt = sh([nvcc] + NVCC_PRE + ["-O2", f"-arch={a}", "-cubin", "-o", str(cub), str(HERE / src)] + inc, timeout=900)
             e = dict(rc=rc, s=round(dt, 1), log=(so + se).strip()[-600:])
             if rc == 0 and have_cuobj:
                 e["sass"] = sass_census(cub, cuobjdump)
@@ -819,7 +823,7 @@ def main():
              "--format=csv,noheader")[1].strip().splitlines()
     name, cc = [x.strip() for x in smi[a.gpu].split(",")][:2]
     arch, ccv = arch_of(cc)
-    R.update(sku_requested=a.sku, shrink=a.shrink, gpu=smi, device=name, cc=cc, arch=arch, nvcc=nvcc,
+    R.update(sku_requested=a.sku, shrink=a.shrink, gpu=smi, device=name, cc=cc, arch=arch, nvcc=nvcc, nvcc_flags=NVCC_PRE,
              nvcc_version=sh([nvcc, "--version"])[1].strip().splitlines()[-2:], numpy=np.__version__,
              python=sys.version.split()[0])
     log("device", name, cc, arch, "nvcc", nvcc)
@@ -843,11 +847,12 @@ def main():
     # builds for this device
     bins = {}
     lf = link_flags(nvcc)
-    for src, extra in (("probe_sm75.cu", []), ("probe_sm80.cu", []), ("gemm_probe.cu", lf), ("probe.cu", [])):
-        if src == "probe_sm80.cu" and ccv < 80 or src == "probe.cu" and ccv < 80:
+    for src, extra in (("probe_sm75.cu", []), ("probe_sm80.cu", []), ("gemm_probe.cu", lf), ("probe.cu", []),
+                       ("probe_fixed.cu", [])):
+        if src in ("probe_sm80.cu", "probe.cu", "probe_fixed.cu") and ccv < 80 or not (HERE / src).exists():
             continue
         exe = WORK / src[:-3]
-        rc, so, se, dt = sh([nvcc, "-O2", f"-arch={arch}", "-o", str(exe), str(HERE / src)] + extra, timeout=900)
+        rc, so, se, dt = sh([nvcc] + NVCC_PRE + ["-O2", f"-arch={arch}", "-o", str(exe), str(HERE / src)] + extra, timeout=900)
         R.setdefault("build", {})[src] = dict(rc=rc, s=round(dt, 1), log=(so + se).strip()[-800:], flags=extra)
         log("build", src, arch, "rc", rc, f"{dt:.1f}s")
         if rc == 0:
@@ -871,6 +876,17 @@ def main():
             return dict(rc=rc, stdout=so[-4000:], stderr=se[-1000:], s=round(dt, 2),
                         note="the hardware lane's probe as written; on sm_90a/sm_100a its e4m3 kernel runs on FP16 HMMA")
         section("probe_cu_as_written", orig)
+    if "probe_fixed.cu" in bins:
+        def fixed():
+            rc, so, se, dt = sh([str(bins["probe_fixed.cu"])], timeout=300)
+            rows = re.findall(r"e4m3 C-acc (integer|fractional)\s+j=\s*(\d+)\s+D=(\S+)\s+exact=(\S+)", so)
+            out = dict(rc=rc, stdout=so[-6000:], stderr=se[-1000:], s=round(dt, 2))
+            for kind in ("integer", "fractional"):
+                r = [(int(j), ok == "yes") for k, j, _, ok in rows if k == kind]
+                if r:
+                    out[kind] = width_from_gaps(r)
+            return out
+        section("probe_fixed", fixed)
     if "gemm_probe.cu" in bins:
         g = bins["gemm_probe.cu"]
         dump = WORK / "dump"

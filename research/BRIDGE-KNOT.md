@@ -34,10 +34,13 @@ Tags: [MEASURED] I ran it; [READ] I read it; [INFERRED] my reasoning; [CLAIM] so
    the device's definitions in the other), a theorem proved in either kernel now
    concerns, checkably, the same function the other kernel defines. "The proof is about
    a hand copy" is false for the orb rung, and "the HOL theorem is about a different step" is false for the device.
-5. TCB: the Lean kernel; the HOL4 kernel; the prelude-row identifications (about 60
-   rows, witnessed by vectors, not yet specified by proved contracts); and the exporters'
-   printers. That means type interpretation, name and binding translation, and
-   declaration selection, to the extent the vectors do not exercise them (§4). For
+5. TCB: the Lean kernel; the HOL4 kernel; the base rows (`=`, numerals, `0`/`SUC`,
+   list and option constructors, `bool ↦ Prop`) and the printers' generic core (literals,
+   binding, application, `case`), to the extent vectors and the round trip do not
+   exercise them; and the few rows still witnessed only by vectors. Since 2026-11-06 the
+   rows the fragment uses carry proved contracts, a HOL4 theorem printed by the row
+   printer and re-proved in Lean, or the reverse (40 forward, 23 reverse; §4.1), so a
+   wrong row fails a proof. For
    anything that reaches machine code, add CakeML's own trusted base (ISA model, FFI/oracle model) or Lean's
    compiler and the C compiler. Proofs never cross the bridge; only definitions do.
 
@@ -278,8 +281,8 @@ commit-before-forward without trusting Lean at all.
 |---|---|---|---|
 | Lean kernel | yes | only for the Lean-side facts linked in | yes |
 | HOL4 kernel | yes | yes | no |
-| prelude rows (forward ~50, reverse ~25), each with a witness pair | forward | reverse | no |
-| exporter term printer, beyond the vectors | forward | reverse | no |
+| prelude rows: 40 forward / 23 reverse with proved contracts (§4.1), the rest witness pairs | forward | reverse | no |
+| generic printer core: literals, binding, application, `case`, `bool ↦ Prop`, `=` (§4.1 item 1) | forward | reverse | no |
 | definitional identification (§4 "≡", the CR-2 row) | yes | for Lean-side links only | no |
 | CakeML trusted base (ISA model, FFI oracle model, basis/startup) | yes | yes | no |
 | Lean compiler + C compiler + runtime | no | no | yes |
@@ -300,6 +303,137 @@ never by inverting one table into the other. Kaliszyk–Krauss's Isabelle import
 question this cannot close: whether the two specifications mean the same thing, which is
 one small, reviewable, shared definition per row. Then the residual printer TCB is
 binding, name and type translation, which round trip plus vectors attack from two sides.
+
+### 4.1 Row contracts: which rows are specified, which are only witnessed
+
+**Built (2026-11-06)** [MEASURED]. DreggNet `p3-bridge` `43bbc6e`, `e9538d5`, `cf7a5f0`;
+breadstuffs `5591fcb3e`, `8487409a9`. The design is the one Codex round 2 proposed, with
+one change that removes a trusted step: the *shared specification* is not written twice.
+
+- **Forward.** For each row the exporter states a characteristic property of the HOL
+  constant in the base vocabulary (numerals, `0`/`SUC`, `=`, the connectives, and rows
+  already contracted), and HOL4 proves it in the exporter run. A contract that rests on
+  any oracle other than `DISK_THM` (a `cheat`, `mk_thm`) stops the run. The HOL theorem's
+  conclusion is then printed **through the same row table the definitions go through**
+  into `PanSem/Contracts.lean`, and Lean must prove the printed statement about the row's
+  Lean target. So there is one statement, two kernels, and the printer in between: a
+  wrong row turns the printed statement into a false one, and the Lean build fails on a
+  proof, not only on a vector. 40 contracts. HOL side: `audit/hol_contracts.txt`.
+- **Reverse.** Mirror image. `Lean2Hol.lean` states 23 contracts about the Lean constants
+  (`P3.RevContract`, proved by the Lean kernel when the file runs), prints them through
+  its row printer into `reverse/hol/leanContractsScript.sml`, and HOL4 must prove each
+  about the HOL constant; the script refuses oracles the same way.
+- **Mutation evidence.** `audit/mutate-row.sh` and `audit/mutate-rev-row.sh` replace one
+  row, regenerate into a scratch directory and report which contract fails. Every
+  mutant tried is caught by a proof:
+
+| mutant (forward) | contracts that fail in Lean |
+|---|---|
+| `word_lt ↦ BitVec.ult` | `word_lt` |
+| `word_lt`/`word_lo` swapped (coordinated) | `word_lo`, `word_lt` |
+| `word_or ↦ ^^^` | `word_or` |
+| `FOLDR ↦ List.foldl` | `list_foldr` |
+| `word_lsr ↦ sshiftRight` | `word_lsr` |
+| `w2w ↦ signExtend` | `w2w_down`, `w2w_up` |
+| `DIV ↦ -` | `num_div_mod`, `word_bit`, `word_lsr` |
+| `+ ↦ *` | `num_add`, `num_sub`, `num_mul`, `num_div_mod`, `word_add` |
+| `word_sub` with swapped arguments | `word_sub` |
+| `MOD ↦ -` | seven, from `num_div_mod` to `word_mul` |
+| `word_slice_alt ↦ word_slice` | `word_slice_alt` |
+| `OPT_MMAP ↦ reverse ∘ mapM` | `list_opt_mmap` |
+
+| mutant (reverse) | contract HOL4 fails |
+|---|---|
+| BitVec `<` ↦ signed `<` | `rev_contract_bv64_lt` |
+| Nat `-` with swapped arguments | `rev_contract_nat_sub` |
+| `List.range ↦ REVERSE ∘ COUNT_LIST` | `rev_contract_list_range` |
+| `extractLsb'` off by one | `rev_contract_bv_extract8` |
+
+The earlier "witness pair" rule (P2 §4.2) caught the same signedness swap only on two
+vectors and missed OR/XOR until a vector was added; a contract is quantified, so it does
+not depend on someone choosing the splitting input.
+
+**Row status.** *Contracted* means a contract pins the row given the rows it mentions;
+*base* means the row is part of the vocabulary contracts are stated in; *vector* means
+only a witness pair.
+
+| direction | contracted | base (not contracted, by construction) | vector only, and why |
+|---|---|---|---|
+| forward types | `word64 ↦ BitVec 64` (w2n bijection onto `[0,2^64)`, bit extensionality), `α \|-> β ↦ FMap` (lookup equations; carrier caveat §2) | `bool ↦ Prop`, `num ↦ Nat`, `fun`, `list`, `option`, `prod` | `char ↦ UInt8`, `int ↦ Int`, `one`, `sum` (no contract statement uses them; names reach the fragment only as byte lists) |
+| forward constants | num `+ - * < ≤ > ≥ DIV MOD EXP`; word `+ - * && \|\| ?? ~ < <+ << >>>`, `word_bit`, `w2n`, `n2w`, `w2w` (both directions of width), `word_slice`, `word_slice_alt`; `LENGTH APPEND MAP FOLDR EVERY ZIP OPT_MMAP`; `FST SND ,`; `OPTION_MAP OPTION_BIND SOME`; `UPDATE K IN`; `FLOOKUP FEMPTY FUPDATE DOMSUB FUPDATE_LIST`; `T F ∧ ∨ ¬ ⇒` | `=`, `0`, `SUC`, numerals, `NIL`, `CONS`, `NONE`, word literals | `word_asr`, `word_ror` (only `Shift`, outside `liftProg`'s image); `ARB` (underspecified by design; it sits in branches `EVERY` excludes) |
+| reverse | Nat `+ - * < ≤ / % ^`; BitVec 64 and 8 carriers (`ofNat`, `toNat`); BitVec 64 `+ - * < ≤`; `extractLsb'` at length 8; `List.append length map range`; `Prod.mk fst snd`; `True False ∧ ∨ ¬ ≠`, `Bool.true/false`; `ite` at `Nat` | `=`, numerals, `List.nil/cons`, binders | `UInt8 ↦ word8` identity row and UInt8 arithmetic; `ite` at other types; `BitVec.ofFin` (literal rendering of vector values) |
+
+**What the contracts do not remove (Codex round 3, accepted).**
+
+1. *The base rows and the printer's generic parts.* No contract mentions a particular
+   numeral, so a printer that rendered `8` as `9` would change `byte_index` and keep every
+   contract true; definitions and their equations share the bug, so checker 2 passes too.
+   Literals, binding and application, `case`, `bool ↦ Prop`, and `=` are therefore still
+   trusted printer, attacked only by the vectors and by the round trip. The trusted
+   printer is now that generic core rather than the ~60 per-constant rows.
+2. *Representation.* The contracts are relative to the carrier maps. Transporting every
+   word row and the literal row through a permutation of `BitVec 64` keeps all word
+   contracts true while `1 + 1` prints as `3`; it needs the literal printer to change
+   with it, which is again the base row of item 1.
+3. *Empty types.* A list or option contract determines its function at every inhabited
+   element type. At `Empty`, Lean admits other functions (for example `LENGTH := fun _ =>
+   1`), because the cons equation is vacuous. Every HOL type is inhabited and every Lean
+   instance the export uses is the image of a HOL type, so uniqueness holds where the
+   bridge uses it; the contracts themselves do not say so.
+4. *Uniqueness is argued, not mechanised.* "Determines the constant given the rows it
+   mentions" is a paper argument per row (induction for the recursive rows, `w2n`
+   injectivity for the word rows, bit extensionality for the bitwise rows).
+
+**Recommendation that stands (peer note on the root's ordering).** Contracts before
+clauses was the right order, for a reason found on the way: the restated ladder needs
+**no** new `evaluate` clause (§3: `liftProg`'s image is already inside the exported
+fragment), while three rows on the fragment's own path (`word_slice_alt` through
+`set_byte` into `StoreByte`, `word_slice`, `OPT_MMAP` for operands) had no contract until
+Codex round 3 named them. Step 5 of the brief (clauses the repoint demands) is therefore
+empty; §6 keeps the clause plan for when a rung needs `Call` or structs.
+
+### 4.2 The trusted-row ledger policy: a proposal for ember (not decided)
+
+The question: when a theorem proved in Lean about `P3.Pan.evaluate` is composed with
+CakeML's HOL4 compiler theorem, what licenses the step from "Lean's `evaluate`" to "HOL's
+`panSem$evaluate`"?
+
+**Option A: accept the identification as a CR-2 ledger row.** The row reads: "on the
+closed fragment, `P3.Pan.evaluate` is `panSem$evaluate` at word64 under the contracted
+prelude rows and the generic printer." Evidence: the stored and certified equations
+re-proved in Lean (checker 2), the uniqueness argument for a clocked recursion over
+HOL's measure, 40 + 23 contracts, 42 vectors, the round trip as fault detector.
+*Cost per new theorem:* zero HOL work. The cost is paid per *CakeML revision*: re-run
+the exporter, keep the checkers and contracts green, review the generic printer when it
+changes. *Trusted:* both kernels, the base rows and generic printer (§4.1), the paper
+uniqueness argument.
+
+**Option B: require every composed statement to be re-proved in HOL4.** *Cost per new
+theorem:* a HOL4 proof of the statement about `panSem$evaluate`. For the orb that means
+porting the serve proof and whatever rung the statement rests on; the ~20k lines under
+`translateCert` do not port mechanically (they are Lean tactic proofs, about Sem.lean),
+so in practice a fresh HOL proof per rung. ADR-3-REV chose Lean because that cost is
+the binding velocity term. *Trusted:* the HOL4 kernel and CakeML's own base only; the
+Lean side becomes a design aid. The device route (§4) is already shaped like this, and
+it was cheap there because the device's definitions are small and the reverse exporter
+moved them.
+
+**A middle form exists** and costs little per rung: B for the *statement*, A for the
+*proof*. Print the rung's statement into HOL through the reverse printer (which now has
+contracts too) and have HOL4 check it is the same term as the HOL statement that composes
+with `pan_to_target`; the proof stays in Lean. That narrows the row from "the definition
+is the same" to "the definition is the same (A) and the statement HOL composes is the one
+Lean proved (checked)".
+
+**Recommendation:** A, with the middle form for every rung that reaches machine code (today
+the two serve branches). Reasons: after the contracts the residual of A is enumerated and
+small (§4.1 items 1 to 4), and it is the same residual the forward checkers and the round
+trip already attack from two sides; B doubles every proof in the logic the project chose
+to avoid, and buys mainly the removal of the Lean kernel and the generic printer from a
+statement whose machine-code half already trusts CakeML's ISA and FFI models. If ember
+wants the stronger ledger, the cheapest B is per *rung*, not per theorem: re-prove only
+the top rung (the serve branches) in HOL4 by symbolic execution of the concrete
+`serveModel`, and keep everything under it in Lean.
 
 ## 5. What stays open by construction
 
@@ -332,9 +466,10 @@ theorems instead of surprises, and two of them already have.
    The stored `evaluate_def` clauses then follow, as they did in HOL.
 3. **Polymorphic word width**: `'a ↦ (w : Nat)`, `dimindex ↦ w`, with `0 < w` as a
    side condition. This needs a witness at w = 8, 32 and 64.
-4. **Row contracts** (§4): a shared specification and kernel lemmas on both sides for
-   every row, starting with the word rows. Then the round-trip checker as an additional
-   fault detector, tested against a coordinated two-table mutation.
+4. ~~**Row contracts**~~ done for the rows the fragment uses (§4.1). Left: `word_asr`,
+   `word_ror`, `char`, UInt8 arithmetic and `ite` beyond `Nat`, each when a rung needs it;
+   a mechanised uniqueness lemma per row (each contract determines its constant at every
+   inhabited type); the round-trip checker as an extra fault detector.
 5. **Device to machine code**: `cv_compile`/in-logic compile of the translated `stepS`
    with a CakeML `main` that calls the Microkit FFI. Whether a CakeML binary can share
    the seL4 seat is an ember decision (below). The capability theorem over the CapDL
@@ -353,16 +488,26 @@ theorems instead of surprises, and two of them already have.
 - Whether the CR-2 ledger accepts the definitional identification as a row, or requires
   re-proof in HOL4 for every composed statement. The second is the device route's shape
   already; for the orb it means porting the serve proof.
-- Whether to spend the next lane on row contracts (moving the rows from witnessed to
-  specified) before adding more `evaluate` clauses.
+- ~~Contracts or clauses next~~: contracts done (§4.1); the repoint needed no clause.
+- The ledger policy for the identification row: §4.2 lays out A (accept the row), B
+  (re-prove each composed statement in HOL4), the middle form, and recommends A plus the
+  middle form for rungs that reach machine code.
+- Whether ProofProducing's local-reading demos (`redirectStatusStage`, `httpStamp`,
+  `crlfStamp`) should move to the precondition form: their `WF` hypotheses quantify over
+  every state and are uninhabited (`wf_reading_local_uninhabited`, Codex round 3), so
+  those Lean certificates are vacuous as stated. The HOL4-side stage certificates on the
+  poster are a different artefact and are not affected.
 
 ## 8. Reproduce
 
-- HOL: `docs/engine/probes/p3-bridge/exporter/run-on-hbox.sh export2leanTheory` and
-  `reverse/hol/run-on-hbox.sh chokeProofTheory` / `chokeTransTheory`. These use hbox,
-  CakeML `ed31510b3`, `cakeml-heap`, and `swarm-build` with an 8G cap. Each takes 2–30 s
-  [MEASURED]. The Mac's `~/dev/HOL` is half-built: no `bossLib.uo`, no `hol.state`, and
-  `hol.state0` was rewritten on Jul 27, so Holmake cannot run there today [MEASURED].
+- **One command, on this Mac:** `docs/engine/probes/p3-bridge/install/run-all.sh`
+  (`INSTALL.md`). It builds a pinned toolchain in `~/tools/hol-bridge` the first time
+  (HOL `a9846ebe2`, CakeML `ed31510b3`, only the theories the bridge needs: about 24 min,
+  990 MB, peak 1.9 GiB per process), then regenerates the export and checks it is
+  byte-identical to breadstuffs', builds the Lean side and checker 1, and runs the
+  reverse direction with its contracts: 73 s cold, about 60 s warm [MEASURED]. The Mac's
+  half-built `~/dev/HOL` is not used. `--hbox` runs the HOL parts on hbox under
+  `/tank/dregg-build/p3-bridge` instead.
 - Lean: `cd docs/engine/probes/p3-bridge/lean && lake build` (Lean 4.30.0, core only;
   it builds the orb-compiler modules it imports into its own `.lake`), then
   `python3 ../audit/diff_skeletons.py`.

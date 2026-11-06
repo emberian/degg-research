@@ -53,3 +53,20 @@ identification row.
   `pan_to_target` theorem was instantiated in this lane, and KNOT §4/§6 say so.
 - Nothing Codex found refuted `evaluate_agree` or the two delta theorems. Both rounds
   read them as correctly scoped.
+
+## Round 3 (2026-11-06, the next lane): the restated ladder and the row contracts
+
+Codex was given the ladder file, the agreement file, the contracts, the exporter's table
+and contract section, and the mutation harness, and asked about vacuity, uniqueness,
+printer residue and uncontracted rows. Findings and adjudication:
+
+| # | finding | adjudication | action |
+|---|---|---|---|
+| 1 | `RefinesPan` keeps `Refines`' whole abstract state but only on word-local, `Γ`-bound states, for the oracle `oracleOf ev`; `SR` leaves globals, structs, code, eshapes, sh_memaddrs, top_addr unconstrained | **Accepted as scope** | KNOT §3 states it |
+| 2 | ProofProducing's `redirectStatusStage`/`httpStamp`/`crlfStamp` certificates rest on `WF` hypotheses no state family satisfies (`∀ s, s.locals "code" = some …`); `translateCertPan` inherits that | **Accepted. A real defect in rung [2] as the orb states it, pre-existing.** My restated instance (`closedDemo`) has closed leaves and is not affected | `wf_reading_local_uninhabited` (breadstuffs `e5081531c`); KNOT §7 asks ember whether those demos move to the precondition form |
+| 3 | `serve_405_panSem_witness` proved only the return value | **Accepted** | it now also proves the byte lands |
+| 4 | List/option contracts are not unique at `Empty` element types | **Accepted, narrowed**: unique at every inhabited type, which is every image of a HOL type | KNOT §4.1 item 3 |
+| 5 | Transporting all word rows and the literal printer through a permutation keeps every word contract true | **Accepted**: the carrier and literal rows are base | KNOT §4.1 item 2 |
+| 6 | A numeral printer bug (8 printed as 9) changes `byte_index` and passes every contract | **Accepted. The decisive finding**: contracts move trust from per-constant rows to the printer's generic core, they do not remove it | KNOT §0 sentence 5, §4 TCB table, §4.1 item 1 |
+| 7 | `word_slice`, `word_slice_alt`, `OPT_MMAP` (on the fragment's path), `word_asr`, `word_ror`, `ARB` uncontracted | **Accepted for the first three** | contracts added (40 forward); mutants caught. asr/ror are outside `liftProg`'s image; `ARB` is underspecified by design |
+| 8 | `mutate-row.sh` reporting no failure is not evidence of equivalence | **Accepted** | the harness says "row NOT caught" in that case |

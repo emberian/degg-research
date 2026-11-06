@@ -18,7 +18,8 @@ Tags: [MEASURED] I ran it; [READ] I read it; [INFERRED] my reasoning; [CLAIM] so
    agree between HOL and Lean.
 2. Lean proves that the hand-written `Sem.lean` agrees with that export on every scoped
    program (`evaluate_agree`). It then re-derives the orb's serve rung about the exported
-   panSem `evaluate` itself (`serveExport_serves_405_panSem`). The proof uses no axiom
+   panSem `evaluate` itself (`serveExport_serves_405_panSem`); since breadstuffs
+   `c9205e769` the orb ladder's Lean rungs are *stated* against the export (§3). The proof uses no axiom
    beyond propext, Classical.choice and Quot.sound. It also proves the two places where
    Sem.lean is *not* panSem.
 3. Reverse: the chokepoint device's Lean definitions are exported mechanically into HOL4.
@@ -163,7 +164,7 @@ theorem below depends only on `propext`, `Classical.choice` and `Quot.sound`
   leaves `Γ` bound. This covers all ten constructors, including `While` (strong induction
   on the clock), `ExtCall` (byte-array read/write and `call_FFI`'s length lemma) and
   `StoreByte` (`set_byte` against Sem.lean's mask form, proved bit by bit).
-- **`serveExport_serves_405_panSem`** (`ServeTransfer.lean`): the orb-compiler's
+- **`serveExport_serves_405_panSem`** (first in `ServeTransfer.lean`, now breadstuffs `Pancake/LadderPanSem.lean` with hypotheses on the panSem state): the orb-compiler's
   `serveExport_serves_405`, restated about `P3.Pan.evaluate` on
   `liftProg (serveModel bs200 bs405)`. The run returns `ValWord |bs405|`, and the
   response bytes are in memory at `outBase`, read with panSem's own `mem_load_byte`.
@@ -192,20 +193,52 @@ a concrete pair of states related by `SR`, with every premise, including `hinj`.
    successfully, so `evaluate_agree` still covers `ExtCall`. Any other user of
    `writeByteArray` inherits the delta.
 
-**Should the orb use the agreement theorem, or prove against `Generated` directly?**
-Both now work. Prefer re-targeting the orb ladder at `P3.Pan.evaluate`: Sem.lean becomes
-a convenience layer with a proved bridge, not a second source of truth. `transfer_return`
-plus `SR` already turns any return-value or memory property of a scoped Sem.lean run into
-the panSem one.
+**The orb ladder is now stated against the export (2026-11-06, ember: "yeah we can
+repoint").** breadstuffs `c9205e769` [MEASURED: whole orb-compiler tree green on hbox under
+`swarm-build`, 12G cap; every new theorem's axioms ⊆ {propext, Classical.choice,
+Quot.sound}]. The export now lives in breadstuffs `orb-compiler/PanSem/` (installed there
+by `exporter/run-on-hbox.sh`; DreggNet's `p3-bridge/lean` compiles it from those sources
+and keeps only the structural audit). The agreement file moved to
+`Pancake/PanSemAgree.lean`, and `Pancake/LadderPanSem.lean` restates the rungs:
+
+- `RefinesPan Γ p φ`: for every panSem state `hs` with word-valued locals (`WordLocals`)
+  and `Γ` bound (`BoundPan`), `evaluate (liftProg p, hs)` returns `NONE`, keeps the clock,
+  and ends in a state whose Sem.lean view is `φ (ofPan hs)`. The quantifier ranges over
+  *panSem* states; `ofPan` is the abstraction function and `SR_eq_ofPan` shows `SR`
+  determines it. `RefinesClkPan` is the loop form (precondition, clock consumed).
+- `refinesPan_of_refines`, `refinesClkPan_of_refinesClk`: the bridge lemmas, from
+  `evaluate_agree` plus `Scoped`. `translateCertPan`: the proof-producing translator's
+  certificate as a `RefinesPan` statement, for every well-formed stage whose emitted
+  program is scoped. `closedDemo_panSem` instantiates it (the `Scoped` side condition is
+  decided by `scopedB`).
+- `serveExport_serves_{get,405}_panSem` and `_real_panSem`: both serve branches, with
+  every hypothesis on the panSem state and the response read back with panSem's
+  `mem_load_byte`; the `_real` forms are about the program `lower (serveExport BS200
+  BS405)` returns. `ladder_hypotheses_inhabited`, `serve_405_panSem_witness` and
+  `closedDemo_panSem_witness` exhibit a concrete panSem state meeting every premise.
+
+**Sem.lean is retained as a proved layer, not deleted.** The orb compiler's ~20k lines
+of emit-correctness proofs (ProofProducing, ServeExportServes and the stage files) are
+stated over `PancakeSem` and reach panSem through `evaluate_agree`. Re-proving them
+directly over `P3.Pan.evaluate` would duplicate them without changing the trusted base:
+the semantics the rungs' *statements* mention is now the export, and Sem.lean appears
+only inside proofs. Sem.lean's header now says this and names the two deltas.
+
+**What this adds to the orb's contract**, and it is a real precondition: a stage that
+assigns a local runs on panSem only from a state in which that local is already bound
+(`BoundPan`), and locals hold words (`WordLocals`). Sem.lean's `Refines` was stated for
+all states, including ones panSem rejects with `Error`; the restated rung is not.
 
 ## 4. The composed theorem shapes, and the exact TCB
 
 **Orb ladder** ("datacake down to the bytes"):
 
 ```
-Lean:  serveExport_serves_405           (property of the Sem.lean run of the lowered serve)
-Lean:  serveExport_serves_405_panSem    (same property of P3.Pan.evaluate; evaluate_agree)
-  ≡    the same statement about HOL4's panSem$evaluate at word64     ← THE BRIDGE (definitional)
+Lean:  serveExport_serves_405           (Sem.lean run; a proof layer since c9205e769)
+Lean:  serveExport_serves_405_panSem    (THE RUNG: about P3.Pan.evaluate, hypotheses on
+                                         the panSem state; proved via evaluate_agree)
+Lean:  translateCertPan                 (every scoped well-formed stage, on P3.Pan.evaluate)
+  ≡    the same statements about HOL4's panSem$evaluate at word64    ← THE BRIDGE (definitional)
 HOL4:  pan_to_target compiler correctness (CakeML)                    ← proved in HOL4
 HOL4:  target ISA semantics, then machine code                        ← CakeML trusted base
 ```
@@ -312,9 +345,8 @@ theorems instead of surprises, and two of them already have.
 
 ## 7. Decisions only ember can make
 
-- Re-target the orb ladder at `P3.Pan.evaluate` and retire Sem.lean's "faithful
-  transcription" header, or keep Sem.lean with `evaluate_agree` as its warrant. Either
-  way, the `Scoped` hypothesis is now part of the orb's contract.
+- ~~Re-target the orb ladder at `P3.Pan.evaluate`.~~ Decided 2026-11-06 (repoint) and
+  done (§3). The `Scoped`/`BoundPan` precondition is now in the orb's contract.
 - Whether the chokepoint PD ships the Lean-compiled `stepS` (today) or the CakeML-compiled
   one (proved commit-before-forward in HOL4, without Lean's or C's compiler in the TCB).
   Also whether the CakeML route's FFI/ISA trusted base is acceptable inside a Microkit PD.

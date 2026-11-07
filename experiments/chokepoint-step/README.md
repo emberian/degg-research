@@ -23,6 +23,17 @@ The axioms used are at most `propext` and `Quot.sound`. `lean -c` emits C with t
 
 Why Lean rather than the Pancake orb: `research/CHOKEPOINT-VEHICLE-DECISION.md`.
 
+- `GrayCounter.lean`: the counter word. `gray_one_flip` (an increment flips exactly one bit) and
+  `grayEnc_injective`, for every counter value.
+- `AriadneStep.lean`: the device with Ariadne state continuity (Strackx and Piessens 2016): packages
+  `(C + 1, state)` written before each increment, restore only from counter `C`, two
+  write-and-increment rounds before resuming. Theorems for every hash and every run: `non_omission`
+  (against an adversary holding every package the device wrote, crashing it anywhere, advancing the
+  counter), `restore_accepts_only_current`, `honest_never_halts`, `honest_recovers`, `occ_binds` (one id never names two entries; recovery
+  re-forwards, so receivers drop repeats by id). Falsifiers by
+  `decide`: `tolerateOne_omits` (accept one behind) and `singleInc_omits` (one increment in
+  retrieve). Its model is the Veil pilot `/Users/ember/dev/veil-pilot/VeilPilot/ChokepointAriadne.lean`.
+
 Named residuals:
 - the wire codec (guarded by tests, not proved);
 - the host must execute the outputs in order, persisting before forwarding (`F ... leafhex`

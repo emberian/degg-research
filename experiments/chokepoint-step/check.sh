@@ -11,4 +11,6 @@ mkdir -p "$O/Compiler"
 (cd "$MD" && "$LEAN" --root=. -o "$O/Compiler/Blake3.olean" Compiler/Blake3.lean)
 (cd "$HERE" && LEAN_PATH="$O" "$LEAN" --root=. -o "$O/CommitStep.olean" CommitStep.lean)
 (cd "$HERE" && LEAN_PATH="$O" "$LEAN" --root=. -o "$O/CommitBytes.olean" CommitBytes.lean)
+(cd "$HERE" && LEAN_PATH="$O" "$LEAN" --root=. -o "$O/GrayCounter.olean" GrayCounter.lean)
+(cd "$HERE" && LEAN_PATH="$O" "$LEAN" --root=. -o "$O/AriadneStep.olean" AriadneStep.lean)
 echo "chokepoint: all green"

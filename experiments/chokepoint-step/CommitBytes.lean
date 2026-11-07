@@ -14,9 +14,15 @@
   * `@[export dregg_chokepoint_arrive]` : a String -> String C-ABI entry, the
     `dregg_deleg_admit` pattern. The wire codec itself is pinned by `#guard`s, not by a theorem
     (named residual, as in DelegAdmit).
+  * The Ariadne device (`AriadneStep.lean`), section 6: a byte codec for its state, events,
+    packages and outputs, with round-trip theorems for every value whose numbers fit 64 bits;
+    `stepBytes_complete` and `stepBytes_sound` (the byte step is exactly `Ariadne.step
+    Blake3.hash` on canonical encodings and refuses everything else); and
+    `@[export dregg_chokepoint_ariadne_step]`, the String -> String entry for the HOL4 bridge.
 -/
 import Compiler.Blake3
 import CommitStep
+import AriadneStep
 
 namespace Chokepoint.Bytes
 
@@ -209,3 +215,331 @@ def arriveFFI (s : String) : String := arriveWire s
   (Blake3.toHex (Blake3.hash "hello".toUTF8.toList))
 
 end Chokepoint.Bytes
+
+/-! # 6. The Ariadne device on bytes -/
+
+namespace Chokepoint.AriadneBytes
+
+open Chokepoint.Ariadne
+open Minidregg.Compiler
+
+/-! ## Fixed-width words -/
+
+/-- `k` little-endian base-256 digits of `n`. -/
+def digits : Nat → Nat → List UInt8
+  | 0, _ => []
+  | k + 1, n => UInt8.ofNat (n % 256) :: digits k (n / 256)
+
+def undigits : List UInt8 → Nat
+  | [] => 0
+  | b :: bs => b.toNat + 256 * undigits bs
+
+theorem digits_length (k n : Nat) : (digits k n).length = k := by
+  induction k generalizing n with
+  | zero => rfl
+  | succ k ih => simp [digits, ih]
+
+theorem undigits_digits (k n : Nat) : undigits (digits k n) = n % 256 ^ k := by
+  induction k generalizing n with
+  | zero => simp [digits, undigits, Nat.mod_one]
+  | succ k ih =>
+    simp only [digits, undigits, ih]
+    rw [Nat.pow_succ', Nat.mod_mul]
+    simp
+
+/-- A 64-bit word, little-endian. -/
+def w64 (n : Nat) : List UInt8 := digits 8 n
+
+def r64 (bs : List UInt8) : Option (Nat × List UInt8) :=
+  if bs.length < 8 then none else some (undigits (bs.take 8), bs.drop 8)
+
+theorem r64_w64 {n : Nat} (h : n < 2 ^ 64) (r : List UInt8) : r64 (w64 n ++ r) = some (n, r) := by
+  have hl := digits_length 8 n
+  have h256 : (256 : Nat) ^ 8 = 2 ^ 64 := by decide
+  simp [r64, w64, hl, undigits_digits, h256, Nat.mod_eq_of_lt h]
+
+/-! ## Byte strings and lists -/
+
+/-- A length-prefixed byte string. -/
+def wB (bs : List UInt8) : List UInt8 := w64 bs.length ++ bs
+
+def rB (bs : List UInt8) : Option (List UInt8 × List UInt8) := do
+  let (n, r) ← r64 bs
+  if r.length < n then none else some (r.take n, r.drop n)
+
+theorem rB_wB {bs : List UInt8} (h : bs.length < 2 ^ 64) (r : List UInt8) :
+    rB (wB bs ++ r) = some (bs, r) := by
+  simp [rB, wB, List.append_assoc, r64_w64 h]
+
+/-- A count-prefixed list. -/
+def wL {α : Type} (f : α → List UInt8) (xs : List α) : List UInt8 :=
+  w64 xs.length ++ (xs.map f).flatten
+
+def rN {α : Type} (g : List UInt8 → Option (α × List UInt8)) :
+    Nat → List UInt8 → Option (List α × List UInt8)
+  | 0, bs => some ([], bs)
+  | n + 1, bs => do
+    let (x, r) ← g bs
+    let (xs, r') ← rN g n r
+    some (x :: xs, r')
+
+def rL {α : Type} (g : List UInt8 → Option (α × List UInt8)) (bs : List UInt8) :
+    Option (List α × List UInt8) := do
+  let (n, r) ← r64 bs
+  rN g n r
+
+theorem rN_flatten {α : Type} {f : α → List UInt8} {g : List UInt8 → Option (α × List UInt8)}
+    {xs : List α} (hg : ∀ x ∈ xs, ∀ r, g (f x ++ r) = some (x, r)) (r : List UInt8) :
+    rN g xs.length ((xs.map f).flatten ++ r) = some (xs, r) := by
+  induction xs with
+  | nil => rfl
+  | cons x xs ih =>
+    have hx := hg x (by simp)
+    have ih' := ih (fun y hy => hg y (by simp [hy]))
+    simp [rN, List.append_assoc, hx, ih']
+
+theorem rL_wL {α : Type} {f : α → List UInt8} {g : List UInt8 → Option (α × List UInt8)}
+    {xs : List α} (hlen : xs.length < 2 ^ 64) (hg : ∀ x ∈ xs, ∀ r, g (f x ++ r) = some (x, r))
+    (r : List UInt8) : rL g (wL f xs ++ r) = some (xs, r) := by
+  simp [rL, wL, List.append_assoc, r64_w64 hlen, rN_flatten hg]
+
+/-! ## Entries, packages, device state, events, outputs -/
+
+abbrev Digest := List UInt8
+
+def wE (e : Entry Digest) : List UInt8 := w64 e.occ ++ wB e.digest ++ wB e.payload
+
+def rE (bs : List UInt8) : Option (Entry Digest × List UInt8) := do
+  let (o, r) ← r64 bs
+  let (d, r) ← rB r
+  let (p, r) ← rB r
+  some (⟨o, d, p⟩, r)
+
+/-- Every number in the entry fits a 64-bit word. -/
+def FitsE (e : Entry Digest) : Prop :=
+  e.occ < 2 ^ 64 ∧ e.digest.length < 2 ^ 64 ∧ e.payload.length < 2 ^ 64
+
+def FitsL (l : List (Entry Digest)) : Prop := l.length < 2 ^ 64 ∧ ∀ e ∈ l, FitsE e
+
+theorem rE_wE {e : Entry Digest} (h : FitsE e) (r : List UInt8) : rE (wE e ++ r) = some (e, r) := by
+  obtain ⟨h1, h2, h3⟩ := h
+  simp [rE, wE, List.append_assoc, r64_w64 h1, rB_wB h2, rB_wB h3]
+
+theorem rL_wE {l : List (Entry Digest)} (h : FitsL l) (r : List UInt8) :
+    rL rE (wL wE l ++ r) = some (l, r) :=
+  rL_wL h.1 (fun e he r => rE_wE (h.2 e he) r) r
+
+/-- A package as the host stores it (the MAC over these bytes is the host side's). -/
+def wP (q : Pkg Digest) : List UInt8 := w64 q.ctr ++ wL wE q.log
+
+def rP (bs : List UInt8) : Option (Pkg Digest × List UInt8) := do
+  let (c, r) ← r64 bs
+  let (l, r) ← rL rE r
+  some (⟨c, l⟩, r)
+
+def FitsP (q : Pkg Digest) : Prop := q.ctr < 2 ^ 64 ∧ FitsL q.log
+
+theorem rP_wP {q : Pkg Digest} (h : FitsP q) (r : List UInt8) : rP (wP q ++ r) = some (q, r) := by
+  simp [rP, wP, List.append_assoc, r64_w64 h.1, rL_wE h.2]
+
+def modeTag : Mode → UInt8
+  | .run => 0 | .commit => 1 | .down => 2 | .rec1 => 3 | .rec1i => 4 | .rec2 => 5 | .rec2i => 6
+
+def modeOfTag : UInt8 → Option Mode
+  | 0 => some .run | 1 => some .commit | 2 => some .down | 3 => some .rec1 | 4 => some .rec1i
+  | 5 => some .rec2 | 6 => some .rec2i | _ => none
+
+theorem modeOfTag_modeTag (m : Mode) : modeOfTag (modeTag m) = some m := by cases m <;> rfl
+
+def wD (d : Dev Digest) : List UInt8 :=
+  w64 d.hw ++ [modeTag d.pc, if d.halted then 1 else 0] ++ wL wE d.log ++ wL wE d.inflight ++
+    wL wE d.queue
+
+def rD (bs : List UInt8) : Option (Dev Digest × List UInt8) := do
+  let (hw, r) ← r64 bs
+  match r with
+  | t :: h :: r =>
+    let pc ← modeOfTag t
+    let halted ← (if h = 0 then some false else if h = 1 then some true else none)
+    let (log, r) ← rL rE r
+    let (inflight, r) ← rL rE r
+    let (queue, r) ← rL rE r
+    some (⟨hw, pc, halted, log, inflight, queue⟩, r)
+  | _ => none
+
+def FitsD (d : Dev Digest) : Prop :=
+  d.hw < 2 ^ 64 ∧ FitsL d.log ∧ FitsL d.inflight ∧ FitsL d.queue
+
+theorem rD_wD {d : Dev Digest} (h : FitsD d) (r : List UInt8) : rD (wD d ++ r) = some (d, r) := by
+  obtain ⟨h1, h2, h3, h4⟩ := h
+  cases d with
+  | mk hw pc halted log inflight queue =>
+    cases halted <;>
+      simp [rD, wD, List.append_assoc, r64_w64 h1, modeOfTag_modeTag, rL_wE h2, rL_wE h3, rL_wE h4]
+
+def wEv : Ariadne.Event Digest → List UInt8
+  | .arrive p => 0 :: wB p
+  | .tick => [1]
+  | .forward => [2]
+  | .crash => [3]
+  | .restore none => [4]
+  | .restore (some q) => 5 :: wP q
+
+def rEv : List UInt8 → Option (Ariadne.Event Digest × List UInt8)
+  | 0 :: r => do let (p, r) ← rB r; some (.arrive p, r)
+  | 1 :: r => some (.tick, r)
+  | 2 :: r => some (.forward, r)
+  | 3 :: r => some (.crash, r)
+  | 4 :: r => some (.restore none, r)
+  | 5 :: r => do let (q, r) ← rP r; some (.restore (some q), r)
+  | _ => none
+
+def FitsEv : Ariadne.Event Digest → Prop
+  | .arrive p => p.length < 2 ^ 64
+  | .restore (some q) => FitsP q
+  | _ => True
+
+theorem rEv_wEv {ev : Ariadne.Event Digest} (h : FitsEv ev) (r : List UInt8) :
+    rEv (wEv ev ++ r) = some (ev, r) := by
+  cases ev with
+  | arrive p => simp [rEv, wEv, rB_wB (show p.length < 2 ^ 64 from h)]
+  | tick => rfl
+  | forward => rfl
+  | crash => rfl
+  | restore q =>
+    cases q with
+    | none => rfl
+    | some q => simp [rEv, wEv, rP_wP (show FitsP q from h)]
+
+def wO : Ariadne.Output Digest → List UInt8
+  | .write q => 0 :: wP q
+  | .forward e => 1 :: wE e
+
+def rO : List UInt8 → Option (Ariadne.Output Digest × List UInt8)
+  | 0 :: r => do let (q, r) ← rP r; some (.write q, r)
+  | 1 :: r => do let (e, r) ← rE r; some (.forward e, r)
+  | _ => none
+
+/-! ## The byte step -/
+
+/-- The device step on bytes: `wD d ++ wEv ev` in, `wD d' ++ wL wO outs` out, where
+`(d', outs) = Ariadne.step Blake3.hash d ev`. Anything else, including a non-canonical encoding or
+trailing bytes, is refused (`none`). -/
+def stepBytes (bs : List UInt8) : Option (List UInt8) :=
+  match rD bs with
+  | some (d, r) =>
+    match rEv r with
+    | some (ev, []) =>
+      if wD d ++ wEv ev = bs then
+        let o := Ariadne.step Blake3.hash d ev
+        some (wD o.1 ++ wL wO o.2)
+      else none
+    | _ => none
+  | none => none
+
+/-- **stepBytes_complete.** On the encoding of any device state and event whose numbers fit
+64-bit words, the byte step returns the encoding of `step Blake3.hash`'s result. -/
+theorem stepBytes_complete {d : Dev Digest} {ev : Ariadne.Event Digest} (hd : FitsD d) (he : FitsEv ev) :
+    stepBytes (wD d ++ wEv ev) =
+      some (wD (Ariadne.step Blake3.hash d ev).1 ++ wL wO (Ariadne.step Blake3.hash d ev).2) := by
+  have h2 := rEv_wEv he []
+  rw [List.append_nil] at h2
+  simp [stepBytes, rD_wD hd, h2]
+
+/-- **stepBytes_sound.** Whatever the byte step accepts is the canonical encoding of a device
+state and an event, and its answer is the encoding of `step Blake3.hash` on them. So every theorem
+of `AriadneStep` about `step` holds of what the export computes. -/
+theorem stepBytes_sound {bs out : List UInt8} (h : stepBytes bs = some out) :
+    ∃ d ev, bs = wD d ++ wEv ev ∧
+      out = wD (Ariadne.step Blake3.hash d ev).1 ++ wL wO (Ariadne.step Blake3.hash d ev).2 := by
+  cases hD : rD bs with
+  | none => simp [stepBytes, hD] at h
+  | some p =>
+    obtain ⟨d, r⟩ := p
+    cases hE : rEv r with
+    | none => simp [stepBytes, hD, hE] at h
+    | some p2 =>
+      obtain ⟨ev, r'⟩ := p2
+      cases r' with
+      | cons _ _ => simp [stepBytes, hD, hE] at h
+      | nil =>
+        by_cases hc : wD d ++ wEv ev = bs
+        · simp [stepBytes, hD, hE, hc] at h
+          exact ⟨d, ev, hc.symm, h.symm⟩
+        · simp [stepBytes, hD, hE, hc] at h
+
+/-! ## The wire and the `@[export]` -/
+
+open Chokepoint.Bytes (hexEncode parseHex)
+
+/-- Wire in: hex of `wD d ++ wEv ev`. Wire out: hex of `wD d' ++ wL wO outs`; `""` refused. The
+host must carry out the outputs in order: a `write` completes (durably) before the next call. -/
+def ariadneWire (s : String) : String :=
+  match parseHex s with
+  | some bs => match stepBytes bs with
+    | some out => hexEncode out
+    | none => ""
+  | none => ""
+
+/-- **`@[export dregg_chokepoint_ariadne_step]`** -- the Ariadne device step for the HOL4 bridge
+and the host dataplane, BLAKE3 digests computed here. -/
+@[export dregg_chokepoint_ariadne_step]
+def ariadneFFI (s : String) : String := ariadneWire s
+
+/-! ## Self-tests through the String wire (`#guard`) -/
+
+/-- One call through the wire, decoding the answer as the host would. -/
+def viaWire (d : Dev Digest) (ev : Ariadne.Event Digest) : Option (Dev Digest × List (Ariadne.Output Digest)) := do
+  let bs ← parseHex (ariadneWire (hexEncode (wD d ++ wEv ev)))
+  let (d', r) ← rD bs
+  let (outs, r) ← rL rO r
+  if r = [] then some (d', outs) else none
+
+def dev0 : Dev Digest := ⟨0, .run, false, [], [], []⟩
+def hello : List UInt8 := "hello".toUTF8.toList
+
+/-- Arrive, commit, forward, crash, restore from the package the arrival wrote, retrieve. -/
+def honestRun : Option (Dev Digest × Pkg Digest × List (Ariadne.Output Digest)) := do
+  let (d, o1) ← viaWire dev0 (.arrive hello)
+  let p1 ← match o1 with | [.write q] => some q | _ => none
+  let (d, _) ← viaWire d .tick
+  let (d, o3) ← viaWire d .forward
+  let (d, _) ← viaWire d .crash
+  let (d, _) ← viaWire d (.restore (some p1))
+  let (d, _) ← viaWire d .tick
+  let (d, _) ← viaWire d .tick
+  let (d, _) ← viaWire d .tick
+  let (d, _) ← viaWire d .tick
+  some (d, p1, o3)
+
+-- The leaf's digest is BLAKE3 of the payload; the package carries counter 1 and the new entry.
+#guard (honestRun.map fun (_, p1, _) =>
+  p1.ctr == 1 && p1.log == [⟨1, Blake3.hash hello, hello⟩]) == some true
+#guard (honestRun.map fun (_, p1, _) => (p1.log.map (·.digest)) ==
+  [Blake3.hash hello]) == some true
+-- The committed entry left, and after crash and retrieve the device runs at counter 3 with it.
+#guard (honestRun.map fun (d, p1, o3) =>
+  o3 == [.forward ⟨1, Blake3.hash hello, hello⟩] && d.pc == .run && d.hw == 3 &&
+    d.halted == false && d.log == p1.log && d.queue == p1.log) == some true
+-- A stale package (the initial one, counter 0) after the commit: fail-stop.
+#guard ((do
+    let (d, _) ← viaWire dev0 (.arrive hello)
+    let (d, _) ← viaWire d .tick
+    let (d, _) ← viaWire d .crash
+    let (d, _) ← viaWire d (.restore (some ⟨0, []⟩))
+    some d).map (fun d : Dev Digest => d.halted)) == some true
+-- Refusals: malformed hex, trailing byte, unknown mode tag, halted flag not 0/1, empty.
+#guard ariadneWire (hexEncode (wD dev0 ++ wEv .tick) ++ "0") == ""
+#guard ariadneWire (hexEncode (wD dev0 ++ wEv .tick ++ [0])) == ""
+#guard ariadneWire (hexEncode (w64 0 ++ [7, 0] ++ wL wE [] ++ wL wE [] ++ wL wE [] ++ [1])) == ""
+#guard ariadneWire (hexEncode (w64 0 ++ [0, 2] ++ wL wE [] ++ wL wE [] ++ wL wE [] ++ [1])) == ""
+#guard ariadneWire "" == ""
+-- A canonical call answers.
+#guard ariadneWire (hexEncode (wD dev0 ++ wEv .tick)) == hexEncode (wD dev0 ++ wL wO [])
+
+/-- info: 'Chokepoint.AriadneBytes.stepBytes_sound' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs in #print axioms stepBytes_sound
+/-- info: 'Chokepoint.AriadneBytes.stepBytes_complete' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in #print axioms stepBytes_complete
+
+end Chokepoint.AriadneBytes

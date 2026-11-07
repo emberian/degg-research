@@ -10,7 +10,9 @@ O="${OLEANS:-${TMPDIR:-/tmp}/chokepoint-oleans}"
 mkdir -p "$O/Compiler"
 (cd "$MD" && "$LEAN" --root=. -o "$O/Compiler/Blake3.olean" Compiler/Blake3.lean)
 (cd "$HERE" && LEAN_PATH="$O" "$LEAN" --root=. -o "$O/CommitStep.olean" CommitStep.lean)
-(cd "$HERE" && LEAN_PATH="$O" "$LEAN" --root=. -o "$O/CommitBytes.olean" CommitBytes.lean)
 (cd "$HERE" && LEAN_PATH="$O" "$LEAN" --root=. -o "$O/GrayCounter.olean" GrayCounter.lean)
 (cd "$HERE" && LEAN_PATH="$O" "$LEAN" --root=. -o "$O/AriadneStep.olean" AriadneStep.lean)
+(cd "$HERE" && LEAN_PATH="$O" "$LEAN" --root=. -o "$O/CommitBytes.olean" -c "$O/CommitBytes.c" CommitBytes.lean)
+grep -q dregg_chokepoint_ariadne_step "$O/CommitBytes.c"
+grep -q dregg_chokepoint_arrive "$O/CommitBytes.c"
 echo "chokepoint: all green"

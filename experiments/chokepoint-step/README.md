@@ -32,10 +32,19 @@ Why Lean rather than the Pancake orb: `research/CHOKEPOINT-VEHICLE-DECISION.md`.
   counter), `restore_accepts_only_current`, `honest_never_halts`, `honest_recovers`, `occ_binds` (one id never names two entries; recovery
   re-forwards, so receivers drop repeats by id). Falsifiers by
   `decide`: `tolerateOne_omits` (accept one behind) and `singleInc_omits` (one increment in
-  retrieve). Its model is the Veil pilot `/Users/ember/dev/veil-pilot/VeilPilot/ChokepointAriadne.lean`.
+  retrieve). Its model is the Veil pilot `/Users/ember/dev/veil-pilot/VeilPilot/ChokepointAriadne.lean`,
+  and `/Users/ember/dev/veil-pilot/VeilPilot/AriadneRefines.lean` proves `step` a forward simulation
+  of that model (`refines`), with the one-increment variant as a control that does not simulate.
+- `CommitBytes.lean` section 6: the Ariadne device on bytes. A codec for its state, events, packages
+  and outputs (round trips proved for every value whose numbers fit 64 bits), `stepBytes_complete`
+  and `stepBytes_sound` (the byte step is exactly `Ariadne.step Blake3.hash` on canonical encodings
+  and refuses anything else), and `@[export dregg_chokepoint_ariadne_step] : String → String`, hex
+  in and out, for the HOL4 bridge. `#guard`s run an arrive, commit, forward, crash, restore and
+  retrieve sequence through the String wire and check the BLAKE3 digests. `check.sh` emits C and
+  checks both export symbols are in it.
 
 Named residuals:
-- the wire codec (guarded by tests, not proved);
+- the hex layer of both wires (guarded by tests, not proved; the Ariadne byte codec under it is proved);
 - the host must execute the outputs in order, persisting before forwarding (`F ... leafhex`
   means: persist `leafhex` durably, then forward);
 - snapshot content integrity (a MAC assumption);

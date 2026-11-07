@@ -1057,6 +1057,12 @@ def main():
         save()
 
     section("compile", lambda: compile_check(nvcc, a.arches.split(",")))
+    for k, e in (R.get("compile") or {}).items():
+        src_k, arch_k = k.split("@") if "@" in k else (k, "")
+        # sm_80+ sources cannot build for sm_75 (m16n8k32 u8, e4m3): expected, as in every T4 run
+        expected = src_k in ("probe.cu", "probe_fixed.cu", "probe_sm80.cu") and arch_k in ("sm_75",)
+        if isinstance(e, dict) and e.get("rc") not in (0, None) and not expected:
+            R["errors"][f"compile {k}"] = e.get("log", "")[-800:]
 
     # builds for this device
     bins = {}
@@ -1074,6 +1080,10 @@ def main():
         log("build", src, arch, "rc", rc, f"{dt:.1f}s")
         if rc == 0:
             bins[src] = exe
+        else:
+            # fail closed: a source that applies to this device and does not build is an error, not a skipped
+            # section (accel-failclosed-t4-01: a truncated probe_sm75.cu ran 45 checks, 0 failed, rc 0)
+            R["errors"][f"build {src}"] = (so + se).strip()[-1500:]
     save()
 
     if "probe_sm75.cu" in bins:
